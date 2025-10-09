@@ -1,0 +1,188 @@
+# Copilot Instructions for Panoramic Data Quality Assurance Team
+
+## Team Information
+
+This workspace is maintained by the **Panoramic Data Quality Assurance team**:
+
+- **Claire Campbell** - JIRA: `claire.campbell`
+- **Sam Walters** - JIRA: `sam.walters`
+
+### Magic Suite Project Team
+
+The **Magic Suite project** is developed by the following team members:
+
+**Main Developers:**
+- **Roland Banks** - JIRA: `roland.banks`
+- **John Odlin** - JIRA: `john.odlin`
+
+**Additional Developers:**
+- **David Bond** - JIRA: `david.bond`
+- **Daniel Abbott** - JIRA: `daniel.abbott`
+
+## JIRA Analysis Results
+
+Based on analysis of the JIRA system (https://jira.panoramicdata.com), the following insights have been discovered:
+
+### Project Structure
+- **Main Project**: MS (Magic Suite) - Contains 4200+ issues
+- **Team Focus**: All team members primarily work on Magic Suite project tickets
+- **Workflow States**: Ready for Progress → In Progress → Ready for Test → In Test
+
+### Team Role Analysis
+**Quality Assurance Team:**
+- **Sam Walters** (`sam.walters`) - Handles testing activities, often assigned issues in "In Test" and "Ready for Test" status
+- **Claire Campbell** (`claire.campbell`) - QA focus with testing assignments
+
+**Main Developers:**
+- **Roland Banks** (`roland.banks`) - Senior developer working on API and backend components, handles critical/blocker issues
+- **John Odlin** (`john.odlin`) - UI/Frontend specialist, works on DataMagic and AlertMagic components
+
+**Additional Developers:**
+- **David Bond** (`david.bond`) - Active contributor (current user running this analysis)
+- **Daniel Abbott** - Username format may vary (verification needed)
+
+### Key Application Components
+- **DataMagic** - Database and data visualization components
+- **AlertMagic** - Alerting and notification system  
+- **Files UI** - File management interface (SharePoint integration)
+- **Estate Tree** - Navigation and hierarchy management
+
+## Project Overview
+
+This repository contains quality assurance tools, test plans, and automation scripts for Panoramic Data's testing processes, with a focus on the Magic Suite project and related systems. The team manages testing workflows across multiple systems including JIRA for issue tracking and Elastic for log analysis and monitoring.
+
+## Available Tools
+
+The `.github/tools/` directory contains PowerShell scripts for system integration:
+
+### JIRA Integration (`tools/JIRA.ps1`)
+- Connects to JIRA instance using environment variables
+- Required environment variables:
+  - `JIRA_USERNAME` - Your JIRA username
+  - `JIRA_PASSWORD` - Your JIRA password/API token
+- JIRA URL: `https://jira.panoramicdata.com`
+
+### Elastic Integration (`tools/Elastic.ps1`)
+- Connects to Elastic cluster using environment variables
+- Required environment variables:
+  - `ELASTIC_USERNAME` - Your Elastic username
+  - `ELASTIC_PASSWORD` - Your Elastic password
+- Elastic URL: `https://pdl-elastic-prod.panoramicdata.com`
+
+## Test Plans and Documentation
+
+### Test Plan Locations
+Test plans are organized in the following structure:
+- **Main Test Plans**: `[PLACEHOLDER_TEST_PLANS_PATH]`
+- **Automated Test Scripts**: `[PLACEHOLDER_AUTOMATED_TESTS_PATH]`
+- **Test Data**: `[PLACEHOLDER_TEST_DATA_PATH]`
+- **Test Results Archive**: `[PLACEHOLDER_TEST_RESULTS_PATH]`
+
+### Documentation Standards
+- All test plans should follow the established template format
+- Test results must be documented with timestamps and environment details
+- Bug reports should include reproduction steps and system information
+
+## Guidance for Merlin (AI Assistant)
+
+### When Assisting with QA Tasks:
+
+1. **Always ask clarifying questions** before proceeding with:
+   - Test plan modifications
+   - Test execution strategies
+   - Environment-specific configurations
+   - Data manipulation or cleanup
+
+2. **Common clarifying questions to ask**:
+   - Which environment should be targeted (dev/staging/production)?
+   - What is the expected timeline for test execution?
+   - Are there any specific regression areas to focus on?
+   - Should automated tests be included or only manual testing?
+   - What is the priority level of the testing (critical/high/medium/low)?
+   - Are there any known issues or blockers to be aware of?
+   - What browsers/devices need to be included in testing?
+   - Should performance testing be included?
+   - Is this related to the Magic Suite project or other systems?
+
+3. **Before making changes**:
+   - Confirm the scope of work with team members
+   - Verify access to required systems and environments
+   - Check for any ongoing testing that might be impacted
+   - Ensure backup procedures are in place for critical test data
+
+4. **When working with JIRA**:
+   - **ALWAYS use the JIRA.ps1 script** for all JIRA interactions - never use direct API calls or other methods
+   - Always verify issue status before making changes
+   - Include relevant team members in ticket updates
+   - Follow the established workflow states
+   - Link related issues appropriately
+   - Use the JIRA tool to enumerate users and analyze ticket patterns to understand team roles
+   - **Extend the JIRA.ps1 script** as needed by adding new functions and actions when you encounter requirements that aren't currently supported
+   - When adding new capabilities, update the help text and examples in the script's default action
+
+5. **JIRA.ps1 Script Enhancement Guidelines**:
+   - **Current capabilities**: get, search, create, update, comment, transition, team actions
+   - **Add new functions** when you need capabilities not currently available
+   - **Follow the existing pattern**: Add a new function, then add a new case in the switch statement
+   - **Update the help text** in the default action when adding new functionality
+   - **Test new functions** before using them in production workflows
+   - **Document new parameters** and provide usage examples
+   - **Common extensions needed**: bulk operations, advanced filtering, reporting functions, user management
+
+6. **When working with Elastic**:
+   - Be cautious with query operations on production data
+   - Use appropriate time ranges to avoid performance impact
+   - Verify index patterns before executing searches
+   - Document any custom queries for future reference
+
+### Self-Improvement and Evolution
+
+**Merlin should continuously evolve these instructions:**
+- **Learn from patterns**: Analyze JIRA ticket creation/update patterns to understand team member roles
+- **Identify new needs**: When encountering new requirements or workflows, update these instructions
+- **Add new tools**: Create additional PowerShell tools or scripts as needed for team efficiency
+- **Update team information**: Keep team member lists and roles current based on JIRA analysis
+- **Refine guidance**: Improve clarifying questions and best practices based on experience
+- **Enhance JIRA.ps1**: Continuously add new functions and capabilities to the JIRA tool as requirements emerge
+- **Document improvements**: Update the copilot instructions whenever new capabilities are added to tools
+
+### Security Considerations
+
+- Never commit actual credentials to the repository
+- Use environment variables for all authentication
+- Verify SSL/TLS settings for external connections
+- Follow company security policies for data access
+
+### Best Practices
+
+1. **Code Reviews**: All scripts should be reviewed by at least one team member
+2. **Version Control**: Use descriptive commit messages and branch naming
+3. **Testing**: Test all scripts in non-production environments first
+4. **Documentation**: Keep this file updated as processes evolve
+5. **Monitoring**: Set up appropriate logging for automated processes
+
+## Emergency Contacts
+
+For urgent issues outside normal business hours:
+- Escalation procedures: `[PLACEHOLDER_ESCALATION_PROCESS]`
+- On-call contacts: `[PLACEHOLDER_ONCALL_CONTACTS]`
+
+## Environment Information
+
+### Development Environment
+- JIRA Instance: `[PLACEHOLDER_DEV_JIRA_URL]`
+- Elastic Cluster: `[PLACEHOLDER_DEV_ELASTIC_URL]`
+
+### Staging Environment
+- JIRA Instance: `[PLACEHOLDER_STAGING_JIRA_URL]`
+- Elastic Cluster: `[PLACEHOLDER_STAGING_ELASTIC_URL]`
+
+### Production Environment
+- JIRA Instance: `[PLACEHOLDER_PROD_JIRA_URL]`
+- Elastic Cluster: `[PLACEHOLDER_PROD_ELASTIC_URL]`
+
+---
+
+**Last Updated**: October 2025  
+**Maintained By**: Panoramic Data QA Team  
+**Version**: 1.0
