@@ -73,7 +73,9 @@ The `.github/tools/` directory contains PowerShell scripts for system integratio
 
 ### Test Plan Locations
 Test plans are organized in the following structure:
-- **Main Test Plans**: `[PLACEHOLDER_TEST_PLANS_PATH]`
+- **Main Test Plans**: `test-plans/` directory in project root
+- **Naming Convention**: `MS-12345.md` format matching JIRA issue keys
+- **Template Available**: `test-plans/README.md` contains structure guidelines
 - **Automated Test Scripts**: `[PLACEHOLDER_AUTOMATED_TESTS_PATH]`
 - **Test Data**: `[PLACEHOLDER_TEST_DATA_PATH]`
 - **Test Results Archive**: `[PLACEHOLDER_TEST_RESULTS_PATH]`
@@ -122,6 +124,8 @@ Test plans are organized in the following structure:
 
 5. **JIRA.ps1 Script Enhancement Guidelines**:
    - **Current capabilities**: get, search, create, update, comment, transition, team actions
+   - **Enhanced ticket access**: getfull, detailed, comments, history actions for comprehensive ticket information
+   - **Ticket data includes**: All comments, state transitions, change history, and formatted summaries
    - **Add new functions** when you need capabilities not currently available
    - **Follow the existing pattern**: Add a new function, then add a new case in the switch statement
    - **Update the help text** in the default action when adding new functionality
