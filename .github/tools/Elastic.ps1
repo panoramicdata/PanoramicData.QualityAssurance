@@ -10,13 +10,28 @@ param(
 # Configuration
 $ELASTIC_BASE_URL = "https://pdl-elastic-prod.panoramicdata.com"
 
-# Get credentials from environment variables
+# Get credentials from environment variables or prompt user
 $ELASTIC_USERNAME = $env:ELASTIC_USERNAME
 $ELASTIC_PASSWORD = $env:ELASTIC_PASSWORD
 
-if (-not $ELASTIC_USERNAME -or -not $ELASTIC_PASSWORD) {
-    Write-Error "Elastic credentials not found. Please set ELASTIC_USERNAME and ELASTIC_PASSWORD environment variables."
-    exit 1
+if (-not $ELASTIC_USERNAME) {
+    Write-Host "Elastic credentials not found in environment variables." -ForegroundColor Yellow
+    Write-Host "Elastic URL: $ELASTIC_BASE_URL" -ForegroundColor Cyan
+    $ELASTIC_USERNAME = Read-Host "Enter your Elastic username"
+    if (-not $ELASTIC_USERNAME) {
+        Write-Error "Username is required to access Elastic"
+        exit 1
+    }
+}
+
+if (-not $ELASTIC_PASSWORD) {
+    Write-Host "Enter your Elastic password (input will be hidden)" -ForegroundColor Cyan
+    $securePassword = Read-Host -AsSecureString
+    $ELASTIC_PASSWORD = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword))
+    if (-not $ELASTIC_PASSWORD) {
+        Write-Error "Password is required to access Elastic"
+        exit 1
+    }
 }
 
 # Create authentication header
@@ -300,15 +315,18 @@ switch ($Action.ToLower()) {
         Get-ElasticHealth
     }
     "indices" {
-        Get-ElasticIndices -Pattern ($Parameters["Pattern"] ?? "*")
+        $pattern = if ($Parameters["Pattern"]) { $Parameters["Pattern"] } else { "*" }
+        Get-ElasticIndices -Pattern $pattern
     }
     "search" {
         if (-not $Index) {
             Write-Error "Index parameter required for 'search' action"
             exit 1
         }
-        $query = $Parameters["Query"] ?? @{ match_all = @{} }
-        Search-ElasticDocuments -Index $Index -Query $query -Size ($Parameters["Size"] ?? 100) -From ($Parameters["From"] ?? 0)
+        $query = if ($Parameters["Query"]) { $Parameters["Query"] } else { @{ match_all = @{} } }
+        $size = if ($Parameters["Size"]) { $Parameters["Size"] } else { 100 }
+        $from = if ($Parameters["From"]) { $Parameters["From"] } else { 0 }
+        Search-ElasticDocuments -Index $Index -Query $query -Size $size -From $from
     }
     "get" {
         if (-not $Index -or -not $Parameters["DocumentId"]) {
@@ -339,7 +357,8 @@ switch ($Action.ToLower()) {
         Remove-ElasticDocument -Index $Index -DocumentId $Parameters["DocumentId"]
     }
     "testlogs" {
-        Search-TestLogs -TestName $Parameters["TestName"] -Environment $Parameters["Environment"] -LogLevel $Parameters["LogLevel"] -StartTime $Parameters["StartTime"] -EndTime $Parameters["EndTime"] -Size ($Parameters["Size"] ?? 100)
+        $size = if ($Parameters["Size"]) { $Parameters["Size"] } else { 100 }
+        Search-TestLogs -TestName $Parameters["TestName"] -Environment $Parameters["Environment"] -LogLevel $Parameters["LogLevel"] -StartTime $Parameters["StartTime"] -EndTime $Parameters["EndTime"] -Size $size
     }
     "teststats" {
         Get-TestExecutionStats -Environment $Parameters["Environment"] -StartTime $Parameters["StartTime"] -EndTime $Parameters["EndTime"]

@@ -2,8 +2,30 @@
 
 ## Team Information
 
-This workspace is maintained by the **Panoramic Data Quality Assurance team**:
+This workspace is maintained by the **Panoramic Data Quality Assurance tea7. **When working with Elastic**:
+   - Be cautious with query operations on production data
+   - Use appropriate time ranges to avoid performance impact
+   - Verify index patterns before executing searches
+   - Document any custom queries for future reference
 
+8. **Standard QA Workflow Integration with JIRA**:
+   - **Always start QA work** by updating the JIRA ticket with a progress comment
+   - **Before creating test plans**: Add comment about starting test plan creation
+   - **After creating test plans**: Add comment with link to test plan file and summary
+   - **Before collecting logs**: Add comment about starting log collection for analysis
+   - **After collecting logs**: Add comment with summary of logs collected, file sizes, and key findings
+   - **During analysis**: Add progress comments for significant findings or roadblocks
+   - **After completing analysis**: Add comprehensive comment with findings and recommendations
+   - **Before transitioning**: Always add a comment explaining the reason for the status change
+   - **When syncing to repository**: Add comment about committing work with commit hash if available
+   - **Example Standard Workflow Comments**:
+     - Start: "Beginning QA work on MS-21863 SharePoint regression. Creating test plan and collecting logs for analysis."
+     - Test Plan: "Created comprehensive test plan (MS-21863.md) with 6 test cases covering version comparison and SharePoint file operations. Ready to collect supporting logs."
+     - Log Collection: "Collected 1.25MB of logs from Elastic (SharePoint: 529KB, CAE Agent: 726KB). Found version info and connection details. Starting analysis."
+     - Analysis: "Log analysis complete. Found version 3.28.163 in current environment. No critical 'not found' errors in sample. Test plan ready for execution."
+     - Completion: "QA preparation complete. Test plan created, logs collected and analyzed, documentation updated. Ready for test execution or developer review."
+
+### Self-Improvement and Evolution
 - **Claire Campbell** - JIRA: `claire.campbell`
 - **Sam Walters** - JIRA: `sam.walters`
 
@@ -114,15 +136,45 @@ Test plans are organized in the following structure:
 
 4. **When working with JIRA**:
    - **ALWAYS use the JIRA.ps1 script** for all JIRA interactions - never use direct API calls or other methods
+   - **Update tickets proactively** with progress comments throughout work sessions
+   - **Transition tickets through workflows** when appropriate (Ready for Progress → In Progress → Ready for Test → In Test)
    - Always verify issue status before making changes
    - Include relevant team members in ticket updates
-   - Follow the established workflow states
+   - Follow the established workflow states (Ready for Progress → In Progress → Ready for Test → In Test)
    - Link related issues appropriately
    - Use the JIRA tool to enumerate users and analyze ticket patterns to understand team roles
    - **Extend the JIRA.ps1 script** as needed by adding new functions and actions when you encounter requirements that aren't currently supported
    - When adding new capabilities, update the help text and examples in the script's default action
 
-5. **JIRA.ps1 Script Enhancement Guidelines**:
+5. **JIRA Progress Tracking & Workflow Management**:
+   - **At Start of Work**: Always check current ticket status and add comment about starting work
+   - **During Work**: Post progress updates at key milestones (e.g., "Test plan created", "Logs collected", "Analysis complete")
+   - **Workflow Transitions**: 
+     - Move tickets from "Ready for Progress" → "In Progress" when starting work
+     - Move from "In Progress" → "Ready for Test" when QA work is complete and ready for developer testing
+     - Move from "Ready for Test" → "In Test" when actively executing test cases
+     - Always add comments explaining the reason for transition
+   - **Progress Comments Should Include**:
+     - Summary of work completed
+     - Key findings or results
+     - Links to created artifacts (test plans, log files, reports)
+     - Next steps or handoff information
+     - Any blockers or issues discovered
+   - **Comment Examples**:
+     ```
+     "Started analysis of MS-21863. Created comprehensive test plan with 6 test cases covering SharePoint regression between v3.26.501 and v3.27.351. Collected 1.25MB of logs from Elastic for analysis. Moving to In Progress."
+     
+     "Progress Update: Analyzed collected logs and found version info (3.28.163 detected). No 'not found' errors found in current log sample. Recommend expanding search to error-specific indices. Test plan ready for execution."
+     
+     "QA work complete. Test plan created, logs collected and analyzed, environment setup documented. Ready for developer review and test execution. Moving to Ready for Test."
+     ```
+   - **When to Transition**:
+     - **Ready for Progress → In Progress**: When you start working on the ticket
+     - **In Progress → Ready for Test**: When QA preparation is complete (test plans, environment setup, log analysis)
+     - **Ready for Test → In Test**: When actively executing test cases or validating fixes
+     - **In Test → Closed/Resolved**: When testing is complete and results documented
+
+6. **JIRA.ps1 Script Enhancement Guidelines**:
    - **Current capabilities**: get, search, create, update, comment, transition, team actions
    - **Enhanced ticket access**: getfull, detailed, comments, history actions for comprehensive ticket information
    - **Ticket data includes**: All comments, state transitions, change history, and formatted summaries
