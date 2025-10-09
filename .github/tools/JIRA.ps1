@@ -12,13 +12,28 @@ $JIRA_BASE_URL = "https://jira.panoramicdata.com"
 $API_VERSION = "2"
 $JIRA_API_URL = "$JIRA_BASE_URL/rest/api/$API_VERSION"
 
-# Get credentials from environment variables
+# Get credentials from environment variables or prompt user
 $JIRA_USERNAME = $env:JIRA_USERNAME
 $JIRA_PASSWORD = $env:JIRA_PASSWORD
 
-if (-not $JIRA_USERNAME -or -not $JIRA_PASSWORD) {
-    Write-Error "JIRA credentials not found. Please set JIRA_USERNAME and JIRA_PASSWORD environment variables."
-    exit 1
+if (-not $JIRA_USERNAME) {
+    Write-Host "JIRA credentials not found in environment variables." -ForegroundColor Yellow
+    Write-Host "JIRA URL: $JIRA_BASE_URL" -ForegroundColor Cyan
+    $JIRA_USERNAME = Read-Host "Enter your JIRA username"
+    if (-not $JIRA_USERNAME) {
+        Write-Error "Username is required to access JIRA"
+        exit 1
+    }
+}
+
+if (-not $JIRA_PASSWORD) {
+    Write-Host "Enter your JIRA password or API token (input will be hidden)" -ForegroundColor Cyan
+    $securePassword = Read-Host -AsSecureString
+    $JIRA_PASSWORD = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword))
+    if (-not $JIRA_PASSWORD) {
+        Write-Error "Password/API token is required to access JIRA"
+        exit 1
+    }
 }
 
 # Create authentication header
@@ -307,7 +322,8 @@ switch ($Action.ToLower()) {
             Write-Error "JQL parameter required for 'search' action"
             exit 1
         }
-        Search-JiraIssues -JQL $jql -MaxResults ($Parameters["MaxResults"] ?? 50)
+        $maxResults = if ($Parameters["MaxResults"]) { $Parameters["MaxResults"] } else { 50 }
+        Search-JiraIssues -JQL $jql -MaxResults $maxResults
     }
     "create" {
         New-JiraIssue -ProjectKey $Parameters["ProjectKey"] -IssueType $Parameters["IssueType"] -Summary $Parameters["Summary"] -Description $Parameters["Description"] -Assignee $Parameters["Assignee"]
