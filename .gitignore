@@ -1,0 +1,31 @@
+# Credentials and sensitive data
+.env
+*.env
+credentials.json
+credentials.xml
+config.json
+
+# Logs
+Logs/
+*.log
+test-*.log
+regression-*.csv
+
+# Test outputs
+baseline/
+current/
+test-results/
+
+# Windows Credential Manager exports
+*.cred
+
+# User-specific settings
+.vscode/settings.json
+
+# PowerShell history
+ConsoleHost_history.txt
+
+# Temporary files
+*.tmp
+*.temp
+~$*
