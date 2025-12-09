@@ -80,20 +80,42 @@ JIRA_PASSWORD=your-password
 
 ## Step 4: Configure MagicSuite CLI
 
-### Set Up Your Profile
+### Option A: Using the Authentication Setup Script (Recommended)
 
+Run the interactive authentication setup script:
+
+```powershell
+.\setup-magicsuite-auth.ps1
+```
+
+This script will:
+- Prompt you securely for your API token name and key (with hidden input)
+- Configure authentication for the AmyTest2 profile
+- Test the connection automatically
+- Store credentials securely in `C:\Users\[YourUsername]\.magicsuite\`
+
+**To get your API token:**
+1. Log in to your MagicSuite instance (e.g., https://test2.magicsuite.net)
+2. Navigate to your user settings/profile
+3. Go to API Tokens section
+4. Create a new API token or use an existing one
+5. Copy both the token name and token key
+
+### Option B: Manual Configuration
+
+If you prefer to configure manually:
+
+**Set Up Your Profile:**
 ```powershell
 magicsuite config profiles add --name myprofile --api-url https://your-api-url.com
 ```
 
-### Set Authentication
-
+**Set Authentication:**
 ```powershell
-magicsuite auth token --name your-token-name --key your-token-key
+magicsuite auth token --name your-token-name --key your-token-key --profile myprofile
 ```
 
-### Select Default Tenant
-
+**Select Default Tenant:**
 ```powershell
 magicsuite tenant select YOUR_TENANT_CODE
 ```
@@ -171,6 +193,13 @@ cmdkey /delete:PanoramicData_JIRA
 
 ### MagicSuite CLI "Unauthorized" Errors
 
+**Using the setup script:**
+```powershell
+# Run the interactive setup to reconfigure
+.\setup-magicsuite-auth.ps1
+```
+
+**Manual method:**
 ```powershell
 # Check auth status
 magicsuite auth status
@@ -212,6 +241,7 @@ Update hardcoded paths in the scripts to match your directory structure.
 ### Core Tools
 - `.github/tools/JIRA.ps1` - JIRA integration tool
 - `.github/copilot-instructions.md` - Reference documentation
+- `setup-magicsuite-auth.ps1` - Interactive MagicSuite CLI authentication setup
 
 ### Bug Reporting
 - `create-jira-bug.ps1` - Template for creating bug tickets
