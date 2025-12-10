@@ -225,11 +225,91 @@ Use Playwright MCP to:
 
 ```text
 playwright/
-├── README.md           # This file
-├── magic suite/        # Magic Suite specific tests and recordings
-├── traces/             # Playwright trace files (gitignored)
-└── screenshots/        # Captured screenshots (gitignored)
+├── README.md              # This file
+├── package.json           # Node.js dependencies
+├── playwright.config.ts   # Playwright configuration
+├── Magic Suite/           # Magic Suite application tests
+│   ├── Www/               # Main portal tests
+│   ├── Docs/              # DocMagic tests
+│   ├── DataMagic/         # DataMagic tests
+│   ├── AlertMagic/        # AlertMagic tests
+│   ├── Admin/             # Admin console tests
+│   ├── Connect/           # Connect service tests
+│   └── ReportMagic/       # ReportMagic tests
+├── traces/                # Playwright trace files (gitignored)
+└── screenshots/           # Captured screenshots (gitignored)
 ```
+
+## Running Regression Tests
+
+### First Time Setup
+
+```powershell
+# Navigate to playwright directory
+cd playwright
+
+# Install dependencies
+npm install
+
+# Install browsers
+npx playwright install
+```
+
+### Using the PowerShell Script (Recommended)
+
+```powershell
+# Run all tests on alpha environment
+.\.github\tools\RunRegressionTests.ps1 -Environment alpha
+
+# Run specific app tests
+.\.github\tools\RunRegressionTests.ps1 -Environment staging -Apps AlertMagic,DataMagic
+
+# Run with visible browser
+.\.github\tools\RunRegressionTests.ps1 -Environment test -Headed
+
+# Run production tests
+.\.github\tools\RunRegressionTests.ps1 -Environment production
+```
+
+### Using npm Scripts
+
+```powershell
+cd playwright
+
+# Run all tests (uses alpha by default)
+npm test
+
+# Run with visible browser
+npm run test:headed
+
+# Open Playwright UI mode
+npm run test:ui
+
+# Run in debug mode
+npm run test:debug
+
+# View last test report
+npm run test:report
+```
+
+### Using VS Code Testing Panel
+
+1. **Open Testing Sidebar**: Click the beaker icon in the Activity Bar
+2. **View Tests**: Tests appear under "PLAYWRIGHT" section
+3. **Run Individual Tests**: Click the play button next to any test
+4. **Run All Tests**: Click "Run All Tests" at the top
+5. **Debug Tests**: Right-click a test and select "Debug Test"
+
+### Environment Selection
+
+Set the `MS_ENV` environment variable to target different environments:
+
+```powershell
+$env:MS_ENV = 'staging'
+npm test
+```
+
+Valid environments: `alpha`, `alpha2`, `test`, `test2`, `beta`, `staging`, `ps`, `production`
 
 ## Troubleshooting
 

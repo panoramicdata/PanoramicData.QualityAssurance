@@ -95,6 +95,22 @@ The `.github/tools/` directory contains PowerShell scripts for system integratio
     }
   }
   ```
+- **Task-Specific Instructions**: See `.github/playwright-instructions.md` for Magic Suite URL patterns, environments, and test conventions
+
+### Regression Test Runner (`tools/RunRegressionTests.ps1`)
+- **Purpose**: Run Playwright regression tests against Magic Suite environments
+- **Usage**:
+  ```powershell
+  # Run all tests on alpha
+  .\.github\tools\RunRegressionTests.ps1 -Environment alpha
+  
+  # Run specific app tests
+  .\.github\tools\RunRegressionTests.ps1 -Environment staging -Apps AlertMagic,DataMagic
+  
+  # Run with visible browser
+  .\.github\tools\RunRegressionTests.ps1 -Environment test -Headed
+  ```
+- **Environments**: alpha, alpha2, test, test2, beta, staging, ps, production
 
 ## Test Plans and Documentation
 
