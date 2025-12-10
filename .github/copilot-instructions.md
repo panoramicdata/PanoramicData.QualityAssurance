@@ -70,6 +70,32 @@ The `.github/tools/` directory contains PowerShell scripts for system integratio
   - `ELASTIC_PASSWORD` - Your Elastic password
 - Elastic URL: `https://pdl-elastic-prod.panoramicdata.com`
 
+### Playwright MCP Integration (`playwright/`)
+- **Purpose**: AI-assisted browser automation for UI testing
+- **Documentation**: See `playwright/README.md` for full setup instructions
+- **Configuration**: Add to `.vscode/mcp.json` to enable Playwright MCP tools
+- **Key Features**:
+  - Navigate to web pages and interact with UI elements
+  - Capture screenshots for bug documentation
+  - Record traces for detailed debugging
+  - Cross-browser testing (Chrome, Firefox, WebKit, Edge)
+  - Device emulation for mobile testing
+- **Quick Setup**:
+  1. Create `.vscode/mcp.json` in workspace
+  2. Add Playwright server configuration
+  3. Restart VS Code to activate MCP tools
+- **Example MCP Configuration**:
+  ```json
+  {
+    "servers": {
+      "playwright": {
+        "command": "npx",
+        "args": ["@playwright/mcp@latest", "--browser", "chrome", "--caps", "vision"]
+      }
+    }
+  }
+  ```
+
 ## Test Plans and Documentation
 
 ### Test Plan Locations
@@ -170,7 +196,27 @@ Test plans are organized in the following structure:
    - Verify index patterns before executing searches
    - Document any custom queries for future reference
 
-8. **Standard QA Workflow Integration with JIRA**:
+8. **When working with Playwright MCP**:
+   - **Check if Playwright MCP tools are available** before attempting browser automation
+   - **Use for UI testing** when testing Magic Suite web interfaces (AlertMagic, DataMagic, Files UI)
+   - **Capture screenshots** when documenting bugs or test results
+   - **Record traces** for complex test scenarios that need detailed playback
+   - **Common use cases**:
+     - Verifying UI displays correctly after bug fixes
+     - Testing form submissions and user interactions
+     - Cross-browser compatibility testing
+     - Mobile device emulation testing
+   - **If Playwright MCP tools are not available**:
+     - Check if `.vscode/mcp.json` exists with Playwright configuration
+     - Verify Node.js is installed (`node --version`)
+     - Run `npx @playwright/mcp@latest --help` to test CLI availability
+     - See `playwright/README.md` for setup instructions
+   - **When capturing evidence for JIRA**:
+     - Save screenshots to `playwright/screenshots/`
+     - Save traces to `playwright/traces/`
+     - Reference captured files in JIRA comments
+
+9. **Standard QA Workflow Integration with JIRA**:
    - **Always start QA work** by updating the JIRA ticket with a progress comment
    - **Before creating test plans**: Add comment about starting test plan creation
    - **After creating test plans**: Add comment with link to test plan file and summary
