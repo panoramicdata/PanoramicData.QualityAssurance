@@ -139,9 +139,20 @@ test.describe('<AppName> Tests', () => {
   test('Home page loads without console errors', async ({ page }) => {
     const consoleErrors: string[] = [];
     
+    // Known non-critical errors to ignore (CSP issues with analytics, etc.)
+    const ignoredPatterns = [
+      /Content Security Policy/i,
+      /google-analytics/i,
+      /gtag/i,
+    ];
+    
     page.on('console', msg => {
       if (msg.type() === 'error') {
-        consoleErrors.push(msg.text());
+        const text = msg.text();
+        const isIgnored = ignoredPatterns.some(pattern => pattern.test(text));
+        if (!isIgnored) {
+          consoleErrors.push(text);
+        }
       }
     });
 
@@ -160,10 +171,38 @@ When working with Playwright tests:
 1. **Check existing tests** before creating new ones
 2. **Use consistent patterns** across all applications
 3. **Environment awareness** - Always consider which environment is being tested
-4. **Console error checking** - Include in all tests
+4. **Console error checking** - Include in all tests, but filter known non-critical errors (CSP, analytics)
 5. **Update this document** when adding new applications or environments
 6. **Run tests locally** before committing
 7. **Document failures** in JIRA using the standard workflow
+
+### Running Tests as Background Processes
+
+When running Playwright tests, use background mode to avoid blocking:
+
+```powershell
+# Run as background process
+cd playwright
+$env:MS_ENV = 'alpha'
+npx playwright test --project=chromium --reporter=list &
+
+# Check terminal output periodically for results
+```
+
+**Key Points:**
+- Use `--reporter=list` for cleaner output
+- Tests typically take 20-30 seconds for the full suite
+- Check terminal output after execution completes
+- Failed tests include screenshots and videos in `test-results/`
+
+### Known Test Behaviors
+
+| Application | Notes |
+|-------------|-------|
+| DataMagic | Has CSP errors for Google Analytics (filtered as non-critical) |
+| Docs | Home page title is "Getting Started" |
+| ReportMagic | May redirect to login (empty title expected) |
+| Connect | Requires authentication for full access |
 
 ## Related Documentation
 

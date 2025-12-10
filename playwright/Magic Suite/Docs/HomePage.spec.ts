@@ -44,6 +44,7 @@ test.describe('Docs Home Page', () => {
     await page.goto(baseUrl);
     
     // Check that the page has a title (adjust regex as needed)
-    await expect(page).toHaveTitle(/Docs|DocMagic|Magic Suite|Documentation/i);
+    // Docs site uses 'Getting Started' as home page title
+    await expect(page).toHaveTitle(/Docs|DocMagic|Magic Suite|Documentation|Getting Started/i);
   });
 });

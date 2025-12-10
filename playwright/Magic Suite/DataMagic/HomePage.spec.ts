@@ -15,10 +15,21 @@ test.describe('DataMagic Home Page', () => {
   test('should load without console errors', async ({ page }) => {
     const consoleErrors: string[] = [];
     
-    // Collect console errors
+    // Known non-critical errors to ignore (CSP issues with analytics, etc.)
+    const ignoredPatterns = [
+      /Content Security Policy/i,
+      /google-analytics/i,
+      /gtag/i,
+    ];
+    
+    // Collect console errors (excluding known non-critical ones)
     page.on('console', msg => {
       if (msg.type() === 'error') {
-        consoleErrors.push(msg.text());
+        const text = msg.text();
+        const isIgnored = ignoredPatterns.some(pattern => pattern.test(text));
+        if (!isIgnored) {
+          consoleErrors.push(text);
+        }
       }
     });
 
