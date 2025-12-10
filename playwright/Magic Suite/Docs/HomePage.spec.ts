@@ -12,7 +12,7 @@ const baseUrl = env === 'production'
   : `https://docs.${env}.magicsuite.net`;
 
 test.describe('Docs Home Page', () => {
-  test('should load without console errors', async ({ page }) => {
+  test('should load correctly', async ({ page }) => {
     const consoleErrors: string[] = [];
     
     // Collect console errors
@@ -25,26 +25,19 @@ test.describe('Docs Home Page', () => {
     // Navigate to the home page
     const response = await page.goto(baseUrl);
     
-    // Verify the page loaded successfully
-    expect(response?.status()).toBeLessThan(400);
-    
     // Wait for page to be fully loaded
     await page.waitForLoadState('load');
     
-    // Log any console errors for debugging
+    // 1. Verify HTTP response is successful
+    expect(response?.status(), 'HTTP response should be successful').toBeLessThan(400);
+    
+    // 2. Verify page has correct title (Docs site uses 'Getting Started' as home page title)
+    await expect(page, 'Page should have correct title').toHaveTitle(/Docs|DocMagic|Magic Suite|Documentation|Getting Started/i);
+    
+    // 3. Verify no console errors
     if (consoleErrors.length > 0) {
       console.log('Console errors found:', consoleErrors);
     }
-    
-    // Assert no console errors
-    expect(consoleErrors).toHaveLength(0);
-  });
-
-  test('should have correct title', async ({ page }) => {
-    await page.goto(baseUrl);
-    
-    // Check that the page has a title (adjust regex as needed)
-    // Docs site uses 'Getting Started' as home page title
-    await expect(page).toHaveTitle(/Docs|DocMagic|Magic Suite|Documentation|Getting Started/i);
+    expect(consoleErrors, 'Page should have no console errors').toHaveLength(0);
   });
 });

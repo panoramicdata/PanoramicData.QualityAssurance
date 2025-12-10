@@ -276,27 +276,14 @@ npx playwright install
 ```powershell
 cd playwright
 
-# === SMOKE TESTS (All Browsers) ===
-# Run smoke tests (HomePage tests) on ALL browsers - recommended for cross-browser validation
-npm run test:smoke
-
-# Run smoke tests on Chromium only (faster)
-npm run test:smoke:chromium
-
-# === FULL TEST SUITE ===
-# Run ALL tests on ALL browsers (slow, comprehensive)
+# === DEFAULT (Chromium Only - Fast) ===
+# Run all tests on Chromium (default, recommended)
 npm test
 
-# Run all tests on Chromium only (fast, recommended for development)
-npm run test:chromium
+# === ALL BROWSERS ===
+# Run tests on ALL 6 browsers (comprehensive, slower)
+npm run test:all-browsers
 
-# Run all tests on Firefox only
-npm run test:firefox
-
-# Run all tests on WebKit/Safari only
-npm run test:webkit
-
-# === BROWSER GROUPS ===
 # Run on all desktop browsers (Chromium, Firefox, WebKit)
 npm run test:desktop
 
@@ -323,15 +310,18 @@ npm run install-browsers
 
 ### Test Strategy
 
-| Test Type | Description | Browsers | When to Use |
-|-----------|-------------|----------|-------------|
-| Smoke Tests | HomePage tests (quick validation) | All 6 browsers | After deployments, daily checks |
-| Chromium Tests | Full test suite | Chromium only | Development, debugging |
-| Full Suite | All tests | All 6 browsers | Release validation, weekly regression |
+| Test Type | Command | Browsers | When to Use |
+|-----------|---------|----------|-------------|
+| Default | `npm test` | Chromium only | Development, daily testing |
+| All Browsers | `npm run test:all-browsers` | All 6 browsers | Release validation, cross-browser check |
+| Desktop Only | `npm run test:desktop` | Chrome, Firefox, Safari | Desktop browser compatibility |
+| Mobile Only | `npm run test:mobile` | Mobile Chrome, Mobile Safari | Mobile responsiveness testing |
 
-**Smoke tests** are any tests in files named `HomePage.spec.ts`. These run on all browsers to ensure cross-browser compatibility.
+**Default behavior**: All tests run on **Chromium only** for fast feedback during development.
 
-**Feature tests** (other `.spec.ts` files) should typically run on Chromium only for speed, unless specifically testing cross-browser behavior.
+**Multi-browser testing**: Use `npm run test:all-browsers` when you need to validate cross-browser compatibility (e.g., before releases).
+
+**Efficient tests**: Each test file now uses a single consolidated test that checks multiple things (HTTP status, title, console errors) in one page load for maximum efficiency.
 
 ### Using VS Code Testing Panel
 

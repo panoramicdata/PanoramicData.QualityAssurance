@@ -3,14 +3,13 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright configuration for Magic Suite regression tests.
  * 
- * Test Strategy:
- * - Smoke tests (HomePage.spec.ts): Run on ALL browsers for cross-browser validation
- * - Feature tests: Run on Chromium only for speed (use @chromium-only tag or place in chromium/ subfolder)
+ * Default: Chromium only (fast development workflow)
  * 
- * To run specific browser sets:
- *   npm test                          # All browsers, smoke tests only
- *   npm run test:chromium             # Chromium only (fast)
- *   npm run test:all                  # All tests, all browsers
+ * To run with other browsers:
+ *   npm test                          # Chromium only (default)
+ *   npm run test:all-browsers         # All 6 browsers
+ *   npm run test:desktop              # Desktop browsers only
+ *   npx playwright test --project=firefox  # Specific browser
  * 
  * See https://playwright.dev/docs/test-configuration
  */
@@ -47,46 +46,38 @@ export default defineConfig({
   /**
    * Browser Projects Configuration
    * 
-   * All browsers are enabled. Use test file naming or grep to control which browsers run:
-   * - HomePage.spec.ts files: Run on all browsers (cross-browser smoke tests)
-   * - Other .spec.ts files: Use --project=chromium for speed during development
+   * Default: Only Chromium runs (fast for development)
+   * Use --project flag or npm scripts to run other browsers when needed.
    * 
    * Install browsers: npx playwright install
    */
   projects: [
-    /* Desktop Browsers */
+    /* Default browser - always runs */
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Mobile Viewports */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
-
-    /* Branded Browsers (use installed browser, not Playwright's) */
-    {
-      name: 'Microsoft Edge',
-      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    },
-    // Uncomment if Google Chrome is installed and you want to test it separately from Chromium
+    
+    /* Additional browsers - run with --project flag or npm run test:all-browsers */
     // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12'] },
+    // },
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
     // },
   ],
   

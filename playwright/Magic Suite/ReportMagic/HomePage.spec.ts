@@ -12,7 +12,7 @@ const baseUrl = env === 'production'
   : `https://report.${env}.magicsuite.net`;
 
 test.describe('ReportMagic Home Page', () => {
-  test('should load without console errors', async ({ page }) => {
+  test('should load correctly', async ({ page }) => {
     const consoleErrors: string[] = [];
     
     // Collect console errors
@@ -25,28 +25,20 @@ test.describe('ReportMagic Home Page', () => {
     // Navigate to the home page
     const response = await page.goto(baseUrl);
     
-    // Verify the page loaded successfully
-    expect(response?.status()).toBeLessThan(400);
-    
     // Wait for page to be fully loaded
     await page.waitForLoadState('load');
     
-    // Log any console errors for debugging
+    // 1. Verify HTTP response is successful
+    expect(response?.status(), 'HTTP response should be successful').toBeLessThan(400);
+    
+    // 2. Verify page has a title (may redirect to login, so accept any title)
+    const title = await page.title();
+    expect(title.length >= 0, 'Page should have loaded').toBeTruthy();
+    
+    // 3. Verify no console errors
     if (consoleErrors.length > 0) {
       console.log('Console errors found:', consoleErrors);
     }
-    
-    // Assert no console errors
-    expect(consoleErrors).toHaveLength(0);
-  });
-
-  test('should have correct title', async ({ page }) => {
-    await page.goto(baseUrl);
-    await page.waitForLoadState('load');
-    
-    // Check that the page loaded (may redirect to login)
-    // Accept any non-empty title or common login page patterns
-    const title = await page.title();
-    expect(title.length >= 0).toBeTruthy(); // Page loaded successfully
+    expect(consoleErrors, 'Page should have no console errors').toHaveLength(0);
   });
 });

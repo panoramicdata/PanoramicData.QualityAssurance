@@ -176,31 +176,23 @@ When working with Playwright tests:
 6. **Run tests locally** before committing
 7. **Document failures** in JIRA using the standard workflow
 
-### Test Strategy: Browsers
+### Test Strategy: Default to Chromium
 
-| Test Type | File Pattern | Browsers | Purpose |
-|-----------|--------------|----------|---------|
-| **Smoke Tests** | `HomePage.spec.ts` | ALL (6 browsers) | Cross-browser validation |
-| **Feature Tests** | Other `.spec.ts` files | Chromium only | Faster development/debugging |
+**Default behavior**: All tests run on **Chromium only** for fast feedback.
 
-**Key Commands:**
+| Command | Browsers | Purpose |
+|---------|----------|---------|
+| `npm test` | Chromium only | Default - development, daily testing |
+| `npm run test:all-browsers` | ALL (6 browsers) | Release validation, cross-browser |
+| `npm run test:desktop` | Chrome, Firefox, Safari | Desktop compatibility |
+| `npm run test:mobile` | Mobile Chrome, Mobile Safari | Mobile testing |
 
-```powershell
-# Smoke tests on all browsers (cross-browser validation)
-npm run test:smoke
+**Key Points:**
+- Tests are consolidated: Each test file checks multiple things (HTTP status, title, console errors) in one page load
+- Default is fast: Chromium-only saves time during development
+- Multi-browser when needed: Use `test:all-browsers` for releases or cross-browser validation
 
-# Smoke tests on Chromium only (fast check)
-npm run test:smoke:chromium
-
-# All tests on Chromium (development)
-npm run test:chromium
-
-# Full suite on all browsers (release validation)
-npm test
-```
-
-**Browser Projects Available:**
-
+**Browser Projects Available (when running all browsers):**
 - `chromium` - Chromium/Chrome engine
 - `firefox` - Firefox browser
 - `webkit` - Safari/WebKit engine
@@ -216,28 +208,41 @@ When running Playwright tests, use background mode to avoid blocking:
 # Run as background process
 cd playwright
 $env:MS_ENV = 'alpha'
-npx playwright test --project=chromium --reporter=list &
+npx playwright test --reporter=list &
 
 # Check terminal output periodically for results
 ```
 
 **Key Points:**
 - Use `--reporter=list` for cleaner output
-- Tests typically take 20-30 seconds for Chromium, 1-2 minutes for all browsers
+- Tests typically take 10-20 seconds for Chromium only
 - Check terminal output after execution completes
 - Failed tests include screenshots and videos in `test-results/`
 
 ### Creating New Tests
 
-**For smoke/home page tests** (should run on all browsers):
-- Name the file `HomePage.spec.ts`
-- Place in the appropriate app folder
-- These automatically run on all 6 browsers
+**Efficient test pattern** (consolidate assertions in single page load):
+```typescript
+test('should load correctly', async ({ page }) => {
+  // 1. Setup console error collection
+  const consoleErrors: string[] = [];
+  page.on('console', msg => { ... });
+  
+  // 2. Navigate once
+  const response = await page.goto(baseUrl);
+  await page.waitForLoadState('load');
+  
+  // 3. Multiple assertions on same page
+  expect(response?.status()).toBeLessThan(400);  // HTTP check
+  await expect(page).toHaveTitle(/Expected/i);    // Title check
+  expect(consoleErrors).toHaveLength(0);          // Console check
+});
+```
 
-**For feature/detailed tests** (Chromium only for speed):
-- Name the file descriptively (e.g., `Login.spec.ts`, `DataGrid.spec.ts`)
-- Run with `npm run test:chromium` during development
-- Full cross-browser can still be done with `npm test` for release validation
+**For new tests:**
+- Use the consolidated pattern above
+- Run with `npm test` during development (Chromium only)
+- Run `npm run test:all-browsers` before releases
 
 ### Known Test Behaviors
 
