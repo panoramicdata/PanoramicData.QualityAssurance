@@ -2,6 +2,16 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright configuration for Magic Suite regression tests.
+ * 
+ * Test Strategy:
+ * - Smoke tests (HomePage.spec.ts): Run on ALL browsers for cross-browser validation
+ * - Feature tests: Run on Chromium only for speed (use @chromium-only tag or place in chromium/ subfolder)
+ * 
+ * To run specific browser sets:
+ *   npm test                          # All browsers, smoke tests only
+ *   npm run test:chromium             # Chromium only (fast)
+ *   npm run test:all                  # All tests, all browsers
+ * 
  * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
@@ -34,57 +44,51 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
-  /* Configure projects for major browsers */
-  /* Note: Run `npx playwright install` to install additional browsers */
+  /**
+   * Browser Projects Configuration
+   * 
+   * All browsers are enabled. Use test file naming or grep to control which browsers run:
+   * - HomePage.spec.ts files: Run on all browsers (cross-browser smoke tests)
+   * - Other .spec.ts files: Use --project=chromium for speed during development
+   * 
+   * Install browsers: npx playwright install
+   */
   projects: [
+    /* Desktop Browsers */
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
 
-    // Uncomment after running: npx playwright install firefox
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
-    // Uncomment after running: npx playwright install webkit
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports */
+    /* Mobile Viewports */
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
     },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 12'] },
+    },
 
-    // Uncomment after running: npx playwright install webkit
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers */
+    /* Branded Browsers (use installed browser, not Playwright's) */
     {
       name: 'Microsoft Edge',
       use: { ...devices['Desktop Edge'], channel: 'msedge' },
     },
-
-    // Uncomment if Google Chrome is installed separately
+    // Uncomment if Google Chrome is installed and you want to test it separately from Chromium
     // {
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
   
   /* Global timeout for each test */
   timeout: 30000,

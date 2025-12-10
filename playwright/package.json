@@ -4,13 +4,18 @@
   "description": "Playwright regression tests for Magic Suite applications",
   "scripts": {
     "test": "playwright test",
+    "test:smoke": "playwright test --grep HomePage",
+    "test:smoke:chromium": "playwright test --grep HomePage --project=chromium",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:desktop": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:mobile": "playwright test --project=\"Mobile Chrome\" --project=\"Mobile Safari\"",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report",
-    "test:chromium": "playwright test --project=chromium",
-    "test:firefox": "playwright test --project=firefox",
-    "test:webkit": "playwright test --project=webkit"
+    "report": "playwright show-report",
+    "install-browsers": "playwright install"
   },
   "keywords": [
     "playwright",

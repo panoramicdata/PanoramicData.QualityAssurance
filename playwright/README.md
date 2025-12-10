@@ -276,21 +276,62 @@ npx playwright install
 ```powershell
 cd playwright
 
-# Run all tests (uses alpha by default)
+# === SMOKE TESTS (All Browsers) ===
+# Run smoke tests (HomePage tests) on ALL browsers - recommended for cross-browser validation
+npm run test:smoke
+
+# Run smoke tests on Chromium only (faster)
+npm run test:smoke:chromium
+
+# === FULL TEST SUITE ===
+# Run ALL tests on ALL browsers (slow, comprehensive)
 npm test
 
-# Run with visible browser
+# Run all tests on Chromium only (fast, recommended for development)
+npm run test:chromium
+
+# Run all tests on Firefox only
+npm run test:firefox
+
+# Run all tests on WebKit/Safari only
+npm run test:webkit
+
+# === BROWSER GROUPS ===
+# Run on all desktop browsers (Chromium, Firefox, WebKit)
+npm run test:desktop
+
+# Run on mobile viewports (Mobile Chrome, Mobile Safari)
+npm run test:mobile
+
+# === DEBUGGING ===
+# Run with visible browser window
 npm run test:headed
 
-# Open Playwright UI mode
+# Open Playwright UI mode (interactive)
 npm run test:ui
 
-# Run in debug mode
+# Debug mode with step-through
 npm run test:debug
 
 # View last test report
-npm run test:report
+npm run report
+
+# === INSTALL BROWSERS ===
+# Install all Playwright browsers (Firefox, WebKit, Chromium)
+npm run install-browsers
 ```
+
+### Test Strategy
+
+| Test Type | Description | Browsers | When to Use |
+|-----------|-------------|----------|-------------|
+| Smoke Tests | HomePage tests (quick validation) | All 6 browsers | After deployments, daily checks |
+| Chromium Tests | Full test suite | Chromium only | Development, debugging |
+| Full Suite | All tests | All 6 browsers | Release validation, weekly regression |
+
+**Smoke tests** are any tests in files named `HomePage.spec.ts`. These run on all browsers to ensure cross-browser compatibility.
+
+**Feature tests** (other `.spec.ts` files) should typically run on Chromium only for speed, unless specifically testing cross-browser behavior.
 
 ### Using VS Code Testing Panel
 

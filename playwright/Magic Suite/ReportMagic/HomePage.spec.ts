@@ -29,7 +29,7 @@ test.describe('ReportMagic Home Page', () => {
     expect(response?.status()).toBeLessThan(400);
     
     // Wait for page to be fully loaded
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
     
     // Log any console errors for debugging
     if (consoleErrors.length > 0) {
@@ -42,7 +42,7 @@ test.describe('ReportMagic Home Page', () => {
 
   test('should have correct title', async ({ page }) => {
     await page.goto(baseUrl);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
     
     // Check that the page loaded (may redirect to login)
     // Accept any non-empty title or common login page patterns

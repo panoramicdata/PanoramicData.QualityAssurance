@@ -176,6 +176,38 @@ When working with Playwright tests:
 6. **Run tests locally** before committing
 7. **Document failures** in JIRA using the standard workflow
 
+### Test Strategy: Browsers
+
+| Test Type | File Pattern | Browsers | Purpose |
+|-----------|--------------|----------|---------|
+| **Smoke Tests** | `HomePage.spec.ts` | ALL (6 browsers) | Cross-browser validation |
+| **Feature Tests** | Other `.spec.ts` files | Chromium only | Faster development/debugging |
+
+**Key Commands:**
+
+```powershell
+# Smoke tests on all browsers (cross-browser validation)
+npm run test:smoke
+
+# Smoke tests on Chromium only (fast check)
+npm run test:smoke:chromium
+
+# All tests on Chromium (development)
+npm run test:chromium
+
+# Full suite on all browsers (release validation)
+npm test
+```
+
+**Browser Projects Available:**
+
+- `chromium` - Chromium/Chrome engine
+- `firefox` - Firefox browser
+- `webkit` - Safari/WebKit engine
+- `Mobile Chrome` - Pixel 5 mobile viewport
+- `Mobile Safari` - iPhone 12 mobile viewport
+- `Microsoft Edge` - Edge browser
+
 ### Running Tests as Background Processes
 
 When running Playwright tests, use background mode to avoid blocking:
@@ -191,9 +223,21 @@ npx playwright test --project=chromium --reporter=list &
 
 **Key Points:**
 - Use `--reporter=list` for cleaner output
-- Tests typically take 20-30 seconds for the full suite
+- Tests typically take 20-30 seconds for Chromium, 1-2 minutes for all browsers
 - Check terminal output after execution completes
 - Failed tests include screenshots and videos in `test-results/`
+
+### Creating New Tests
+
+**For smoke/home page tests** (should run on all browsers):
+- Name the file `HomePage.spec.ts`
+- Place in the appropriate app folder
+- These automatically run on all 6 browsers
+
+**For feature/detailed tests** (Chromium only for speed):
+- Name the file descriptively (e.g., `Login.spec.ts`, `DataGrid.spec.ts`)
+- Run with `npm run test:chromium` during development
+- Full cross-browser can still be done with `npm test` for release validation
 
 ### Known Test Behaviors
 

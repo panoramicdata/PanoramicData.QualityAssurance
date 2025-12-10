@@ -40,7 +40,7 @@ test.describe('DataMagic Home Page', () => {
     expect(response?.status()).toBeLessThan(400);
     
     // Wait for page to be fully loaded
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
     
     // Log any console errors for debugging
     if (consoleErrors.length > 0) {
