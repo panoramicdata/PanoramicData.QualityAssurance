@@ -29,3 +29,11 @@ ConsoleHost_history.txt
 *.tmp
 *.temp
 ~$*
+
+# Playwright outputs
+playwright/traces/
+playwright/screenshots/
+playwright/videos/
+playwright/test-results/
+playwright/playwright-report/
+playwright/node_modules/

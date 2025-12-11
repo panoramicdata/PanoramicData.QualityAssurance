@@ -1,0 +1,28 @@
+{
+  "name": "magicsuite-playwright-tests",
+  "version": "1.0.0",
+  "description": "Playwright regression tests for Magic Suite applications",
+  "scripts": {
+    "test": "playwright test",
+    "test:all-browsers": "playwright test --project=chromium --project=firefox --project=webkit --project=\"Mobile Chrome\" --project=\"Mobile Safari\" --project=\"Microsoft Edge\"",
+    "test:desktop": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:mobile": "playwright test --project=\"Mobile Chrome\" --project=\"Mobile Safari\"",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "install-browsers": "playwright install"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "magic-suite",
+    "regression"
+  ],
+  "author": "Panoramic Data QA Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0"
+  }
+}

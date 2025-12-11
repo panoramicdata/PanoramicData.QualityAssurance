@@ -29,6 +29,13 @@ A collection of PowerShell scripts and tools for testing the MagicSuite CLI, cre
 - **Credential Management** - Secure credential storage
 - **Batch Operations** - Update multiple tickets at once
 
+### Playwright Browser Automation
+- **MCP Integration** - AI-assisted browser automation via Playwright MCP
+- **Cross-Browser Testing** - Chrome, Firefox, WebKit, Edge support
+- **Screenshot Capture** - Visual documentation for bug reports
+- **Trace Recording** - Detailed session playback for debugging
+- **See**: [playwright/README.md](playwright/README.md) for setup and usage
+
 ### Documentation
 - **Setup Instructions** - How to configure on your machine
 - **Testing Strategies** - 10 different testing approaches
@@ -50,6 +57,7 @@ A collection of PowerShell scripts and tools for testing the MagicSuite CLI, cre
 - **[SETUP-INSTRUCTIONS.md](SETUP-INSTRUCTIONS.md)** - First-time setup guide
 - **[Testing-Ideas.md](Testing-Ideas.md)** - Comprehensive testing strategies
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - CLI reference and JIRA details
+- **[playwright/README.md](playwright/README.md)** - Playwright MCP browser automation setup
 
 ---
 
