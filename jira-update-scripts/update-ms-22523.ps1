@@ -27,7 +27,43 @@ $headers = @{
 }
 
 $comment = @"
-Tested in version 4.1.249+73a3bd2565
+*Fix Verified in Version 4.1.254*
+
+Testing Date: December 11, 2025
+CLI Version: 4.1.254+9bb1b85f0d
+Tester: Amy Bond
+
+h3. Test Results
+✓ *PASSED* - The active profile indicator now displays correctly
+
+h3. Test Details
+Command executed:
+{code}
+magicsuite config profiles list
+{code}
+
+Previous behavior (versions ≤ 4.1.249):
+{code}
+┌──────────────┬──────────────────────────────────┬────────┐
+│ Profile Name │ API URL                          │ Active │
+├──────────────┼──────────────────────────────────┼────────┤
+│ AmyTest2     │ https://api.test2.magicsuite.net │ ?      │
+└──────────────┴──────────────────────────────────┴────────┘
+{code}
+
+Current behavior (version 4.1.254):
+{code}
+┌──────────────┬──────────────────────────────────┬────────┐
+│ Profile Name │ API URL                          │ Active │
+├──────────────┼──────────────────────────────────┼────────┤
+│ AmyTest2     │ https://api.test2.magicsuite.net │ √      │
+└──────────────┴──────────────────────────────────┴────────┘
+{code}
+
+The Active column now correctly shows "√" (checkmark) instead of "?" for the active profile.
+
+h3. Conclusion
+This issue has been successfully resolved in version 4.1.254. The profile list command now properly displays the active profile indicator
 
 BUG STILL EXISTS
 
