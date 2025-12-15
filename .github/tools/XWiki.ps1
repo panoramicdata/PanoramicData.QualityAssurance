@@ -2,28 +2,43 @@
 # Fetches, creates, updates, and deletes XWiki pages
 # Uses Windows Credential Manager to securely store credentials
 #
+# IMPORTANT: Copilot/AI assistants should ALWAYS use this script to interact with XWiki.
+# NEVER access the XWiki REST API directly. If new functionality is needed, enhance this script.
+#
 # Usage Examples:
-#   # Read a page (default action)
+#   # Read a page (default action) - parses HTML tables
 #   .\XWiki.ps1 -Url "https://wiki.panoramicdata.com/bin/view/Sandbox/TestPage"
 #
-#   # Get page content as JSON via REST API
+#   # Get page metadata and content as JSON via REST API
 #   .\XWiki.ps1 -Action Get -Space "Sandbox" -PageName "TestPage"
+#
+#   # Get ONLY the page content (useful for reading/editing)
+#   .\XWiki.ps1 -Action GetContent -Space "QA Home" -PageName "WebHome"
+#
+#   # Get content from nested spaces (use dots to separate nested spaces)
+#   .\XWiki.ps1 -Action GetContent -Space "QA Home.QA's AI hopes, dreams and plans" -PageName "WebHome"
 #
 #   # Create a new page
 #   .\XWiki.ps1 -Action Create -Space "Sandbox" -PageName "NewPage" -Title "My New Page" -Content "# Hello World"
 #
-#   # Update an existing page
+#   # Update an existing page (provide new content)
 #   .\XWiki.ps1 -Action Update -Space "Sandbox" -PageName "TestPage" -Title "Updated Title" -Content "# Updated content"
+#
+#   # Update page using Find/Replace (useful for fixing typos)
+#   .\XWiki.ps1 -Action Replace -Space "QA Home.SubPage" -PageName "WebHome" -Find "typo" -Replace "correction"
 #
 #   # Delete a page
 #   .\XWiki.ps1 -Action Delete -Space "Sandbox" -PageName "TestPage"
 #
 #   # Search for pages
 #   .\XWiki.ps1 -Action Search -Query "regression test"
+#
+#   # List all spaces
+#   .\XWiki.ps1 -Action ListSpaces
 
 param(
     [Parameter(Mandatory=$false)]
-    [ValidateSet("Read", "Get", "Create", "Update", "Delete", "Search", "ListSpaces")]
+    [ValidateSet("Read", "Get", "GetContent", "Create", "Update", "Replace", "Delete", "Search", "ListSpaces")]
     [string]$Action = "Read",
     
     [Parameter(Mandatory=$false)]
@@ -33,7 +48,7 @@ param(
     [string]$Space,
     
     [Parameter(Mandatory=$false)]
-    [string]$PageName,
+    [string]$PageName = "WebHome",
     
     [Parameter(Mandatory=$false)]
     [string]$Title,
@@ -43,6 +58,12 @@ param(
     
     [Parameter(Mandatory=$false)]
     [string]$Query,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$Find,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$Replace,
     
     [Parameter(Mandatory=$false)]
     [string]$BaseUrl = "https://wiki.panoramicdata.com",
@@ -285,6 +306,35 @@ function Parse-XWikiTable {
     }
 }
 
+# Function to build REST API URL for pages (handles nested spaces)
+# XWiki REST API requires nested spaces to be formatted as:
+#   /spaces/Parent/spaces/Child/spaces/GrandChild/pages/PageName
+# Input space can be dot-separated: "QA Home.SubSpace.DeepSpace"
+function Build-XWikiPageUrl {
+    param(
+        [string]$BaseUrl,
+        [string]$Space,
+        [string]$PageName
+    )
+    
+    # Split space by dots to handle nested spaces
+    $spaceParts = $Space -split '\.'
+    
+    # Build the nested spaces URL path
+    $spacePath = ""
+    for ($i = 0; $i -lt $spaceParts.Count; $i++) {
+        $encodedSpace = [System.Uri]::EscapeDataString($spaceParts[$i])
+        if ($i -eq 0) {
+            $spacePath = "spaces/$encodedSpace"
+        } else {
+            $spacePath += "/spaces/$encodedSpace"
+        }
+    }
+    
+    $encodedPage = [System.Uri]::EscapeDataString($PageName)
+    return "$BaseUrl/rest/wikis/xwiki/$spacePath/pages/$encodedPage"
+}
+
 # Try to get stored credentials
 $storedCred = Get-StoredCredential -Target $CredentialTarget
 $Username = $null
@@ -383,8 +433,8 @@ switch ($Action) {
     
     "Get" {
         # Get page content via REST API as JSON
-        if (-not $Space -or -not $PageName) {
-            Write-Host "Error: -Space and -PageName parameters are required for Get action" -ForegroundColor Red
+        if (-not $Space) {
+            Write-Host "Error: -Space parameter is required for Get action" -ForegroundColor Red
             exit 1
         }
         
@@ -393,7 +443,7 @@ switch ($Action) {
             Accept = "application/json"
         }
         
-        $apiUrl = "$BaseUrl/rest/wikis/xwiki/spaces/$Space/pages/$PageName"
+        $apiUrl = Build-XWikiPageUrl -BaseUrl $BaseUrl -Space $Space -PageName $PageName
         Write-Host "Getting page: $Space/$PageName" -ForegroundColor Cyan
         
         try {
@@ -410,10 +460,40 @@ switch ($Action) {
         }
     }
     
+    "GetContent" {
+        # Get ONLY the page content (returns just the markdown/wiki content string)
+        if (-not $Space) {
+            Write-Host "Error: -Space parameter is required for GetContent action" -ForegroundColor Red
+            exit 1
+        }
+        
+        $headers = @{
+            Authorization = "Basic $base64AuthInfo"
+            Accept = "application/json"
+        }
+        
+        $apiUrl = Build-XWikiPageUrl -BaseUrl $BaseUrl -Space $Space -PageName $PageName
+        Write-Host "Getting content: $Space/$PageName" -ForegroundColor Cyan
+        
+        try {
+            $page = Invoke-RestMethod -Uri $apiUrl -Headers $headers
+            Write-Host "✓ Content retrieved successfully" -ForegroundColor Green
+            # Return just the content string
+            return $page.content
+        } catch {
+            if ($_.Exception.Response.StatusCode -eq 404) {
+                Write-Host "Page not found: $Space/$PageName" -ForegroundColor Yellow
+            } else {
+                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+            }
+            exit 1
+        }
+    }
+    
     "Create" {
         # Create a new page
-        if (-not $Space -or -not $PageName) {
-            Write-Host "Error: -Space and -PageName parameters are required for Create action" -ForegroundColor Red
+        if (-not $Space) {
+            Write-Host "Error: -Space parameter is required for Create action" -ForegroundColor Red
             exit 1
         }
         
@@ -432,24 +512,88 @@ switch ($Action) {
         
         $xml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?><page xmlns=`"http://www.xwiki.org`"><title>$escapedTitle</title><syntax>markdown/1.2</syntax><content>$escapedContent</content></page>"
         
-        $apiUrl = "$BaseUrl/rest/wikis/xwiki/spaces/$Space/pages/$PageName"
+        $apiUrl = Build-XWikiPageUrl -BaseUrl $BaseUrl -Space $Space -PageName $PageName
         Write-Host "Creating page: $Space/$PageName" -ForegroundColor Cyan
         
         try {
             Invoke-RestMethod -Uri $apiUrl -Method PUT -Headers $headers -Body $xml | Out-Null
             Write-Host "✓ Page created successfully!" -ForegroundColor Green
-            Write-Host "  View at: $BaseUrl/bin/view/$Space/$PageName" -ForegroundColor Gray
-            return @{ Success = $true; Space = $Space; PageName = $PageName; Url = "$BaseUrl/bin/view/$Space/$PageName" }
+            Write-Host "  View at: $BaseUrl/bin/view/$($Space -replace '\.', '/')/$PageName" -ForegroundColor Gray
+            return @{ Success = $true; Space = $Space; PageName = $PageName; Url = "$BaseUrl/bin/view/$($Space -replace '\.', '/')/$PageName" }
         } catch {
             Write-Host "Error creating page: $($_.Exception.Message)" -ForegroundColor Red
             exit 1
         }
     }
     
+    "Replace" {
+        # Find and replace text in a page (useful for fixing typos without rewriting entire content)
+        if (-not $Space) {
+            Write-Host "Error: -Space parameter is required for Replace action" -ForegroundColor Red
+            exit 1
+        }
+        if (-not $Find) {
+            Write-Host "Error: -Find parameter is required for Replace action" -ForegroundColor Red
+            exit 1
+        }
+        if (-not $PSBoundParameters.ContainsKey('Replace')) {
+            Write-Host "Error: -Replace parameter is required for Replace action (can be empty string)" -ForegroundColor Red
+            exit 1
+        }
+        
+        # First, get the existing page
+        $headers = @{
+            Authorization = "Basic $base64AuthInfo"
+            Accept = "application/json"
+        }
+        
+        $apiUrl = Build-XWikiPageUrl -BaseUrl $BaseUrl -Space $Space -PageName $PageName
+        Write-Host "Fetching page for replacement: $Space/$PageName" -ForegroundColor Cyan
+        
+        try {
+            $existingPage = Invoke-RestMethod -Uri $apiUrl -Headers $headers
+        } catch {
+            Write-Host "Error: Page not found." -ForegroundColor Red
+            exit 1
+        }
+        
+        # Perform the replacement
+        $oldContent = $existingPage.content
+        $newContent = $oldContent -replace [regex]::Escape($Find), $Replace
+        
+        if ($oldContent -eq $newContent) {
+            Write-Host "Warning: No matches found for '$Find' - page not modified" -ForegroundColor Yellow
+            return @{ Success = $false; Message = "No matches found"; Find = $Find }
+        }
+        
+        # Count replacements
+        $matchCount = ([regex]::Matches($oldContent, [regex]::Escape($Find))).Count
+        
+        # Update the page
+        $headers["Content-Type"] = "application/xml"
+        $headers["Accept"] = "application/xml"
+        
+        $escapedTitle = $existingPage.title -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
+        $escapedContent = $newContent -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
+        
+        $xml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?><page xmlns=`"http://www.xwiki.org`"><title>$escapedTitle</title><syntax>markdown/1.2</syntax><content>$escapedContent</content></page>"
+        
+        Write-Host "Replacing '$Find' with '$Replace' ($matchCount occurrence(s))" -ForegroundColor Cyan
+        
+        try {
+            Invoke-RestMethod -Uri $apiUrl -Method PUT -Headers $headers -Body $xml | Out-Null
+            Write-Host "✓ Replacement complete! $matchCount occurrence(s) replaced." -ForegroundColor Green
+            return @{ Success = $true; Space = $Space; PageName = $PageName; ReplacementCount = $matchCount; Find = $Find; Replace = $Replace }
+        } catch {
+            Write-Host "Error updating page: $($_.Exception.Message)" -ForegroundColor Red
+            exit 1
+        }
+    }
+    
     "Update" {
         # Update an existing page
-        if (-not $Space -or -not $PageName) {
-            Write-Host "Error: -Space and -PageName parameters are required for Update action" -ForegroundColor Red
+        if (-not $Space) {
+            Write-Host "Error: -Space parameter is required for Update action" -ForegroundColor Red
             exit 1
         }
         
@@ -464,7 +608,7 @@ switch ($Action) {
             Accept = "application/json"
         }
         
-        $apiUrl = "$BaseUrl/rest/wikis/xwiki/spaces/$Space/pages/$PageName"
+        $apiUrl = Build-XWikiPageUrl -BaseUrl $BaseUrl -Space $Space -PageName $PageName
         
         try {
             $existingPage = Invoke-RestMethod -Uri $apiUrl -Headers $headers
@@ -498,8 +642,8 @@ switch ($Action) {
     
     "Delete" {
         # Delete a page
-        if (-not $Space -or -not $PageName) {
-            Write-Host "Error: -Space and -PageName parameters are required for Delete action" -ForegroundColor Red
+        if (-not $Space) {
+            Write-Host "Error: -Space parameter is required for Delete action" -ForegroundColor Red
             exit 1
         }
         
@@ -507,7 +651,7 @@ switch ($Action) {
             Authorization = "Basic $base64AuthInfo"
         }
         
-        $apiUrl = "$BaseUrl/rest/wikis/xwiki/spaces/$Space/pages/$PageName"
+        $apiUrl = Build-XWikiPageUrl -BaseUrl $BaseUrl -Space $Space -PageName $PageName
         Write-Host "Deleting page: $Space/$PageName" -ForegroundColor Yellow
         
         try {

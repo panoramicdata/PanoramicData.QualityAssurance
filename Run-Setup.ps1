@@ -391,8 +391,126 @@ else {
     Write-Info "Run: .\.github\tools\JIRA.ps1"
 }
 
-# Step 6: Check Node.js and Playwright Setup
-Write-Header "Step 6: Checking Node.js and Playwright for UI Testing"
+# Step 6: Configure XWiki Credentials
+Write-Header "Step 6: Configuring XWiki Credentials"
+
+# Check if credentials already exist
+$hasExistingXWikiCreds = $false
+$existingXWikiUsername = ""
+
+try {
+    $credModule = Get-Module -ListAvailable -Name CredentialManager
+    if ($credModule) {
+        Import-Module CredentialManager -ErrorAction SilentlyContinue
+        $cred = Get-StoredCredential -Target "LogicMonitor:XWiki" -ErrorAction SilentlyContinue
+        if ($cred) {
+            $hasExistingXWikiCreds = $true
+            $existingXWikiUsername = $cred.UserName
+        }
+    }
+}
+catch { }
+
+# Also check native cmdkey for credential
+if (-not $hasExistingXWikiCreds) {
+    $cmdkeyOutput = cmdkey /list 2>&1 | Out-String
+    if ($cmdkeyOutput -match 'LogicMonitor:XWiki') {
+        $hasExistingXWikiCreds = $true
+        $existingXWikiUsername = "stored in Credential Manager"
+    }
+}
+
+if ($hasExistingXWikiCreds) {
+    Write-Success "XWiki credentials already configured"
+    Write-Info "Username: $existingXWikiUsername"
+    Write-Host ""
+    $updateXWiki = Read-Host "Would you like to update XWiki credentials? (y/N)"
+    if ([string]::IsNullOrWhiteSpace($updateXWiki)) { $updateXWiki = "N" }
+    $setupXWiki = $updateXWiki
+}
+else {
+    Write-Host "XWiki credentials allow you to read and update wiki documentation." -ForegroundColor White
+    Write-Host ""
+    Write-Info "XWiki URL: https://wiki.panoramicdata.com"
+    Write-Info "You can use your XWiki password"
+    Write-Host ""
+    $setupXWiki = Read-Host "Would you like to configure XWiki credentials now? (Y/N)"
+}
+
+if ($setupXWiki -eq "Y" -or $setupXWiki -eq "y") {
+    Write-Host ""
+    Write-Host "Please enter your XWiki credentials:" -ForegroundColor Yellow
+    
+    $xwikiUsername = Read-Host "XWiki Username (e.g. firstname_lastname)"
+    $xwikiPassword = Read-Host "XWiki Password" -AsSecureString
+    
+    try {
+        $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($xwikiPassword))
+        
+        # Store using cmdkey (native Windows credential manager)
+        # Remove existing credential if present
+        cmdkey /delete:LogicMonitor:XWiki 2>&1 | Out-Null
+        
+        # Add new credential
+        $cmdkeyResult = cmdkey /generic:LogicMonitor:XWiki /user:$xwikiUsername /pass:$plainPassword 2>&1
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Success "XWiki credentials saved to Windows Credential Manager"
+        }
+        else {
+            Write-Host "WARNING: Failed to save credentials via cmdkey, trying CredentialManager module..." -ForegroundColor Yellow
+            
+            # Fallback to CredentialManager module
+            $credModule = Get-Module -ListAvailable -Name CredentialManager
+            if ($credModule) {
+                Import-Module CredentialManager
+                
+                # Remove existing credential if present
+                $existingCred = Get-StoredCredential -Target "LogicMonitor:XWiki" -ErrorAction SilentlyContinue
+                if ($existingCred) {
+                    Remove-StoredCredential -Target "LogicMonitor:XWiki" -ErrorAction SilentlyContinue | Out-Null
+                }
+                
+                New-StoredCredential -Target "LogicMonitor:XWiki" -UserName $xwikiUsername -Password $plainPassword -Type Generic -Persist LocalMachine | Out-Null
+                Write-Success "XWiki credentials saved to Windows Credential Manager"
+            }
+            else {
+                Write-Host "ERROR: Could not save XWiki credentials" -ForegroundColor Red
+                Write-Info "Install CredentialManager module: Install-Module -Name CredentialManager -Force"
+            }
+        }
+        
+        # Test XWiki connection
+        Write-Host ""
+        Write-Host "Testing XWiki connection..." -ForegroundColor Yellow
+        if (Test-Path ".\.github\tools\XWiki.ps1") {
+            $testResult = .\.github\tools\XWiki.ps1 -Action Search -Query "QA" 2>&1
+            if ($testResult -notmatch "error" -and $testResult -notmatch "401") {
+                Write-Success "XWiki connection successful"
+            }
+            else {
+                Write-Host "WARNING: XWiki connection test inconclusive - verify credentials later" -ForegroundColor Yellow
+            }
+        }
+    }
+    catch {
+        Write-Error "Failed to save XWiki credentials: $_"
+        Write-Info "You can configure this later using the XWiki tool"
+    }
+    finally {
+        # Ensure sensitive data is cleared even if there's an error
+        $xwikiPassword = $null
+        $plainPassword = $null
+        [System.GC]::Collect()
+    }
+}
+else {
+    Write-Host "WARNING: Skipped - You can configure XWiki credentials later" -ForegroundColor Yellow
+    Write-Info "Run: .\.github\tools\XWiki.ps1 -Action Search -Query 'test'"
+}
+
+# Step 7: Check Node.js and Playwright Setup
+Write-Header "Step 7: Checking Node.js and Playwright for UI Testing"
 
 Write-Host "Node.js is required for Playwright UI testing tools." -ForegroundColor White
 Write-Host ""
@@ -486,8 +604,8 @@ else {
     }
 }
 
-# Step 7: Configure Playwright Authentication
-Write-Header "Step 7: Configuring Playwright Authentication"
+# Step 8: Configure Playwright Authentication
+Write-Header "Step 8: Configuring Playwright Authentication"
 
 if (Test-Command "node") {
     # Check if authentication already exists
@@ -613,8 +731,8 @@ else {
     Write-Host "Skipped - Node.js must be installed first" -ForegroundColor Yellow
 }
 
-# Step 8: Final verification
-Write-Header "Step 8: Verifying Setup"
+# Step 9: Final verification
+Write-Header "Step 9: Verifying Setup"
 Write-Host "Running final checks..." -ForegroundColor Yellow
 Write-Host ""
 
@@ -667,8 +785,24 @@ else {
     Write-Info "  Run: .\.github\tools\JIRA.ps1"
 }
 
+# Check XWiki credentials
+Write-Step "4" "XWiki Credentials"
+$hasXWikiCreds = $false
+$cmdkeyOutput = cmdkey /list 2>&1 | Out-String
+if ($cmdkeyOutput -match 'LogicMonitor:XWiki') {
+    $hasXWikiCreds = $true
+}
+
+if ($hasXWikiCreds) {
+    Write-Success "  Configured"
+}
+else {
+    Write-Host "  WARNING: Not configured yet" -ForegroundColor Yellow
+    Write-Info "  Run: .\.github\tools\XWiki.ps1"
+}
+
 # Check Node.js
-Write-Step "4" "Node.js for Playwright"
+Write-Step "5" "Node.js for Playwright"
 if (Test-Command "node") {
     $nodeVersion = node --version 2>&1
     Write-Success "  Installed: $nodeVersion"
@@ -679,7 +813,7 @@ else {
 }
 
 # Check Playwright setup
-Write-Step "5" "Playwright Dependencies"
+Write-Step "6" "Playwright Dependencies"
 if ((Test-Path ".\playwright\node_modules") -and (Test-Path ".\playwright\.auth")) {
     Write-Success "  Installed and configured"
     
@@ -701,7 +835,7 @@ else {
 }
 
 # Check MagicSuite auth
-Write-Step "6" "MagicSuite CLI Authentication"
+Write-Step "7" "MagicSuite CLI Authentication"
 $configPath = "$env:USERPROFILE\.magicsuite"
 $hasConfig = $false
 
@@ -742,6 +876,7 @@ Write-Host ""
 Write-Host "Quick Commands:" -ForegroundColor Cyan
 Write-Host "  - Test MagicSuite CLI:  magicsuite --version" -ForegroundColor Gray
 Write-Host "  - Test JIRA:            .\.github\tools\JIRA.ps1 get MS-1" -ForegroundColor Gray
+Write-Host "  - Test XWiki:           .\.github\tools\XWiki.ps1 -Action Search -Query 'QA'" -ForegroundColor Gray
 Write-Host "  - View all profiles:    magicsuite config profiles list" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Need help? Check SETUP-INSTRUCTIONS.md or ask the team!" -ForegroundColor Yellow

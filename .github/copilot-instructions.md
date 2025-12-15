@@ -70,6 +70,48 @@ The `.github/tools/` directory contains PowerShell scripts for system integratio
   - `ELASTIC_PASSWORD` - Your Elastic password
 - Elastic URL: `https://pdl-elastic-prod.panoramicdata.com`
 
+### XWiki Integration (`tools/XWiki.ps1`)
+- **Purpose**: Access and manage company wiki pages
+- **CRITICAL**: Copilot/AI assistants must ALWAYS use this script to interact with XWiki. NEVER access the XWiki REST API directly.
+- **Credentials**: Windows Credential Manager (target: `LogicMonitor:XWiki`)
+- **XWiki URL**: `https://wiki.panoramicdata.com`
+
+**Available Actions:**
+| Action | Description | Required Parameters |
+|--------|-------------|---------------------|
+| `Read` | Parse page from URL (extracts tables) | `-Url` |
+| `Get` | Get page metadata + content as JSON | `-Space` |
+| `GetContent` | Get ONLY the page content (string) | `-Space` |
+| `Create` | Create a new wiki page | `-Space`, `-PageName`, `-Title`, `-Content` |
+| `Update` | Update existing page content | `-Space`, `-Content` or `-Title` |
+| `Replace` | Find and replace text in a page | `-Space`, `-Find`, `-Replace` |
+| `Delete` | Delete a page | `-Space` |
+| `Search` | Search for pages by keyword | `-Query` |
+| `ListSpaces` | List all wiki spaces | (none) |
+
+**Common Usage Examples:**
+```powershell
+# Read the QA Home page
+.\.github\tools\XWiki.ps1 -Action GetContent -Space "QA Home"
+
+# Read a nested page (use dots to separate nested spaces)
+.\.github\tools\XWiki.ps1 -Action GetContent -Space "QA Home.QA's AI hopes, dreams and plans"
+
+# Fix a typo on a page
+.\.github\tools\XWiki.ps1 -Action Replace -Space "QA Home" -Find "typo" -Replace "correction"
+
+# Search for pages about regression testing
+.\.github\tools\XWiki.ps1 -Action Search -Query "regression"
+
+# Create a new test documentation page
+.\.github\tools\XWiki.ps1 -Action Create -Space "QA Home" -PageName "TestDoc" -Title "Test Documentation" -Content "# Test Doc"
+```
+
+**Nested Spaces:**
+- Use dots (`.`) to separate nested space names
+- Example: `"QA Home.SubSpace.DeepSpace"` → navigates to QA Home → SubSpace → DeepSpace
+- Default page in any space is `WebHome`
+
 ### Playwright MCP Integration (`playwright/`)
 - **Purpose**: AI-assisted browser automation for UI testing
 - **Documentation**: See `playwright/README.md` for full setup instructions
@@ -212,6 +254,27 @@ Test plans are organized in the following structure:
    - Verify index patterns before executing searches
    - Document any custom queries for future reference
 
+10. **When working with XWiki**:
+   - **ALWAYS use the XWiki.ps1 script** for all wiki interactions - NEVER access the XWiki REST API directly
+   - **Extend XWiki.ps1** if new functionality is needed rather than using direct API calls
+   - **Use `GetContent`** action when you need to read page content for analysis or editing
+   - **Use `Replace`** action for fixing typos or small text changes (avoids needing full content)
+   - **Use `Update`** action for replacing entire page content
+   - **Nested spaces**: Use dots to separate space hierarchy (e.g., `"QA Home.SubSpace"`)
+   - **Default page**: If `-PageName` is not specified, defaults to `WebHome` (the main page of a space)
+   - **Common wiki pages**:
+     - QA documentation: `-Space "QA Home"`
+     - QA AI plans: `-Space "QA Home.QA's AI hopes, dreams and plans"`
+   - **Before editing wiki content**:
+     - Read the existing content first with `GetContent`
+     - Verify you have the correct page/space
+     - For typos, prefer `Replace` action over `Update`
+   - **XWiki.ps1 Enhancement Guidelines**:
+     - Follow existing patterns when adding new actions
+     - Use `Build-XWikiPageUrl` helper for constructing API URLs
+     - Update the header examples when adding new functionality
+     - Test new functions before using in production
+
 8. **When working with Playwright MCP**:
    - **Check if Playwright MCP tools are available** before attempting browser automation
    - **Use for UI testing** when testing Magic Suite web interfaces (AlertMagic, DataMagic, Files UI)
@@ -268,6 +331,7 @@ Test plans are organized in the following structure:
 - **Update team information**: Keep team member lists and roles current based on JIRA analysis
 - **Refine guidance**: Improve clarifying questions and best practices based on experience
 - **Enhance JIRA.ps1**: Continuously add new functions and capabilities to the JIRA tool as requirements emerge
+- **Enhance XWiki.ps1**: Add new actions to XWiki.ps1 as wiki interaction needs evolve (never use direct API calls)
 - **Document improvements**: Update the copilot instructions whenever new capabilities are added to tools
 
 ### Security Considerations
