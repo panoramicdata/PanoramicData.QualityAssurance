@@ -308,7 +308,7 @@ For urgent issues outside normal business hours:
 ## Overview
 MagicSuite CLI (command: `magicsuite`) is a command-line interface for Magic Suite operations. It provides comprehensive API access and management capabilities for the Magic Suite platform.
 
-**Version**: 3.28.258+b2ef011bc7  
+**Version**: 4.1.278+0db90d0a24  
 **Installation Location**: `C:\Users\amycb\.dotnet\tools\magicsuite.exe`
 
 ## Global Options
@@ -420,7 +420,7 @@ When testing this CLI tool and writing Jira tickets for bugs:
 - Specify the profile/tenant context if relevant
 - Include the output format being used (JSON vs Table)
 - Capture the full error output
-- Note the version number (3.28.258+b2ef011bc7)
+- Note the version number (4.1.278+0db90d0a24)
 - Include any authentication/profile configuration issues
 - Specify if the issue occurs with specific entity types
 
