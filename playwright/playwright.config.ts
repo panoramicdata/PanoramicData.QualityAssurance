@@ -39,8 +39,14 @@ export default defineConfig({
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
     
-    /* Video recording */
-    video: 'retain-on-failure',
+    /* Video recording - 'on' records all tests */
+    video: {
+      mode: 'on',
+      size: { width: 1920, height: 1080 },
+    },
+    
+    /* Viewport size for higher resolution */
+    viewport: { width: 1920, height: 1080 },
   },
 
   /**
