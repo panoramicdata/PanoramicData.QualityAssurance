@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as fs from 'fs';
 
 /**
  * Playwright configuration for Magic Suite regression tests.
@@ -15,6 +16,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './Magic Suite',
+  
+  /* Output directory for test results including videos */
+  outputDir: 'test-results',
   
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -39,7 +43,10 @@ export default defineConfig({
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
     
-    /* Video recording - 'on' records all tests */
+    /* Video recording - ALWAYS records all tests in WebM format
+     * Videos are saved to test-results/<test-name>/video.webm
+     * Options: 'off', 'on', 'retain-on-failure', 'on-first-retry'
+     */
     video: {
       mode: 'on',
       size: { width: 1920, height: 1080 },
@@ -47,6 +54,13 @@ export default defineConfig({
     
     /* Viewport size for higher resolution */
     viewport: { width: 1920, height: 1080 },
+    
+    /* Reuse authentication state from auth.setup.spec.ts
+     * This loads saved cookies and storage so tests don't need to log in
+     * Run 'npx playwright test auth.setup' to create/refresh the auth state
+     * Only loads if the file exists (allows auth.setup to run without it)
+     */
+    storageState: fs.existsSync('.auth/user.json') ? '.auth/user.json' : undefined,
   },
 
   /**
@@ -65,10 +79,10 @@ export default defineConfig({
     },
     
     /* Additional browsers - run with --project flag or npm run test:all-browsers */
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
     // {
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },
@@ -87,8 +101,8 @@ export default defineConfig({
     // },
   ],
   
-  /* Global timeout for each test */
-  timeout: 30000,
+  /* Global timeout for each test - set high to allow manual login in auth.setup */
+  timeout: 360000, // 6 minutes
   
   /* Expect timeout */
   expect: {

@@ -230,6 +230,10 @@ Test plans are organized in the following structure:
    - **When capturing evidence for JIRA**:
      - Save screenshots to `playwright/screenshots/`
      - Save traces to `playwright/traces/`
+     - **Video recordings**: Playwright automatically records all tests in WebM format (configured in playwright.config.ts)
+     - **CRITICAL**: When uploading videos to JIRA, the file MUST have the `.webm` extension or JIRA will reject the upload
+     - Videos are saved to `playwright/test-results/<test-name>/video.webm`
+     - If downloading from Playwright HTML report and file saves without extension, manually add `.webm` before uploading to JIRA
      - Reference captured files in JIRA comments
 
 9. **Standard QA Workflow Integration with JIRA**:
@@ -242,6 +246,12 @@ Test plans are organized in the following structure:
    - **After completing analysis**: Add comprehensive comment with findings and recommendations
    - **Before transitioning**: Always add a comment explaining the reason for the status change
    - **When syncing to repository**: Add comment about committing work with commit hash if available
+   - **When commenting on test results**: ALWAYS include test environment and version information:
+     - Test environment (e.g., test2.magicsuite.net, alpha.magicsuite.net)
+     - Application version (e.g., v4.1.275)
+     - Test date/time
+     - Test framework and browser versions (for automated tests)
+     - Example: "Environment: test2.magicsuite.net (DataMagic), Version: v4.1.275, Test Date: 2025-12-15 16:36:09, Browsers: Chromium 143.0.7499.4, Firefox 144.0.2"
    - **Example Standard Workflow Comments**:
      - Start: "Beginning QA work on MS-21863 SharePoint regression. Creating test plan and collecting logs for analysis."
      - Test Plan: "Created comprehensive test plan (MS-21863.md) with 6 test cases covering version comparison and SharePoint file operations. Ready to collect supporting logs."
