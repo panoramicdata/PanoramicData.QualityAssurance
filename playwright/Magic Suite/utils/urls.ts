@@ -17,7 +17,7 @@ export function getAppUrl(appPrefix: AppPrefix, env?: string): string {
   // Special URL mappings for environments with non-standard naming
   const specialMappings: { [key: string]: { [key in AppPrefix]?: string } } = {
     'alpha2': {
-      'www': 'https://alpha2.magicsuite.net',
+      'www': 'https://www.alpha2.magicsuite.net',
       'data': 'https://data.alpha2.magicsuite.net',
       'alert': 'https://alert.alpha2.magicsuite.net',
       'report': 'https://report.alpha2.magicsuite.net',
@@ -26,7 +26,7 @@ export function getAppUrl(appPrefix: AppPrefix, env?: string): string {
       'connect': 'https://connect.alpha2.magicsuite.net',
     },
     'alpha3': {
-      'www': 'https://alpha3.magicsuite.net',
+      'www': 'https://www.alpha3.magicsuite.net',
       'data': 'https://data.alpha3.magicsuite.net',
       'alert': 'https://alert.alpha3.magicsuite.net',
       'report': 'https://report.alpha3.magicsuite.net',
@@ -35,7 +35,7 @@ export function getAppUrl(appPrefix: AppPrefix, env?: string): string {
       'connect': 'https://connect.alpha3.magicsuite.net',
     },
     'test2': {
-      'www': 'https://test2.magicsuite.net',
+      'www': 'https://www.test2.magicsuite.net',
       'data': 'https://data.test2.magicsuite.net',
       'alert': 'https://alert.test2.magicsuite.net',
       'report': 'https://report.test2.magicsuite.net',
@@ -44,7 +44,7 @@ export function getAppUrl(appPrefix: AppPrefix, env?: string): string {
       'connect': 'https://connect.test2.magicsuite.net',
     },
     'ps': {
-      'www': 'https://ps.magicsuite.net',
+      'www': 'https://www.ps.magicsuite.net',
       'data': 'https://data.ps.magicsuite.net',
       'alert': 'https://alert.ps.magicsuite.net',
       'report': 'https://report.ps.magicsuite.net',
