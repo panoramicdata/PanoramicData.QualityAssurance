@@ -677,7 +677,7 @@ if (Test-Command "node") {
                 
                 # Try Chrome first
                 Write-Host "Opening Chrome browser..." -ForegroundColor Yellow
-                $chromeResult = npx playwright test "Magic Suite/auth.setup.spec.ts" --headed --project=chromium 2>&1
+                $chromeResult = npx playwright test auth.setup.spec.ts --headed --project=chromium 2>&1
                 
                 # Check if auth file was created
                 if (Test-Path ".\.auth\user.json") {
@@ -693,7 +693,7 @@ if (Test-Command "node") {
                     # First ensure Firefox is installed
                     npx playwright install firefox 2>&1 | Out-Null
                     
-                    $firefoxResult = npx playwright test "Magic Suite/auth.setup.spec.ts" --headed --project=firefox 2>&1
+                    $firefoxResult = npx playwright test auth.setup.spec.ts --headed --project=firefox 2>&1
                     
                     if (Test-Path ".\.auth\user.json") {
                         Write-Success "Authentication state saved successfully!"
@@ -711,7 +711,7 @@ if (Test-Command "node") {
             catch {
                 Write-Error "Failed to set up authentication: $_"
                 Write-Info "You can try again later by running:"
-                Write-Info "  cd playwright; `$env:MS_ENV='$selectedEnv'; npx playwright test 'Magic Suite/auth.setup.spec.ts' --headed"
+                Write-Info "  cd playwright; `$env:MS_ENV='$selectedEnv'; npx playwright test auth.setup.spec.ts --headed"
             }
             finally {
                 Pop-Location
@@ -723,7 +723,7 @@ if (Test-Command "node") {
     }
     else {
         Write-Host "Skipped - You can set up authentication later by running:" -ForegroundColor Yellow
-        Write-Info "cd playwright; `$env:MS_ENV='test2'; npx playwright test 'Magic Suite/auth.setup.spec.ts' --headed"
+        Write-Info "cd playwright; `$env:MS_ENV='test2'; npx playwright test auth.setup.spec.ts --headed"
         Write-Info "Remember: Log in, then click 'Resume' in the Playwright Inspector to save the session"
     }
 }

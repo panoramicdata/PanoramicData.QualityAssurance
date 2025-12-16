@@ -1,4 +1,4 @@
-# General XWiki Access Script
+﻿# General XWiki Access Script
 # Fetches, creates, updates, and deletes XWiki pages
 # Uses Windows Credential Manager to securely store credentials
 #
@@ -507,8 +507,9 @@ switch ($Action) {
         }
         
         # Escape XML special characters
-        $escapedTitle = $pageTitle -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
-        $escapedContent = $pageContent -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
+        $aposEntity = [char]38 + 'apos;'  # Build &apos; without literal to avoid PS parser bug
+        $escapedTitle = [System.Security.SecurityElement]::Escape($pageTitle).Replace("'", $aposEntity)
+        $escapedContent = [System.Security.SecurityElement]::Escape($pageContent).Replace("'", $aposEntity)
         
         $xml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?><page xmlns=`"http://www.xwiki.org`"><title>$escapedTitle</title><syntax>markdown/1.2</syntax><content>$escapedContent</content></page>"
         
@@ -623,8 +624,9 @@ switch ($Action) {
         $headers["Accept"] = "application/xml"
         
         # Escape XML special characters
-        $escapedTitle = $pageTitle -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
-        $escapedContent = $pageContent -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
+        $aposEntity = [char]38 + 'apos;'  # Build &apos; without literal to avoid PS parser bug
+        $escapedTitle = [System.Security.SecurityElement]::Escape($pageTitle).Replace("'", $aposEntity)
+        $escapedContent = [System.Security.SecurityElement]::Escape($pageContent).Replace("'", $aposEntity)
         
         $xml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?><page xmlns=`"http://www.xwiki.org`"><title>$escapedTitle</title><syntax>markdown/1.2</syntax><content>$escapedContent</content></page>"
         
