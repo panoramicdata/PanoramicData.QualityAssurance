@@ -1,149 +1,76 @@
-# MagicSuite CLI QA Tools
+# PanoramicData Quality Assurance Workspace
 
-A collection of PowerShell scripts and tools for testing the MagicSuite CLI, creating JIRA bug reports, and automating quality assurance workflows.
+This workspace contains automated testing tools, test plans, and documentation for Panoramic Data's Magic Suite quality assurance processes.
 
----
+## 📂 Folder Structure
+
+### `.github/` - GitHub Integration Tools
+- **`tools/`** - PowerShell integration scripts (JIRA, XWiki, Elastic, Regression Runner)
+
+### `docs/` - Documentation
+- **`Test-Migration-Plan.md`** - Comprehensive test automation migration plan
+- Setup instructions, sharing guides, and other documentation
+
+### `scripts/` - Organized Scripts
+- **`setup/`** - Environment and tool setup (Run-Setup.ps1, authentication, profiles)
+- **`automation/`** - Automated monitoring and maintenance
+- **`utilities/`** - Helper scripts and templates
+
+### `playwright/` - Automated UI Tests
+- **`Magic Suite/`** - Test specs by application (Admin, AlertMagic, DataMagic, etc.)
+- Test results, screenshots, videos, and traces
+
+### `test-plans/` - Manual Test Plans
+- Test plans for JIRA tickets (MS-XXXXX.md format)
+
+### `test-scripts/` - CLI & API Test Scripts
+- PowerShell tests for MagicSuite CLI and API
+
+### `bug-scripts/` - Bug Ticket Creation
+- Automated JIRA bug creation scripts
+
+### `jira-update-scripts/` - JIRA Updates
+- Scripts for updating JIRA tickets
+
+### `logs/` - Log Analysis
+- Collected logs organized by JIRA ticket
 
 ## 🚀 Quick Start
 
-1. **Clone or copy this folder** to your local machine
-2. **Follow setup instructions**: See [SETUP-INSTRUCTIONS.md](SETUP-INSTRUCTIONS.md)
-3. **Run smoke test**: `.\smoke-test.ps1` to verify everything works
-4. **Read testing ideas**: Check [Testing-Ideas.md](Testing-Ideas.md) for strategies
-
----
-
-## 📋 What's Included
-
-### Testing Tools
-- **Smoke Tests** - Quick validation of core functionality
-- **Regression Tests** - Systematic testing of all entity types
-- **Performance Tests** - Measure execution times
-- **Error Handling Tests** - Validate edge cases
-- **Output Validation** - Verify JSON/Table formats
-- **Comparative Testing** - Before/after update comparisons
-- **Coverage Tracking** - Monitor what's been tested
-
-### JIRA Integration
-- **Automated Bug Creation** - Create tickets from test failures
-- **Credential Management** - Secure credential storage
-- **Batch Operations** - Update multiple tickets at once
-
-### Playwright Browser Automation
-- **MCP Integration** - AI-assisted browser automation via Playwright MCP
-- **Cross-Browser Testing** - Chrome, Firefox, WebKit, Edge support
-- **Screenshot Capture** - Visual documentation for bug reports
-- **Trace Recording** - Detailed session playback for debugging
-- **See**: [playwright/README.md](playwright/README.md) for setup and usage
-
-### Documentation
-- **Setup Instructions** - How to configure on your machine
-- **Testing Strategies** - 10 different testing approaches
-- **CLI Reference** - Complete command documentation
-
----
-
-## 🔧 Requirements
-
-- **MagicSuite CLI** (v3.28.258 or later)
-- **PowerShell** 5.1 or later
-- **JIRA Account** with MS project access
-- **Windows** (for Credential Manager integration)
-
----
-
-## 📖 Documentation
-
-- **[SETUP-INSTRUCTIONS.md](SETUP-INSTRUCTIONS.md)** - First-time setup guide
-- **[Testing-Ideas.md](Testing-Ideas.md)** - Comprehensive testing strategies
-- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - CLI reference and JIRA details
-- **[playwright/README.md](playwright/README.md)** - Playwright MCP browser automation setup
-
----
-
-## 🔒 Security
-
-**Important**: This repository contains tools that interact with JIRA and MagicSuite APIs.
-
-- **Never commit credentials** to version control
-- Use **Windows Credential Manager** for secure storage
-- Keep `.env` files in `.gitignore`
-- Use **JIRA API tokens** instead of passwords
-- Each user must configure their own credentials
-
-See [SETUP-INSTRUCTIONS.md](SETUP-INSTRUCTIONS.md) for secure credential management.
-
----
-
-## 🎯 Common Tasks
-
-### Run Quick Validation
+### 1. Initial Setup
 ```powershell
-.\smoke-test.ps1
+.\scripts\setup\Run-Setup.ps1
 ```
 
-### Test All Entity Types
+### 2. Run Playwright Tests
 ```powershell
-.\regression-test.ps1
+cd playwright
+npx playwright test
+npx playwright show-report
 ```
 
-### Create a Bug Report
+### 3. Run Regression Tests
 ```powershell
-# Edit create-jira-bug.ps1 with bug details, then run:
-.\create-jira-bug.ps1
+.\.github\tools\RunRegressionTests.ps1 -Environment test
 ```
 
-### Check Test Coverage
-```powershell
-.\test-coverage.ps1
-```
+## 📋 Test Migration
 
-### Compare Before/After Update
-```powershell
-.\compare-versions.ps1
-```
+See [docs/Test-Migration-Plan.md](docs/Test-Migration-Plan.md) for the comprehensive plan to migrate manual tests to Playwright/CLI automation.
 
----
+**Progress:**
+- ✅ Playwright setup complete
+- ✅ Authentication flows working
+- ✅ Basic navigation tests
+- 🔄 Comprehensive test suite in progress
 
-## 🐛 Known Issues
+## 🔗 Links
 
-See JIRA project MS for active bug reports:
-- MS-22521: NullReferenceException on many entity types
-- MS-22522: Malformed markup exception (Spectre.Console)
-- MS-22523: Profile list shows "?" instead of checkmark
-- MS-22558: NuGet package missing DotnetToolSettings.xml
+- **Playwright Guide:** https://wiki.panoramicdata.com/bin/view/QA%20Home/PlaywrightGuide
+- **XWiki QA Home:** https://wiki.panoramicdata.com/bin/view/QA%20Home/
+- **JIRA:** https://jira.panoramicdata.com/browse/MS
 
 ---
 
-## 🤝 Contributing
-
-To add new tests or improve existing ones:
-
-1. **Don't hardcode credentials** - Use environment variables
-2. **Follow naming conventions** - `test-*.ps1` for tests
-3. **Document your changes** - Update README if needed
-4. **Test your scripts** - Verify they work for others
-5. **Share with the team** - Submit improvements
-
----
-
-## 📝 Version History
-
-- **v1.0** (2025-12-08) - Initial release
-  - Core testing scripts
-  - JIRA integration
-  - Documentation
-
----
-
-## 👥 Team
-
-Developed for MagicSuite QA workflows.
-
-Questions? Check the documentation or ask the team!
-
----
-
-## 📄 License
-
-Internal tool for PanoramicData team use.
+**Last Updated:** December 16, 2025  
+**Maintained By:** Panoramic Data QA Team
