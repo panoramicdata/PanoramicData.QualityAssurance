@@ -1,0 +1,16 @@
+﻿=== CLI TESTING RESULTS - 2025-12-18 10:44:17 ===
+CLI Version: 4.1.323+b1d2df9293
+Test Environment: test.magicsuite.net (Profile: AmyTest2)
+
+=== MS-22608: CLI Exit Code on Failure ===
+Invalid command exit code: 0 (expected non-zero)
+Valid command exit code: 0 (expected 0)
+Auth failure exit code: 0 (expected non-zero)
+Status: NOT FIXED
+
+=== MS-22568: Global Options Placement ===
+Option BEFORE subcommand exit code: 0
+Option AFTER subcommand exit code: 0
+Status: FIXED
+
+

@@ -1,0 +1,40 @@
+﻿{
+    "expand":  "names,schema",
+    "startAt":  0,
+    "maxResults":  10,
+    "total":  1,
+    "issues":  [
+                   {
+                       "expand":  "operations,versionedRepresentations,editmeta,changelog,renderedFields",
+                       "id":  "146472",
+                       "self":  "https://jira.panoramicdata.com/rest/api/2/issue/146472",
+                       "key":  "MS-22611",
+                       "fields":  {
+                                      "summary":  "CLI: Negative take parameter returns exit code 0",
+                                      "created":  "2025-12-18T11:01:34.000+0000",
+                                      "assignee":  null,
+                                      "priority":  {
+                                                       "self":  "https://jira.panoramicdata.com/rest/api/2/priority/3",
+                                                       "iconUrl":  "https://jira.panoramicdata.com/images/icons/priorities/major.svg",
+                                                       "name":  "Major",
+                                                       "id":  "3"
+                                                   },
+                                      "updated":  "2025-12-18T11:01:34.000+0000",
+                                      "status":  {
+                                                     "self":  "https://jira.panoramicdata.com/rest/api/2/status/10001",
+                                                     "description":  "The issue has been well defined and is ready for progress",
+                                                     "iconUrl":  "https://jira.panoramicdata.com/images/icons/statuses/open.png",
+                                                     "name":  "Ready for Progress",
+                                                     "id":  "10001",
+                                                     "statusCategory":  {
+                                                                            "self":  "https://jira.panoramicdata.com/rest/api/2/statuscategory/2",
+                                                                            "id":  2,
+                                                                            "key":  "new",
+                                                                            "colorName":  "default",
+                                                                            "name":  "To Do"
+                                                                        }
+                                                 }
+                                  }
+                   }
+               ]
+}

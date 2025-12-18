@@ -57,11 +57,75 @@ This repository contains quality assurance tools, test plans, and automation scr
 The `.github/tools/` directory contains PowerShell scripts for system integration:
 
 ### JIRA Integration (`tools/JIRA.ps1`)
+- **CRITICAL**: Copilot/AI assistants must ALWAYS use this script for JIRA interactions. NEVER use direct REST API calls or other methods.
+- **Extends automatically**: When the JIRA.ps1 script lacks needed functionality, extend it by adding new functions and actions rather than using direct API calls.
 - Connects to JIRA instance using environment variables
 - Required environment variables:
   - `JIRA_USERNAME` - Your JIRA username
   - `JIRA_PASSWORD` - Your JIRA password/API token
 - JIRA URL: `https://jira.panoramicdata.com`
+
+**Available Actions:**
+| Action | Description | Required Parameters | Notes |
+|--------|-------------|---------------------|-------|
+| `Get` | Get issue details | `-IssueKey` | Basic issue info |
+| `GetFull` | Get issue with comments/history | `-IssueKey` | Includes comments and changelog |
+| `Detailed` | Get comprehensive formatted info | `-IssueKey` | Formatted summary |
+| `Search` | Search issues by JQL | `-Parameters @{JQL="..."}` | |
+| `Create` | Create new issue | `-Parameters @{ProjectKey, IssueType, Summary, Description}` | Limited - see note below |
+| `Update` | Update issue fields | `-IssueKey`, `-Parameters @{Fields=@{...}}` | |
+| `Comment` | Add comment | `-IssueKey`, `-Parameters @{Comment="..."}` | |
+| `Transition` | Change issue status | `-IssueKey`, `-Parameters @{TransitionName="..."}` | |
+| `Team` | Get team member issues | | QA team filtering |
+
+**IMPORTANT - Creating JIRA Tickets:**
+- The `Create` action in JIRA.ps1 has **limitations**: it doesn't support labels, priority, custom fields (like customfield_11200), or issue links
+- **When creating bug tickets** that need these fields:
+  1. **First choice**: Extend JIRA.ps1 by adding an enhanced `New-JiraIssueFull` function that supports all fields
+  2. **Temporary workaround**: Use direct REST API calls BUT document this as technical debt
+  3. **Always use environment variables** for credentials (`$env:JIRA_USERNAME`, `$env:JIRA_PASSWORD`)
+  4. **Never use `Get-StoredCredential`** - it's not universally available
+
+**Common Pitfalls When Creating Tickets:**
+1. **Ampersand character** in strings like `"MagicSuite_R&D"` must be in single quotes: `@('MagicSuite_R&D')`
+2. **Here-string syntax** (@"..."@) inside hashtables can cause parsing errors - use single-quoted strings with concatenation instead
+3. **Required custom field**: `customfield_11200 = @('MagicSuite_R&D')` is required for MS project tickets
+4. **Priority**: Use `@{id = "2"}` for Critical, `@{id = "3"}` for High, etc.
+5. **Labels**: Must be array of strings: `@("CLI", "exit-codes", "automation-blocker")`
+
+**Example - Creating a Comprehensive Bug Ticket:**
+```powershell
+# Get credentials from environment
+$auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($env:JIRA_USERNAME):$($env:JIRA_PASSWORD)"))
+$headers = @{
+    "Authorization" = "Basic $auth"
+    "Content-Type" = "application/json"
+}
+
+# Use simple string variable for description (avoid here-strings in hashtables)
+$description = 'h2. Summary
+Bug description here
+
+h2. Environment
+* CLI Version: 4.1.323
+* Test Date: 2025-12-18'
+
+# Create issue with all required fields
+$issue = @{
+    fields = @{
+        project = @{key = "MS"}
+        issuetype = @{name = "Bug"}
+        summary = "Brief description"
+        description = $description
+        priority = @{id = "2"}  # Critical
+        labels = @("CLI", "exit-codes")
+        customfield_11200 = @('MagicSuite_R&D')  # Required for MS project
+    }
+} | ConvertTo-Json -Depth 10
+
+$result = Invoke-RestMethod -Uri "https://jira.panoramicdata.com/rest/api/2/issue" `
+    -Method POST -Headers $headers -Body $issue
+```
 
 ### Elastic Integration (`tools/Elastic.ps1`)
 - Connects to Elastic cluster using environment variables
@@ -199,6 +263,16 @@ Test plans are organized in the following structure:
 
 4. **When working with JIRA**:
    - **ALWAYS use the JIRA.ps1 script** for all JIRA interactions - never use direct API calls or other methods
+   - **EXCEPTION**: When creating comprehensive bug tickets with labels, priority, and custom fields, the current JIRA.ps1 Create action is limited. In this case:
+     - **Preferred**: Extend JIRA.ps1 with a `New-JiraIssueFull` function that supports all fields
+     - **Temporary**: Use direct REST API with environment variables (`$env:JIRA_USERNAME`, `$env:JIRA_PASSWORD`)
+     - **Never use** `Get-StoredCredential` - it's not universally available
+   - **When creating tickets via REST API**:
+     - Store description in a variable BEFORE the hashtable (avoid here-strings inside hashtables)
+     - Use single quotes for strings with ampersands: `@('MagicSuite_R&D')`
+     - Always include `customfield_11200 = @('MagicSuite_R&D')` for MS project tickets
+     - Priority must be object with id: `@{id = "2"}` for Critical
+     - Labels must be array: `@("CLI", "exit-codes")`
    - **Update tickets proactively** with progress comments throughout work sessions
    - **Transition tickets through workflows** when appropriate (Ready for Progress → In Progress → Ready for Test → In Test)
    - Always verify issue status before making changes

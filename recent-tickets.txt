@@ -1,0 +1,14 @@
+﻿
+=== RECENTLY CREATED JIRA TICKETS ===
+
+MS-22611: CLI: Negative take parameter returns exit code 0
+  Created: 2025-12-18T11:01:34.000+0000
+  Status: Ready for Progress
+  URL: https://jira.panoramicdata.com/browse/MS-22611
+
+MS-22609: App names in the waffle should not be a different colour.
+  Created: 2025-12-18T09:57:39.000+0000
+  Status: Ready for Progress
+  URL: https://jira.panoramicdata.com/browse/MS-22609
+
+
