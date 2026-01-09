@@ -52,6 +52,21 @@ Based on analysis of the JIRA system (https://jira.panoramicdata.com), the follo
 
 This repository contains quality assurance tools, test plans, and automation scripts for Panoramic Data's testing processes, with a focus on the Magic Suite project and related systems. The team manages testing workflows across multiple systems including JIRA for issue tracking and Elastic for log analysis and monitoring.
 
+## MagicSuite CLI Testing Requirements
+
+**CRITICAL - Always Test on 4.1.x Versions:**
+- All CLI testing MUST be performed on the **4.1.x version branch** (e.g., 4.1.486)
+- **NEVER test on 4.2.x versions** for official bug testing and JIRA updates
+- The 4.1.x branch is the primary supported version for production environments
+- To switch to 4.1.x version:
+  ```powershell
+  dotnet tool uninstall magicsuite.cli --global
+  dotnet tool install magicsuite.cli --global --version 4.1.*
+  magicsuite --version  # Verify correct version is installed
+  ```
+- Always document the specific 4.1.x version used in bug reports and test results
+- When creating or updating JIRA tickets, always specify the exact 4.1.x version tested
+
 ## Available Tools
 
 The `.github/tools/` directory contains PowerShell scripts for system integration:
