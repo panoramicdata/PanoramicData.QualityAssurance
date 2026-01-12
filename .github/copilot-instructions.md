@@ -212,7 +212,7 @@ $result = Invoke-RestMethod -Uri "https://jira.panoramicdata.com/rest/api/2/issu
     "servers": {
       "playwright": {
         "command": "npx",
-        "args": ["@playwright/mcp@latest", "--browser", "chrome", "--caps", "vision"]
+        "args": ["@playwright/mcp@latest", "--browser", "chrome", "--cap", "vision"]
       }
     }
   }
