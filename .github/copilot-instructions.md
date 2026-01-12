@@ -5,6 +5,7 @@
 This workspace is maintained by the **Panoramic Data Quality Assurance team**.
 
 ### Quality Assurance Team
+- **Amy Bond** - JIRA: `amy.bond` - QA team member focused on testing and automation
 - **Claire Campbell** - JIRA: `claire.campbell` - QA focus with testing assignments
 - **Sam Walters** - JIRA: `sam.walters` - Handles testing activities, often assigned issues in "In Test" and "Ready for Test" status
 
