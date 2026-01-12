@@ -219,6 +219,21 @@ $result = Invoke-RestMethod -Uri "https://jira.panoramicdata.com/rest/api/2/issu
   ```
 - **Task-Specific Instructions**: See `.github/playwright-instructions.md` for Magic Suite URL patterns, environments, and test conventions
 
+**CRITICAL - Tests Requiring Authentication:**
+- When creating or running Playwright tests that require login, **ALWAYS allow sufficient time for manual login**
+- Magic Suite apps require authentication - tests must either:
+  1. Use saved auth state from `.auth/user.json` (run `npx playwright test auth.setup --headed` first)
+  2. Include a `page.pause()` to allow manual login before proceeding
+- **When running tests that need login**:
+  - Run auth.setup FIRST as a separate step: `npx playwright test auth.setup --headed`
+  - Wait for the user to complete login before running the actual tests
+  - Set generous timeouts (5+ minutes) for manual login steps
+- **When creating new authenticated tests**:
+  - Add a `beforeEach` hook that checks for auth redirect
+  - Include helpful error messages directing user to run auth.setup
+  - Consider adding `test.setTimeout(300000)` (5 min) for tests requiring manual intervention
+- **NEVER immediately run authenticated tests** without first confirming the auth state exists or giving time for login
+
 ### Regression Test Runner (`tools/RunRegressionTests.ps1`)
 - **Purpose**: Run Playwright regression tests against Magic Suite environments
 - **Usage**:

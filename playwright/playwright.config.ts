@@ -37,6 +37,9 @@ export default defineConfig({
   
   /* Shared settings for all the projects below */
   use: {
+    /* Show browser window during tests (set to true for headed mode) */
+    headless: false,
+    
     /* Collect trace when retrying the failed test */
     trace: 'on-first-retry',
     
