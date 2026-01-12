@@ -45,6 +45,10 @@ function Test-Command {
     }
 }
 
+# Navigate to workspace root (go up two levels from scripts/setup)
+$WorkspaceRoot = (Get-Item $PSScriptRoot).Parent.Parent.FullName
+Push-Location $WorkspaceRoot
+
 # Start the wizard
 Clear-Host
 Write-Header "QA Tools Setup Wizard"
@@ -106,8 +110,8 @@ if (Test-Command "magicsuite") {
     $updateChoice = Read-Host "Would you like to check for updates? (y/N)"
     if ([string]::IsNullOrWhiteSpace($updateChoice)) { $updateChoice = "N" }
     if ($updateChoice -eq "Y" -or $updateChoice -eq "y") {
-        Write-Host "Checking for updates..." -ForegroundColor Yellow
-        dotnet tool update -g MagicSuite.Cli
+        Write-Host "Checking for updates to latest 4.1.x version..." -ForegroundColor Yellow
+        dotnet tool update -g MagicSuite.Cli --version '4.1.*'
     }
 }
 else {
@@ -125,7 +129,7 @@ else {
         }
         
         try {
-            dotnet tool install -g MagicSuite.Cli
+            dotnet tool install -g MagicSuite.Cli --version '4.1.*'
             Write-Success "MagicSuite CLI installed successfully"
             
             # Refresh PATH
@@ -675,9 +679,13 @@ if (Test-Command "node") {
             try {
                 $env:MS_ENV = $selectedEnv
                 
-                # Try Chrome first
-                Write-Host "Opening Chrome browser..." -ForegroundColor Yellow
-                $chromeResult = npx playwright test auth.setup.spec.ts --headed --project=chromium 2>&1
+                # Try Firefox first
+                Write-Host "Opening Firefox browser..." -ForegroundColor Yellow
+                
+                # First ensure Firefox is installed
+                npx playwright install firefox 2>&1 | Out-Null
+                
+                $firefoxResult = npx playwright test auth.setup --headed --project=firefox 2>&1
                 
                 # Check if auth file was created
                 if (Test-Path ".\.auth\user.json") {
@@ -687,13 +695,10 @@ if (Test-Command "node") {
                     Write-Info "Cookie details: .AspNetCore.MagicSuite$($selectedEnv.Substring(0,1).ToUpper())$($selectedEnv.Substring(1))"
                 }
                 else {
-                    # Chrome failed, try Firefox
-                    Write-Host "Chrome didn't work, trying Firefox..." -ForegroundColor Yellow
+                    # Firefox failed, try Chrome
+                    Write-Host "Firefox didn't work, trying Chrome..." -ForegroundColor Yellow
                     
-                    # First ensure Firefox is installed
-                    npx playwright install firefox 2>&1 | Out-Null
-                    
-                    $firefoxResult = npx playwright test auth.setup.spec.ts --headed --project=firefox 2>&1
+                    $chromeResult = npx playwright test auth.setup --headed --project=chromium 2>&1
                     
                     if (Test-Path ".\.auth\user.json") {
                         Write-Success "Authentication state saved successfully!"
@@ -704,14 +709,14 @@ if (Test-Command "node") {
                     else {
                         Write-Host "WARNING: Authentication file not found - you may need to try again" -ForegroundColor Yellow
                         Write-Info "Make sure to click 'Resume' in the Playwright Inspector after logging in"
-                        Write-Info "Output: $chromeResult"
+                        Write-Info "Output: $firefoxResult"
                     }
                 }
             }
             catch {
                 Write-Error "Failed to set up authentication: $_"
                 Write-Info "You can try again later by running:"
-                Write-Info "  cd playwright; `$env:MS_ENV='$selectedEnv'; npx playwright test auth.setup.spec.ts --headed"
+                Write-Info "  cd playwright; `$env:MS_ENV='$selectedEnv'; npx playwright test auth.setup --headed --project=firefox"
             }
             finally {
                 Pop-Location
@@ -723,7 +728,7 @@ if (Test-Command "node") {
     }
     else {
         Write-Host "Skipped - You can set up authentication later by running:" -ForegroundColor Yellow
-        Write-Info "cd playwright; `$env:MS_ENV='test2'; npx playwright test auth.setup.spec.ts --headed"
+        Write-Info "cd playwright; `$env:MS_ENV='test2'; npx playwright test auth.setup --headed --project=firefox"
         Write-Info "Remember: Log in, then click 'Resume' in the Playwright Inspector to save the session"
     }
 }
@@ -880,4 +885,7 @@ Write-Host "  - Test XWiki:           .\.github\tools\XWiki.ps1 -Action Search -
 Write-Host "  - View all profiles:    magicsuite config profiles list" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Need help? Check SETUP-INSTRUCTIONS.md or ask the team!" -ForegroundColor Yellow
+
+# Return to original directory
+Pop-Location
 Write-Host ""

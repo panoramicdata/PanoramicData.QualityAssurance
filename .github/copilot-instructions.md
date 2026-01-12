@@ -196,6 +196,7 @@ $result = Invoke-RestMethod -Uri "https://jira.panoramicdata.com/rest/api/2/issu
 - **Purpose**: AI-assisted browser automation for UI testing
 - **Documentation**: See `playwright/README.md` for full setup instructions
 - **Configuration**: Add to `.vscode/mcp.json` to enable Playwright MCP tools
+- **Browser Preference**: **ALWAYS use Firefox as the default browser** for Playwright tests. Chromium can be used if specifically required or if Firefox fails.
 - **Key Features**:
   - Navigate to web pages and interact with UI elements
   - Capture screenshots for bug documentation
@@ -212,20 +213,31 @@ $result = Invoke-RestMethod -Uri "https://jira.panoramicdata.com/rest/api/2/issu
     "servers": {
       "playwright": {
         "command": "npx",
-        "args": ["@playwright/mcp@latest", "--browser", "chrome", "--cap", "vision"]
+        "args": ["@playwright/mcp@latest", "--browser", "firefox", "--cap", "vision"]
       }
     }
   }
   ```
 - **Task-Specific Instructions**: See `.github/playwright-instructions.md` for Magic Suite URL patterns, environments, and test conventions
 
+**CRITICAL - Running Playwright Tests:**
+- **ALWAYS specify a project** when running Playwright tests to avoid opening multiple browsers simultaneously
+  - Use `--project=firefox` (preferred default) or `--project=chromium`
+  - Example: `npx playwright test auth.setup --headed --project=firefox`
+  - **WITHOUT `--project` flag, ALL configured browsers will open at once**
+- **Use test name patterns, NOT file paths**:
+  - ✅ Correct: `npx playwright test auth.setup`
+  - ❌ Wrong: `npx playwright test "Magic Suite\auth.setup.spec.ts"`
+  - Playwright matches test names, not file paths
+- **Browser preference**: Always use `--project=firefox` unless specifically requested otherwise
+
 **CRITICAL - Tests Requiring Authentication:**
 - When creating or running Playwright tests that require login, **ALWAYS allow sufficient time for manual login**
 - Magic Suite apps require authentication - tests must either:
-  1. Use saved auth state from `.auth/user.json` (run `npx playwright test auth.setup --headed` first)
+  1. Use saved auth state from `.auth/user.json` (run `npx playwright test auth.setup --headed --project=firefox` first)
   2. Include a `page.pause()` to allow manual login before proceeding
 - **When running tests that need login**:
-  - Run auth.setup FIRST as a separate step: `npx playwright test auth.setup --headed`
+  - Run auth.setup FIRST as a separate step: `npx playwright test auth.setup --headed --project=firefox`
   - Wait for the user to complete login before running the actual tests
   - Set generous timeouts (5+ minutes) for manual login steps
 - **When creating new authenticated tests**:
