@@ -574,8 +574,10 @@ switch ($Action) {
         $headers["Content-Type"] = "application/xml"
         $headers["Accept"] = "application/xml"
         
-        $escapedTitle = $existingPage.title -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
-        $escapedContent = $newContent -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
+        # Use proper XML escaping via .NET SecurityElement to avoid double-escaping issues
+        $aposEntity = [char]38 + 'apos;'  # Build &apos; without literal
+        $escapedTitle = [System.Security.SecurityElement]::Escape($existingPage.title).Replace("'", $aposEntity)
+        $escapedContent = [System.Security.SecurityElement]::Escape($newContent).Replace("'", $aposEntity)
         
         $xml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?><page xmlns=`"http://www.xwiki.org`"><title>$escapedTitle</title><syntax>markdown/1.2</syntax><content>$escapedContent</content></page>"
         
