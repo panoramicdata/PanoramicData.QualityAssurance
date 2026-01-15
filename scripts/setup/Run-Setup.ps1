@@ -736,6 +736,136 @@ else {
     Write-Host "Skipped - Node.js must be installed first" -ForegroundColor Yellow
 }
 
+# Step 8b: Configure Additional User Roles (Optional)
+Write-Header "Step 8b: Configuring Additional User Roles (Optional)"
+
+if (Test-Command "node") {
+    Write-Host "Some tests require different user permission levels:" -ForegroundColor White
+    Write-Host ""
+    Write-Info "  • Super Admin - For tenant management, all-tenants queries"
+    Write-Info "  • Uber Admin  - Highest level admin access"
+    Write-Info "  • Regular User - Standard user permissions (non-admin)"
+    Write-Host ""
+    Write-Host "Your default authentication (Step 8) is used for most tests." -ForegroundColor Gray
+    Write-Host "Additional roles are only needed when testing specific permissions." -ForegroundColor Gray
+    Write-Host ""
+    
+    $setupRoles = Read-Host "Would you like to set up additional user roles now? (y/N)"
+    if ([string]::IsNullOrWhiteSpace($setupRoles)) { $setupRoles = "N" }
+    
+    if ($setupRoles -eq "Y" -or $setupRoles -eq "y") {
+        Write-Host ""
+        Write-Host "Which user roles would you like to configure?" -ForegroundColor Yellow
+        Write-Host "  1. Super Admin"
+        Write-Host "  2. Uber Admin"
+        Write-Host "  3. Regular User"
+        Write-Host "  4. All of the above"
+        Write-Host "  5. Skip"
+        Write-Host ""
+        
+        $roleChoice = Read-Host "Enter choice (1-5)"
+        
+        $rolesToSetup = @()
+        switch ($roleChoice) {
+            "1" { $rolesToSetup = @("super-admin") }
+            "2" { $rolesToSetup = @("uber-admin") }
+            "3" { $rolesToSetup = @("regular-user") }
+            "4" { $rolesToSetup = @("super-admin", "uber-admin", "regular-user") }
+            default { Write-Host "Skipping additional user roles" -ForegroundColor Gray }
+        }
+        
+        if ($rolesToSetup.Count -gt 0) {
+            # Use the same environment as the main auth setup
+            $envForRoles = if ($selectedEnv) { $selectedEnv } else { "alpha2" }
+            
+            Write-Host ""
+            Write-Host "Setting up roles for environment: $envForRoles" -ForegroundColor Cyan
+            Write-Host ""
+            
+            foreach ($role in $rolesToSetup) {
+                $roleName = switch ($role) {
+                    "super-admin" { "Super Admin" }
+                    "uber-admin" { "Uber Admin" }
+                    "regular-user" { "Regular User" }
+                }
+                
+                Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray
+                Write-Host "Configuring: $roleName" -ForegroundColor Yellow
+                Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray
+                Write-Host ""
+                Write-Info "⚠️  IMPORTANT: Log in with $roleName credentials"
+                Write-Info "   This is a DIFFERENT account than your default login"
+                Write-Host ""
+                Write-Host "Steps:" -ForegroundColor Cyan
+                Write-Info "  1. Browser will open and pause at Playwright Inspector"
+                Write-Info "  2. Log in with $roleName account in the browser"
+                Write-Info "  3. After login completes, click 'Resume' in Inspector"
+                Write-Info "  4. Session will be saved to .auth/$role.json"
+                Write-Host ""
+                Read-Host "Press Enter when ready to proceed with $roleName login"
+                
+                Push-Location ".\playwright"
+                try {
+                    $env:MS_ENV = $envForRoles
+                    
+                    # Install Firefox if not already installed
+                    npx playwright install firefox 2>&1 | Out-Null
+                    
+                    Write-Host "Opening browser for $roleName authentication..." -ForegroundColor Yellow
+                    $authResult = npx playwright test "auth.setup.$role" --headed --project=firefox 2>&1
+                    
+                    if (Test-Path ".\.auth\$role.json") {
+                        Write-Success "$roleName authentication saved successfully!"
+                        Write-Info "File: .auth\$role.json"
+                        Write-Info "Usage: npx playwright test --project=$role"
+                    }
+                    else {
+                        Write-Host "WARNING: $roleName authentication file not created" -ForegroundColor Yellow
+                        Write-Info "Make sure to click 'Resume' in Playwright Inspector after logging in"
+                        Write-Info "You can retry later with: npx playwright test auth.setup.$role --headed"
+                    }
+                }
+                catch {
+                    Write-Error "Failed to set up $roleName authentication: $_"
+                    Write-Info "You can try again later by running:"
+                    Write-Info "  cd playwright; npx playwright test auth.setup.$role --headed"
+                }
+                finally {
+                    Pop-Location
+                }
+                
+                Write-Host ""
+            }
+            
+            Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray
+            Write-Success "User role setup complete!"
+            Write-Host ""
+            Write-Host "To use different roles in tests:" -ForegroundColor Cyan
+            Write-Info "  Default user:   npx playwright test"
+            if ($rolesToSetup -contains "super-admin") {
+                Write-Info "  Super Admin:    npx playwright test --project=super-admin"
+            }
+            if ($rolesToSetup -contains "uber-admin") {
+                Write-Info "  Uber Admin:     npx playwright test --project=uber-admin"
+            }
+            if ($rolesToSetup -contains "regular-user") {
+                Write-Info "  Regular User:   npx playwright test --project=regular-user"
+            }
+            Write-Host ""
+            Write-Host "See .\playwright\.auth\README.md for more details" -ForegroundColor Gray
+        }
+    }
+    else {
+        Write-Host "Skipped - You can set up additional roles later by running:" -ForegroundColor Yellow
+        Write-Info "cd playwright; npx playwright test auth.setup.super-admin --headed"
+        Write-Info "cd playwright; npx playwright test auth.setup.uber-admin --headed"
+        Write-Info "cd playwright; npx playwright test auth.setup.regular-user --headed"
+    }
+}
+else {
+    Write-Host "Skipped - Node.js must be installed first" -ForegroundColor Yellow
+}
+
 # Step 9: Final verification
 Write-Header "Step 9: Verifying Setup"
 Write-Host "Running final checks..." -ForegroundColor Yellow

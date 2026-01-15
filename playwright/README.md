@@ -271,7 +271,106 @@ npx playwright install
 .\.github\tools\RunRegressionTests.ps1 -Environment production
 ```
 
-### Using npm Scripts
+## Finding Test Videos 🎬
+
+After running tests, videos are automatically recorded and organized by test run session:
+
+### 🚀 Automatic Video Report with Run History (NEW!)
+After each test run, an **HTML report with clickable video links** opens automatically!
+- **Location**: `test-results/test-videos.html` (always shows latest run)
+- **Archive**: Each run is saved to `test-results/video-reports/run-<timestamp>/`
+- **History**: View last 10 test runs directly in the HTML report
+- **Shows**: All videos organized by status (❌ Failed, ⚠️ Flaky, ✅ Passed)
+- **Compare**: Easy access to previous test runs for comparison
+
+### 📅 Multiple Test Runs
+Running tests multiple times? No problem!
+- Each test run gets a unique timestamp ID (e.g., `run-2026-01-15T10-30-00`)
+- Videos are automatically archived for each session
+- Compare results across different runs
+- Last 50 runs are kept in the history
+
+### 💻 Quick PowerShell Commands
+```powershell
+# List all recent videos from latest run
+.\Get-TestVideos.ps1
+
+# View all test run sessions with timestamps
+.\Get-TestVideos.ps1 -Action list-runs
+
+# Open a specific test run report
+.\Get-TestVideos.ps1 -Action open-run -RunId "run-2026-01-15T10-30-00"
+
+# Open the most recent video
+.\Get-TestVideos.ps1 -Action open-latest
+
+# Open all failed test videos (great for debugging!)
+.\Get-TestVideos.ps1 -Action open-failed
+
+# Open the latest HTML video report
+.\Get-TestVideos.ps1 -Action open-report
+
+# Open videos folder in Windows Explorer
+explorer test-results
+```
+
+### ⚡ PowerShell Profile Functions (Even Faster!)
+If you've sourced the `video-functions.ps1` file:
+```powershell
+Get-TestVideos           # or 'gtv' - List recent videos
+Get-TestRunHistory       # or 'gtrh' - View all test runs
+Open-TestRun "<run-id>"  # or 'open-run' - Open specific run
+Open-LatestTestVideo     # or 'latest-video' - Open most recent
+Open-FailedTestVideos    # or 'failed-videos' - Open failed tests
+Open-TestVideoReport     # Open latest HTML report
+```
+
+### 📁 Manual Access
+Videos are stored in: `test-results/<test-name>/video.webm`
+- Each test gets its own folder
+- Videos are in WebM format (playable in Chrome, Edge, Firefox)
+- Automatically organized by test run session
+- Both Markdown and HTML reports generated for each run
+- History maintained in `test-results/video-reports/runs-index.json`
+
+---
+
+## 📂 Project Structure
+
+```
+playwright/
+├── setup/                      # Setup scripts (auth, etc.)
+│   ├── auth.setup.ts          # All authentication setups
+│   └── README.md
+├── .auth/                     # Saved authentication states
+│   ├── user.json              # Default user
+│   ├── super-admin.json       # Super admin
+│   ├── uber-admin.json        # Uber admin
+│   └── regular-user.json      # Regular user
+├── Magic Suite/               # Test files organized by product
+│   ├── Admin/                 # Admin Portal tests
+│   ├── DataMagic/             # DataMagic tests
+│   ├── ReportMagic/           # ReportMagic tests
+│   ├── AlertMagic/            # AlertMagic tests
+│   ├── Connect/               # Connect Portal tests
+│   ├── Docs/                  # Documentation tests
+│   ├── NCalc101/              # NCalc 101 tests
+│   ├── Www/                   # Main Portal tests
+│   ├── tests/                 # Special test suites
+│   │   └── deep-link-validation.spec.ts
+│   └── utils/                 # Shared utilities
+│       ├── urls.ts
+│       └── magic-suite-urls.ts
+├── test-results/              # Test outputs, videos, reports
+├── playwright.config.ts       # Playwright configuration
+├── package.json               # Dependencies
+├── DEEP-LINKS-REFERENCE.md    # URL reference guide
+└── README.md                  # This file
+```
+
+---
+
+## Using npm Scripts
 
 ```powershell
 cd playwright

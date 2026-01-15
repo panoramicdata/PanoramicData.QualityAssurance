@@ -1,0 +1,208 @@
+import { test, expect } from '@playwright/test';
+
+/**
+ * Example: Multi-User Role Testing
+ * 
+ * This example demonstrates how to write tests for different user roles.
+ * Tests will automatically use the appropriate authentication state based
+ * on which project is specified when running the test.
+ * 
+ * USAGE:
+ *   # Run with default user (your personal profile)
+ *   npx playwright test example.user-roles.spec.ts
+ *   npx playwright test example.user-roles.spec.ts --project=default-chromium
+ * 
+ *   # Run with super admin
+ *   npx playwright test example.user-roles.spec.ts --project=super-admin
+ * 
+ *   # Run with uber admin
+ *   npx playwright test example.user-roles.spec.ts --project=uber-admin
+ * 
+ *   # Run with regular user
+ *   npx playwright test example.user-roles.spec.ts --project=regular-user
+ * 
+ * SETUP REQUIRED:
+ *   Before running with specific roles, you must create the auth state:
+ *   npx playwright test auth.setup.super-admin
+ *   npx playwright test auth.setup.uber-admin
+ *   npx playwright test auth.setup.regular-user
+ */
+
+// Example environment configuration
+const env = process.env.MS_ENV || 'alpha2';
+const baseUrl = env === 'production' 
+  ? 'https://www.magicsuite.net'
+  : `https://www.${env}.magicsuite.net`;
+
+// ===========================================================================
+// APPROACH 1: Single test file, run with different --project flags
+// ===========================================================================
+
+test.describe('Dashboard Features', () => {
+  
+  test('should display user dashboard', async ({ page }) => {
+    // This test runs with whatever authentication state is configured
+    // for the project you specify when running the test
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Check that user is logged in
+    await expect(page).not.toHaveURL(/login/);
+    
+    // Verify dashboard elements are visible
+    const heading = page.locator('h1, h2').first();
+    await expect(heading).toBeVisible();
+  });
+  
+  test('should navigate to user settings', async ({ page }) => {
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Example: Click user menu (adjust selectors to match your app)
+    // This works for any user role
+    const userMenu = page.locator('[data-testid="user-menu"]').or(page.locator('.user-menu'));
+    if (await userMenu.isVisible()) {
+      await userMenu.click();
+    }
+  });
+});
+
+// ===========================================================================
+// APPROACH 2: Role-specific test suites with tags
+// ===========================================================================
+
+test.describe('Super Admin Features', { tag: '@super-admin' }, () => {
+  // These tests are tagged for super admin
+  // Run with: npx playwright test --grep @super-admin --project=super-admin
+  
+  test('should access tenant management', async ({ page }) => {
+    await page.goto(`${baseUrl}/admin/tenants`);
+    await page.waitForLoadState('networkidle');
+    
+    // Verify super admin can access tenant management
+    const tenantHeader = page.locator('h1:has-text("Tenants")');
+    await expect(tenantHeader).toBeVisible({ timeout: 10000 });
+  });
+  
+  test('should view all tenants with --all-tenants functionality', async ({ page }) => {
+    // This test verifies super admin capabilities
+    await page.goto(`${baseUrl}/admin/tenants`);
+    await page.waitForLoadState('networkidle');
+    
+    // Example verification that super admin sees all tenants
+    const tenantList = page.locator('[data-testid="tenant-list"]').or(page.locator('.tenant-list'));
+    await expect(tenantList).toBeVisible();
+  });
+});
+
+test.describe('Regular User Restrictions', { tag: '@regular-user' }, () => {
+  // These tests verify that regular users DON'T have admin access
+  // Run with: npx playwright test --grep @regular-user --project=regular-user
+  
+  test('should NOT access admin pages', async ({ page }) => {
+    // Attempt to navigate to admin area
+    await page.goto(`${baseUrl}/admin`);
+    await page.waitForLoadState('networkidle');
+    
+    // Should be redirected or see access denied
+    const currentUrl = page.url();
+    const isBlocked = currentUrl.includes('unauthorized') || 
+                      currentUrl.includes('access-denied') ||
+                      !currentUrl.includes('/admin');
+    
+    expect(isBlocked).toBeTruthy();
+  });
+  
+  test('should see standard user dashboard only', async ({ page }) => {
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Verify no admin navigation items are visible
+    const adminNav = page.locator('a:has-text("Admin")').or(page.locator('[href*="/admin"]'));
+    await expect(adminNav).not.toBeVisible();
+  });
+});
+
+// ===========================================================================
+// APPROACH 3: Permission-based test grouping
+// ===========================================================================
+
+test.describe('Permission Testing Matrix', () => {
+  
+  test('RBAC: Role-Based Access Control verification', async ({ page }) => {
+    // This single test can be run with different projects to verify
+    // different permission levels
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Check various features and log what's accessible
+    const features = {
+      dashboard: await page.locator('[data-testid="dashboard"]').isVisible(),
+      reports: await page.locator('a:has-text("Reports")').isVisible(),
+      admin: await page.locator('a:has-text("Admin")').isVisible(),
+      users: await page.locator('a:has-text("Users")').isVisible(),
+    };
+    
+    console.log('Accessible features:', features);
+    
+    // Basic assertion - all users should see dashboard
+    expect(features.dashboard || true).toBeTruthy(); // Adjust based on actual app structure
+  });
+});
+
+// ===========================================================================
+// APPROACH 4: Parallel execution for different roles
+// ===========================================================================
+
+test.describe('Cross-Role Feature Testing', () => {
+  // Run this entire suite with multiple projects in parallel:
+  // npx playwright test example.user-roles.spec.ts --project=default-chromium --project=super-admin --project=regular-user
+  
+  test('Feature X is available to all user types', async ({ page }) => {
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Test a feature that should work for everyone
+    const mainContent = page.locator('main, [role="main"]').first();
+    await expect(mainContent).toBeVisible();
+  });
+  
+  test('Navigation works correctly for all roles', async ({ page }) => {
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Test basic navigation
+    const homeLink = page.locator('a[href="/"], a:has-text("Home")').first();
+    if (await homeLink.isVisible()) {
+      await homeLink.click();
+      await expect(page).toHaveURL(new RegExp(baseUrl));
+    }
+  });
+});
+
+// ===========================================================================
+// PRO TIP: Conditional test logic based on authentication
+// ===========================================================================
+
+test.describe('Smart Role-Aware Tests', () => {
+  
+  test('adaptable test - checks permissions dynamically', async ({ page }) => {
+    await page.goto(baseUrl);
+    await page.waitForLoadState('networkidle');
+    
+    // Check if admin link exists (indicates admin role)
+    const hasAdminAccess = await page.locator('a:has-text("Admin")').isVisible();
+    
+    if (hasAdminAccess) {
+      // If admin access, verify admin features
+      console.log('Running as admin user - verifying admin features');
+      await page.click('a:has-text("Admin")');
+      await expect(page).toHaveURL(/admin/);
+    } else {
+      // If no admin access, verify user features
+      console.log('Running as regular user - verifying user features');
+      const userNav = page.locator('[data-testid="user-nav"]');
+      await expect(userNav).toBeVisible();
+    }
+  });
+});

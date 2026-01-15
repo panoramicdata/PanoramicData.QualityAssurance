@@ -17,6 +17,12 @@ import * as fs from 'fs';
 export default defineConfig({
   testDir: './Magic Suite',
   
+  /* Ignore setup files and examples from test discovery */
+  testIgnore: [
+    '**/auth.setup*.spec.ts',  // Old auth setup files (moved to setup/ folder)
+    '**/example.*.spec.ts',    // Example files
+  ],
+  
   /* Output directory for test results including videos */
   outputDir: 'test-results',
   
@@ -32,8 +38,11 @@ export default defineConfig({
   /* Opt out of parallel tests on CI */
   workers: process.env.CI ? 1 : undefined,
   
-  /* Reporter to use */
-  reporter: 'html',
+  /* Reporter to use - includes custom video reporter for easy video access */
+  reporter: [
+    ['html'],
+    ['./video-reporter.js']
+  ],
   
   /* Shared settings for all the projects below */
   use: {
@@ -69,34 +78,70 @@ export default defineConfig({
   /**
    * Browser Projects Configuration
    * 
-   * Default: Only Chromium runs (fast for development)
-   * Use --project flag or npm scripts to run other browsers when needed.
+   * Default: Chromium with default user (tester's personal profile)
+   * Additional projects for different user roles when needed.
+   * 
+   * User Role Projects:
+   * - 'default-chromium': Tester's personal Microsoft profile (default)
+   * - 'super-admin': Super admin user permissions
+   * - 'uber-admin': Uber admin user permissions  
+   * - 'regular-user': Standard user permissions
+   * 
+   * Usage:
+   *   npx playwright test                        # Runs with default user
+   *   npx playwright test --project=super-admin  # Runs as super admin
+   *   npx playwright test tests/admin.spec.ts --project=super-admin
+   * 
+   * In test files, specify the project/role:
+   *   test.describe('Admin features', { tag: '@super-admin' }, () => { ... })
    * 
    * Install browsers: npx playwright install
    */
   projects: [
-    /* Default browser - always runs */
+    /* Default user - tester's personal profile */
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'default-chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/user.json') ? '.auth/user.json' : undefined,
+      },
     },
     
-    /* Additional browsers - run with --project flag or npm run test:all-browsers */
+    /* Super Admin role - for tests requiring super admin permissions */
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: 'super-admin',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/super-admin.json') ? '.auth/super-admin.json' : undefined,
+      },
     },
+    
+    /* Uber Admin role - for tests requiring uber admin permissions */
+    {
+      name: 'uber-admin',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/uber-admin.json') ? '.auth/uber-admin.json' : undefined,
+      },
+    },
+    
+    /* Regular User role - for tests requiring standard user permissions */
+    {
+      name: 'regular-user',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/regular-user.json') ? '.auth/regular-user.json' : undefined,
+      },
+    },
+    
+    /* Additional browsers - uncomment to enable */
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
     // {
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },
-    // },
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
     // },
     // {
     //   name: 'Microsoft Edge',

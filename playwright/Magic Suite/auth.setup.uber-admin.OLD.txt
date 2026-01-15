@@ -1,0 +1,86 @@
+import { test as setup, expect } from '@playwright/test';
+import * as fs from 'fs';
+import * as path from 'path';
+import { getLoginUrl } from './utils/urls';
+
+/**
+ * Uber Admin Authentication Setup
+ * 
+ * This script logs into Magic Suite with UBER ADMIN credentials
+ * and saves the authentication state to a separate file.
+ * 
+ * Run this once manually when you need to refresh uber admin login:
+ *   npx playwright test auth.setup.uber-admin.ts
+ * 
+ * The saved state expires when your session expires - rerun when needed.
+ */
+
+const authFile = '.auth/uber-admin.json';
+
+// Get environment from environment variable or default to 'alpha2'
+const env = process.env.MS_ENV || 'alpha2';
+const loginUrl = getLoginUrl(env);
+
+setup('authenticate as Uber Admin', async ({ page }) => {
+  // Override the default timeout - give 5 minutes for manual login
+  setup.setTimeout(300000); // 5 minutes
+  
+  console.log('\n=================================================================');
+  console.log('UBER ADMIN LOGIN SETUP');
+  console.log('=================================================================');
+  console.log(`Environment: ${env}`);
+  console.log(`Login URL: ${loginUrl}`);
+  console.log('');
+  console.log('⚠️  IMPORTANT: Log in with UBER ADMIN credentials');
+  console.log('');
+  console.log('This authentication state will be used for tests that require');
+  console.log('uber admin permissions (highest level admin access)');
+  console.log('=================================================================\n');
+  
+  // Go to login page
+  await page.goto(loginUrl);
+  
+  // Wait for complete page load
+  await page.waitForLoadState('networkidle');
+  
+  // Check if already logged in or needs login
+  const currentUrl = page.url();
+  const needsLogin = currentUrl.includes('login') || 
+                     currentUrl.includes('auth') ||
+                     currentUrl.includes('identity') ||
+                     currentUrl.includes('microsoftonline');
+  
+  if (needsLogin) {
+    console.log('🔐 Please log in manually with UBER ADMIN account in the browser window');
+    console.log('📌 After logging in successfully, click "Resume" in the Playwright Inspector\n');
+    
+    // Pause for manual login - user clicks Resume when done
+    await page.pause();
+  } else {
+    console.log('✅ Already logged in, proceeding...\n');
+  }
+  
+  // After login (or if already logged in), verify we're on a Magic Suite page
+  await page.waitForLoadState('networkidle');
+  const finalUrl = page.url();
+  expect(finalUrl).toContain('magicsuite.net');
+  
+  // Ensure the .auth directory exists
+  const authDir = path.dirname(authFile);
+  if (!fs.existsSync(authDir)) {
+    fs.mkdirSync(authDir, { recursive: true });
+  }
+  
+  // Save the authenticated state (cookies, localStorage, sessionStorage)
+  await page.context().storageState({ path: authFile });
+  
+  console.log('\n=================================================================');
+  console.log('✅ UBER ADMIN authentication state saved successfully!');
+  console.log(`   Saved to: ${authFile}`);
+  console.log('\nTests using the "uber-admin" project will now use this login.');
+  console.log('\nUsage:');
+  console.log('  npx playwright test --project=uber-admin');
+  console.log('  npx playwright test tests/uber-admin-features.spec.ts --project=uber-admin');
+  console.log('\nRun this setup again when your uber admin session expires.');
+  console.log('=================================================================\n');
+});
