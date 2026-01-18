@@ -34,7 +34,7 @@ h2. Summary
 The MagicSuite CLI help text shows the {{--profile}} option twice in multiple commands, creating confusion about which option to use.
 
 h2. Environment
-* MagicSuite CLI Version: 4.1.184+7504ce11bc
+* MagicSuite CLI Version: 4.1.*
 * Installation Path: {{C:\Users\amycb\.dotnet\tools\magicsuite.exe}}
 * Date Tested: December 9, 2025
 

@@ -11,7 +11,7 @@
 ### Check Current Version
 ```powershell
 magicsuite --version
-# Expected: 4.1.546+a2e24699c9 (or similar 4.1.x version)
+# Expected: 4.1.* (or similar 4.1.x version; use `4.1.*` to install latest 4.1.x)
 ```
 
 ### Install Specific Version
@@ -20,7 +20,7 @@ magicsuite --version
 dotnet tool install -g MagicSuite.Cli --version '4.1.*'
 
 # Install specific version
-dotnet tool install -g MagicSuite.Cli --version 4.1.546
+dotnet tool install -g MagicSuite.Cli --version '4.1.*'
 ```
 
 ### Update/Downgrade Version

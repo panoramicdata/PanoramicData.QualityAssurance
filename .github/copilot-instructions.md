@@ -39,7 +39,7 @@ Environments: alpha, alpha2, test, **test2 (default)**, beta, staging, productio
 
 ### 2. MagicSuite CLI Version: 4.1.x ONLY
 - ❌ **NEVER use 4.2.x** for official testing
-- ✅ **Always use 4.1.x** (e.g., 4.1.546)
+- ✅ **Always use 4.1.x** (use `4.1.*` to mean "install the latest 4.1.x available")
 - ✅ Check before tests: `magicsuite --version`
 - ✅ Document exact version in all JIRA updates
 
@@ -88,7 +88,7 @@ Environments: alpha, alpha2, test, **test2 (default)**, beta, staging, productio
 | Info | Value |
 |------|-------|
 | **Default Test Environment** | test2.magicsuite.net |
-| **CLI Version for Testing** | 4.1.x ONLY (currently 4.1.546) |
+| **CLI Version for Testing** | 4.1.x ONLY (use `4.1.*` to mean latest 4.1.x) |
 | **Default Browser** | Firefox with `--project=firefox` |
 | **JIRA Project** | MS (Magic Suite) |
 | **Primary QA Tester** | Amy Bond (amy.bond) |

@@ -1,5 +1,55 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+
+// Configure Playwright output directory (videos, traces, reports)
+// Preferred: `MS_VIDEO_DIR` environment variable (user-provided)
+// Secondary: attempt to detect OneDrive (Panoramic* folders)
+// Important: do NOT store videos inside the repository. If no external storage
+// is available, videos will be disabled and the user will be warned.
+const oneDriveRoot = process.env.MS_VIDEO_DIR || process.env.OneDrive || process.env.OneDriveCommercial || process.env.OneDriveConsumer;
+
+function tryCreateDir(p: string): boolean {
+  try {
+    if (!p) return false;
+    if (!path.isAbsolute(p)) p = path.resolve(p);
+    if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+    return fs.existsSync(p);
+  } catch (e) {
+    return false;
+  }
+}
+
+let absoluteOutputDir: string | undefined;
+if (process.env.MS_VIDEO_DIR) {
+  if (tryCreateDir(process.env.MS_VIDEO_DIR)) {
+    absoluteOutputDir = path.resolve(process.env.MS_VIDEO_DIR);
+  }
+}
+
+// If MS_VIDEO_DIR not set, try to pick a sensible OneDrive path under detected OneDrive roots
+if (!absoluteOutputDir && (process.env.OneDrive || process.env.OneDriveCommercial || process.env.OneDriveConsumer)) {
+  const roots = [process.env.OneDriveCommercial, process.env.OneDrive, process.env.OneDriveConsumer].filter(Boolean) as string[];
+  for (const r of roots) {
+    // prefer folders named Panoramic Data* otherwise use a standard candidate
+    const candidate = path.join(r!, 'Panoramic Data', 'QA', 'playwright tests');
+    if (tryCreateDir(candidate)) { absoluteOutputDir = path.resolve(candidate); break; }
+  }
+}
+
+// If we still don't have an external folder, disable video recording and avoid repo storage
+let videoEnabled = true;
+if (!absoluteOutputDir) {
+  // Use system temp for non-video artifacts to avoid writing into the repo
+  absoluteOutputDir = path.join(os.tmpdir(), 'playwright-test-results');
+  tryCreateDir(absoluteOutputDir);
+  // But do not record videos if no external persistent storage selected
+  videoEnabled = false;
+  console.warn('\nWARNING: No external Playwright output directory found.');
+  console.warn('Videos will be DISABLED to avoid storing large files inside the repository.');
+  console.warn('To enable video recording, set the environment variable MS_VIDEO_DIR to a folder (OneDrive recommended) or run the repository setup to configure it.\n');
+}
 
 /**
  * Playwright configuration for Magic Suite regression tests.
@@ -24,7 +74,7 @@ export default defineConfig({
   ],
   
   /* Output directory for test results including videos */
-  outputDir: 'test-results',
+  outputDir: absoluteOutputDir,
   
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -55,12 +105,11 @@ export default defineConfig({
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
     
-    /* Video recording - ALWAYS records all tests in WebM format
-     * Videos are saved to test-results/<test-name>/video.webm
+    /* Video recording - enabled only when an external MS_VIDEO_DIR was configured
      * Options: 'off', 'on', 'retain-on-failure', 'on-first-retry'
      */
     video: {
-      mode: 'on',
+      mode: videoEnabled ? 'on' : 'off',
       size: { width: 1920, height: 1080 },
     },
     

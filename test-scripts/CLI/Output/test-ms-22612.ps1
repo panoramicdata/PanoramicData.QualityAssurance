@@ -1,6 +1,6 @@
 # Test script for MS-22612: MagicSuite CLI: --output to non-existent directory returns exit code 0
 # Bug Discovery Date: 2025-12-18
-# CLI Version: 4.1.323+b1d2df9293
+# CLI Version: 4.1.*
 # Related: MS-22608 (parent issue), MS-22611 (sibling issue)
 
 Write-Host "`n=== MS-22612: --output Directory Error Exit Code Test ===" -ForegroundColor Cyan

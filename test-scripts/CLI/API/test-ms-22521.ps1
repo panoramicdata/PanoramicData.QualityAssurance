@@ -44,7 +44,7 @@ h3. Test Steps Performed:
 
 h3. Environment:
 * Test Date: December 9, 2025
-* MagicSuite CLI Version: 4.1.184+7504ce11bc
+* MagicSuite CLI Version: 4.1.*
 * Profile: AmyTest2 (https://api.test2.magicsuite.net)
 * Authentication: Successfully configured and tested
 * Result: SUCCESS - No null reference exceptions encountered

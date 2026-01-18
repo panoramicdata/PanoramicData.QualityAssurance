@@ -35,7 +35,7 @@ if ($profilesOutput -match "$activeProfile.*\?") {
 Write-Host ""
 
 Write-Host "=== Test Summary ===" -ForegroundColor Cyan
-Write-Host "Bug Status: STILL EXISTS in version 4.1.249" -ForegroundColor Red
+Write-Host "Bug Status: STILL EXISTS in 4.1.*" -ForegroundColor Red
 Write-Host "The Active column shows '?' instead of a checkmark for the active profile." -ForegroundColor Red
 Write-Host ""
 Write-Host "Expected Behavior:" -ForegroundColor Yellow

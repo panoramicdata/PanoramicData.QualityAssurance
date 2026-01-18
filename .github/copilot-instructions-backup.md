@@ -122,7 +122,7 @@ $description = 'h2. Summary
 Bug description here
 
 h2. Environment
-* CLI Version: 4.1.323
+* CLI Version: 4.1.* (use `4.1.*` to mean "install the latest 4.1.x available")
 * Test Date: 2025-12-18'
 
 # Create issue with all required fields
@@ -514,7 +514,7 @@ For urgent issues outside normal business hours:
 ## Overview
 MagicSuite CLI (command: `magicsuite`) is a command-line interface for Magic Suite operations. It provides comprehensive API access and management capabilities for the Magic Suite platform.
 
-**Version**: 4.1.278+0db90d0a24  
+**Version**: 4.1.*  
 **Installation Location**: `C:\Users\amycb\.dotnet\tools\magicsuite.exe`
 
 ## Global Options

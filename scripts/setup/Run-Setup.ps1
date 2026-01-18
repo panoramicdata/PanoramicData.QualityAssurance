@@ -608,6 +608,105 @@ else {
     }
 }
 
+# Step 7b: Configure Playwright Output Location (OneDrive)
+Write-Header "Step 7b: Configure Playwright Output Location (OneDrive)"
+
+Write-Host "Playwright test videos and artifacts can be saved to a folder you choose." -ForegroundColor White
+Write-Host ""
+# Try to detect OneDrive root(s) and find a Panoramic* folder
+$oneDriveRoots = @()
+if ($env:OneDriveCommercial) { $oneDriveRoots += $env:OneDriveCommercial }
+if ($env:OneDrive) { $oneDriveRoots += $env:OneDrive }
+if ($env:OneDriveConsumer) { $oneDriveRoots += $env:OneDriveConsumer }
+
+$oneDriveRoots = $oneDriveRoots | Where-Object { $_ } | Get-Unique
+
+$foundDefault = $null
+foreach ($root in $oneDriveRoots) {
+    try {
+        $children = Get-ChildItem -Path $root -Directory -ErrorAction SilentlyContinue
+        if ($children) {
+            # Prefer exact known names, then any folder starting with "Panoramic"
+            $preferred = $children | Where-Object { $_.Name -in @('Panoramic Data Limited','Panoramic Data','PanoramicData') } | Select-Object -First 1
+            if (-not $preferred) {
+                $preferred = $children | Where-Object { $_.Name -match '^Panoramic' } | Select-Object -First 1
+            }
+            if ($preferred) {
+                $foundDefault = Join-Path $preferred.FullName "QA\playwright tests"
+                break
+            }
+        }
+    }
+    catch { }
+}
+
+if (-not $foundDefault -and $oneDriveRoots.Count -gt 0) {
+    # Fallback to first OneDrive root with a common folder name
+    $foundDefault = Join-Path $oneDriveRoots[0] "Panoramic Data\QA\playwright tests"
+}
+
+if ($foundDefault) {
+    $defaultPath = $foundDefault
+    $defaultLabel = "Detected OneDrive"
+}
+else {
+    $defaultPath = Join-Path $WorkspaceRoot "test-results\playwright"
+    $defaultLabel = "Repository fallback"
+}
+
+Write-Host "Where should Playwright save videos and artifacts?" -ForegroundColor Cyan
+Write-Host "  1) Use default ($defaultLabel): $defaultPath" -ForegroundColor Gray
+Write-Host "  2) Enter a custom folder path (full path)" -ForegroundColor Gray
+Write-Host "  3) Skip (videos will be disabled to avoid repo storage)" -ForegroundColor Gray
+Write-Host ""
+$choice = Read-Host "Choose 1, 2 or 3 (press Enter for 1)"
+if ([string]::IsNullOrWhiteSpace($choice)) { $choice = '1' }
+
+switch ($choice) {
+    '1' {
+        $targetPath = $defaultPath
+    }
+    '2' {
+        $entered = Read-Host "Enter full folder path for Playwright outputs"
+        if ([string]::IsNullOrWhiteSpace($entered)) {
+            Write-Host "No path entered - falling back to default." -ForegroundColor Yellow
+            $targetPath = $defaultPath
+        }
+        else { $targetPath = $entered }
+    }
+    '3' {
+        $targetPath = $null
+    }
+    default {
+        Write-Host "Invalid choice - using default." -ForegroundColor Yellow
+        $targetPath = $defaultPath
+    }
+}
+
+if ($targetPath) {
+    try {
+        if (-not (Test-Path $targetPath)) {
+            New-Item -Path $targetPath -ItemType Directory -Force | Out-Null
+            Write-Success "Created folder: $targetPath"
+        }
+        else {
+            Write-Success "Folder exists: $targetPath"
+        }
+
+        # Persist environment variable for the current user and set for this session
+        [System.Environment]::SetEnvironmentVariable('MS_VIDEO_DIR', $targetPath, 'User')
+        $env:MS_VIDEO_DIR = $targetPath
+        Write-Info "Saved MS_VIDEO_DIR to your user environment and set for this session"
+        Write-Info 'To change later re-run this setup or remove with: [Environment]::SetEnvironmentVariable("MS_VIDEO_DIR", $null, "User")'
+    }
+    catch {
+        Write-Error "Failed to set MS_VIDEO_DIR: $_"
+    }
+}
+else {
+    Write-Host "Skipping OneDrive configuration. Videos will be disabled to avoid storing large files in the repository." -ForegroundColor Gray
+}
+
 # Step 8: Configure Playwright Authentication
 Write-Header "Step 8: Configuring Playwright Authentication"
 

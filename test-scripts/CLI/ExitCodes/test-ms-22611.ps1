@@ -1,6 +1,6 @@
 # Test script for MS-22611: MagicSuite CLI: Negative --take parameter returns exit code 0
 # Bug Discovery Date: 2025-12-18
-# CLI Version: 4.1.323+b1d2df9293
+# CLI Version: 4.1.*
 # Related: MS-22608 (parent issue - CLI returns exit code 0 on failure)
 
 Write-Host "`n=== MS-22611: Negative --take Parameter Exit Code Test ===" -ForegroundColor Cyan

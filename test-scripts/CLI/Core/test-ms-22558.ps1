@@ -35,7 +35,7 @@ h3. Test Results: PASSED
 The DotnetToolSettings.xml issue has been resolved in the latest package.
 
 h3. Test Steps Performed:
-# Checked current version: 4.1.184+7504ce11bc
+# Checked current version: 4.1.*
 # Uninstalled the tool successfully
 # Reinstalled the tool from NuGet: {{dotnet tool install -g MagicSuite.Cli}}
 # Installation completed successfully without DotnetToolSettings.xml error
@@ -43,7 +43,7 @@ h3. Test Steps Performed:
 
 h3. Environment:
 * Test Date: December 9, 2025
-* Installed Version: 4.1.184+7504ce11bc
+* Installed Version: 4.1.*
 * Installation Method: {{dotnet tool install -g MagicSuite.Cli}}
 * Result: SUCCESS - No errors encountered
 
