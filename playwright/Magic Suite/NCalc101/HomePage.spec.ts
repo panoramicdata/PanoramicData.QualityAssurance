@@ -1,11 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { handleAuthentication } from '../utils/auth';
 
 /**
  * NCalc 101 Home Page Tests
  * Tests the NCalc expression language learning portal
  * 
- * REQUIRES AUTHENTICATION:
- * Run 'npx playwright test auth.setup' first to create login session
+ * AUTHENTICATION:
+ * - Uses saved auth from .auth/user.json if available
+ * - Falls back to automatic login if MS_TEST_USER and MS_TEST_PASSWORD are set
+ * - Falls back to manual login if no credentials available
  */
 
 // NCalc 101 uses the same auth as other Magic Suite apps
@@ -23,7 +26,7 @@ const ignoredPatterns = [
 test.describe('NCalc 101 Home Page', () => {
   // Ensure we're authenticated before each test
   test.beforeEach(async ({ page }) => {
-    // Set generous timeout for potential manual login
+    // Set generous timeout for manual login if needed
     test.setTimeout(300000); // 5 minutes
     
     // Navigate to NCalc 101 - auth state should be loaded from .auth/user.json
@@ -32,42 +35,11 @@ test.describe('NCalc 101 Home Page', () => {
     // Wait for page to load
     await page.waitForLoadState('networkidle');
     
-    // ALWAYS check if login is required and pause for manual login if needed
-    const currentUrl = page.url();
-    const pageText = await page.textContent('body') || '';
-    const needsLogin = currentUrl.includes('login') || 
-                       currentUrl.includes('auth') || 
-                       currentUrl.includes('identity') ||
-                       currentUrl.includes('microsoftonline') ||
-                       pageText.includes('Log In to use') ||
-                       pageText.includes('Pick an account') ||
-                       pageText.includes('Sign in') ||
-                       pageText.includes('Microsoft');
+    // Handle authentication (automatic or manual)
+    await handleAuthentication(page, baseUrl, 'NCalc 101', 'ncalc101');
     
-    // If we're not on the expected NCalc domain, we need to log in
-    if (needsLogin || !currentUrl.includes('ncalc101')) {
-      console.log('\n=================================================================');
-      console.log('MANUAL LOGIN REQUIRED');
-      console.log('=================================================================');
-      console.log(`Environment: ${env}`);
-      console.log(`Target: ${baseUrl}`);
-      console.log('');
-      console.log('1. Log in manually in the browser window');
-      console.log('2. Complete the Microsoft authentication if prompted');
-      console.log('3. After logging in successfully, click "Resume" in the Playwright Inspector');
-      console.log('4. The test will continue automatically');
-      console.log('=================================================================\n');
-      
-      // Pause for manual login - user clicks Resume when done
-      await page.pause();
-      
-      // After resume, navigate to the target page
-      await page.goto(baseUrl);
-      await page.waitForLoadState('networkidle');
-      
-      // Wait for app to fully load after login
-      await page.waitForTimeout(2000);
-    }
+    // Wait for app to fully load
+    await page.waitForTimeout(2000);
   });
 
   test('should load correctly', async ({ page }) => {
@@ -160,85 +132,59 @@ test.describe('NCalc 101 Home Page', () => {
       }
     }
     
-    // Wait longer for CodeMirror to load (sometimes takes a while)
-    console.log('Waiting for CodeMirror editor to load...');
-    await page.waitForTimeout(5000);
+    // Wait longer for Monaco editor to load
+    console.log('Waiting for Monaco editor to load...');
+    await page.waitForTimeout(3000);
     
     // The NCalc 101 UI has three panels:
     // - Left: Variables panel (shows Name, Type, Value)
-    // - Center: Expression editor (CodeMirror - shows line numbers like "1" and code)
-    // - Right: Result output (shows line numbers and result)
+    // - Center: Expression editor (Monaco editor - the editable area)
+    // - Right: Result output (shows the evaluation result)
     
-    // Strategy: Try to find and interact with the editor more reliably
-    // 1. First, check if there are multiple .cm-content elements (there usually are 2-3)
-    const allEditors = await workingFrame.locator('.cm-content').all();
-    console.log(`Found ${allEditors.length} .cm-content elements`);
+    // Look for Monaco editor - it uses .monaco-editor and .view-line classes
+    const monacoEditors = await workingFrame.locator('.monaco-editor').all();
+    console.log(`Found ${monacoEditors.length} Monaco editors`);
     
-    // The center panel editor is typically the one that's contenteditable
-    const editableEditor = workingFrame.locator('.cm-content[contenteditable="true"]');
-    const editableCount = await editableEditor.count();
-    console.log(`Found ${editableCount} contenteditable .cm-content elements`);
+    // Find the editable Monaco editor (center panel - Expression editor)
+    // Look for the editor with contenteditable textarea or the lines-content div
+    const editorContent = workingFrame.locator('.monaco-editor .lines-content').first();
+    const editorExists = await editorContent.count() > 0;
     
-    let editorFound = false;
-    
-    if (editableCount > 0) {
+    if (editorExists) {
       try {
-        // The center column is typically the second editor (index 1)
-        // Left panel = index 0, Center (Expression editor) = index 1, Right panel = index 2
-        const centerEditor = editableCount > 1 ? editableEditor.nth(1) : editableEditor.first();
+        console.log('✓ Found Monaco editor content area');
         
-        // Scroll into view first
-        await centerEditor.scrollIntoViewIfNeeded({ timeout: 5000 });
-        console.log('✓ Scrolled center editor into view');
+        // Click on the view-line (the actual text line) to focus the editor
+        // Use force click to bypass overlays
+        const viewLine = workingFrame.locator('.monaco-editor .view-line').first();
+        await viewLine.click({ force: true, timeout: 5000 });
+        console.log('✓ Clicked Monaco editor (view-line)');
         
-        // Wait for it to be actionable (visible, stable, enabled)
-        await centerEditor.waitFor({ state: 'visible', timeout: 5000 });
-        console.log('✓ Center editor is visible');
+        await page.waitForTimeout(300);
         
-        // Force click in case something is overlaying it
-        await centerEditor.click({ force: true, timeout: 5000 });
-        console.log('✓ Clicked center editor (force mode)');
+        // Select all text in the editor (Ctrl+A)
+        await workingFrame.keyboard.press('Control+A');
+        await page.waitForTimeout(200);
+        console.log('✓ Selected all text');
         
-        editorFound = true;
+        // Delete the selected text
+        await workingFrame.keyboard.press('Delete');
+        await page.waitForTimeout(300);
+        console.log('✓ Deleted existing content');
+        
+        // Type the new expression
+        await workingFrame.keyboard.type('2 + 2', { delay: 100 });
+        console.log('✓ Typed: 2 + 2');
+        
       } catch (e: any) {
-        console.log(`✗ Failed to interact with center editor: ${e.message}`);
+        console.log(`✗ Failed to interact with Monaco editor: ${e.message}`);
+        throw e;
       }
-    }
-    
-    // Fallback: Try clicking in the center of the page (where Expression editor should be)
-    if (!editorFound) {
-      console.log('⚠️  Trying fallback: Click center of page');
-      try {
-        // Click in the center area where the Expression editor should be
-        await page.mouse.click(960, 300); // Center-ish position
-        await page.waitForTimeout(500);
-        editorFound = true;
-        console.log('✓ Clicked center of page');
-      } catch (e) {
-        console.log('✗ Center click failed');
-      }
-    }
-    
-    if (!editorFound) {
-      console.log('⚠️  Editor not found with any method, skipping test');
+    } else {
+      console.log('✗ Monaco editor not found');
       await page.screenshot({ path: 'test-results/ncalc-editor-not-found.png', fullPage: true });
-      test.skip();
-      return;
+      throw new Error('Monaco editor not found on page');
     }
-    
-    // Give focus a moment to settle
-    await page.waitForTimeout(500);
-    
-    // Clear existing content and type the expression
-    // Select all existing text (Ctrl+A) and replace it
-    await workingFrame.keyboard.press('Control+A');
-    await page.waitForTimeout(200);
-    await workingFrame.keyboard.press('Delete');
-    await page.waitForTimeout(200);
-    
-    // Type the new expression
-    await workingFrame.keyboard.type('2 + 2', { delay: 150 });
-    console.log('✓ Typed: 2 + 2');
     
     // Wait for evaluation to complete
     await page.waitForTimeout(2000);
@@ -247,13 +193,17 @@ test.describe('NCalc 101 Home Page', () => {
     await page.screenshot({ path: 'test-results/ncalc-after-typing.png', fullPage: true });
     console.log('📸 Screenshot saved: test-results/ncalc-after-typing.png');
     
-    // Verify the result "4" appears on the page
-    // The right panel should show the result
-    const pageContent = await page.textContent('body');
-    expect(pageContent, 'Page should contain result 4').toContain('4');
+    // Verify the result "4" appears in the rightmost result panel
+    // Look for Monaco editor view lines which contain the result
+    const viewLines = await workingFrame.locator('.view-line').allTextContents();
+    console.log(`✓ Found view lines with content: ${viewLines.join(', ')}`);
+    
+    // The result "4" should appear in one of the view lines
+    const hasResult = viewLines.some(line => line.trim() === '4');
+    expect(hasResult, 'Result panel should show "4"').toBe(true);
     
     // Verify Output Type shows Int32 (visible in the toolbar)
-    // Use first() to handle multiple Int32 elements on the page
     await expect(page.getByText('Int32').first(), 'Output type should be Int32').toBeVisible({ timeout: 5000 });
+    console.log('✓ Test passed: 2 + 2 = 4 verified');
   });
 });

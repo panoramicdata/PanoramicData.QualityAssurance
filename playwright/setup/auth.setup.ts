@@ -22,7 +22,8 @@ import { getLoginUrl } from '../Magic Suite/utils/urls';
 
 // Get environment from environment variable or default to 'alpha2'
 const env = process.env.MS_ENV || 'alpha2';
-const loginUrl = getLoginUrl(env);
+// Use NCalc 101 for test2 environment since it's a common Magic Suite app
+const loginUrl = env === 'test2' ? `https://ncalc101.${env}.magicsuite.net` : getLoginUrl(env);
 
 /**
  * Helper function to perform authentication

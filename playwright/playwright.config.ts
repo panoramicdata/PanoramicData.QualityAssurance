@@ -161,7 +161,6 @@ export default defineConfig({
       name: 'super-admin',
       use: { 
         ...devices['Desktop Chrome'],
-        storageState: fs.existsSync('.auth/super-admin.json') ? '.auth/super-admin.json' : undefined,
       },
     },
     
@@ -170,7 +169,6 @@ export default defineConfig({
       name: 'uber-admin',
       use: { 
         ...devices['Desktop Chrome'],
-        storageState: fs.existsSync('.auth/uber-admin.json') ? '.auth/uber-admin.json' : undefined,
       },
     },
     
@@ -179,7 +177,6 @@ export default defineConfig({
       name: 'regular-user',
       use: { 
         ...devices['Desktop Chrome'],
-        storageState: fs.existsSync('.auth/regular-user.json') ? '.auth/regular-user.json' : undefined,
       },
     },
     
