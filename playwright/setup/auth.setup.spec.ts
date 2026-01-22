@@ -22,10 +22,10 @@ import { performAutoLogin } from '../Magic Suite/utils/auth';
  * The saved states expire when your session expires - rerun when needed.
  */
 
-// Get environment from environment variable or default to 'alpha2'
-const env = process.env.MS_ENV || 'alpha2';
-// Use NCalc 101 for test2 environment since it's a common Magic Suite app
-const loginUrl = env === 'test2' ? `https://ncalc101.${env}.magicsuite.net` : getLoginUrl(env);
+// Get environment from environment variable or default to 'test2'
+const env = process.env.MS_ENV || 'test2';
+// Use Magic Suite home app (Www) for login
+const loginUrl = `https://www.${env}.magicsuite.net`;
 
 /**
  * Helper function to perform authentication
