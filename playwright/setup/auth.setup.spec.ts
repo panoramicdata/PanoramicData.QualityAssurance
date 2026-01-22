@@ -2,6 +2,7 @@ import { test as setup, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getLoginUrl } from '../Magic Suite/utils/urls';
+import { performAutoLogin } from '../Magic Suite/utils/auth';
 
 /**
  * Consolidated Authentication Setup for Magic Suite
@@ -15,6 +16,7 @@ import { getLoginUrl } from '../Magic Suite/utils/urls';
  *   
  *   # Specific roles
  *   npx playwright test setup/auth.setup.ts --grep "Super Admin"
+ *   npx playwright test setup/auth.setup.ts --grep "Tenant Admin"
  *   npx playwright test setup/auth.setup.ts --grep "Regular User"
  *   
  * The saved states expire when your session expires - rerun when needed.
@@ -34,7 +36,7 @@ async function authenticateUser(
   userType: string,
   description: string
 ) {
-  // Override the default timeout - give 5 minutes for manual login
+  // Override the default timeout - give 5 minutes for manual login if needed
   setup.setTimeout(300000); // 5 minutes
   
   console.log('\n=================================================================');
@@ -51,27 +53,17 @@ async function authenticateUser(
   // Go to login page
   await page.goto(loginUrl);
   
-  // Wait for complete page load
+  // Wait for initial page load
   await page.waitForLoadState('networkidle');
   
-  // Check if already logged in or needs login
-  const currentUrl = page.url();
-  const needsLogin = currentUrl.includes('login') || 
-                     currentUrl.includes('auth') ||
-                     currentUrl.includes('identity') ||
-                     currentUrl.includes('microsoftonline');
+  console.log(`🔐 Please log in manually with ${userType} account in the browser window`);
+  console.log('📌 After logging in successfully, click "Resume" in the Playwright Inspector\n');
   
-  if (needsLogin) {
-    console.log(`🔐 Please log in manually with ${userType} account in the browser window`);
-    console.log('📌 After logging in successfully, click "Resume" in the Playwright Inspector\n');
-    
-    // Pause for manual login - user clicks Resume when done
-    await page.pause();
-  } else {
-    console.log('✅ Already logged in, proceeding...\n');
-  }
+  // Pause for manual login - user clicks Resume when done
+  // This happens AFTER navigation so the page is visible
+  await page.pause();
   
-  // After login (or if already logged in), verify we're on a Magic Suite page
+  // After login completes (user clicked Resume), verify we're on a Magic Suite page
   await page.waitForLoadState('networkidle');
   const finalUrl = page.url();
   expect(finalUrl).toContain('magicsuite.net');
@@ -125,20 +117,20 @@ setup('authenticate - Super Admin', async ({ page }) => {
   console.log('  npx playwright test tests/admin-features.spec.ts --project=super-admin');
 });
 
-// Uber Admin Authentication
-setup('authenticate - Uber Admin', async ({ page }) => {
-  const authFile = '.auth/uber-admin.json';
+// Tenant Admin Authentication
+setup('authenticate - Tenant Admin', async ({ page }) => {
+  const authFile = '.auth/tenant-admin.json';
   
   await authenticateUser(
     page,
     authFile,
-    'Uber Admin',
-    'This authentication state will be used for tests that require\nuber admin permissions (highest level admin access)'
+    'Tenant Admin',
+    'This authentication state will be used for tests that require\ntenant admin permissions (tenant-level administration)'
   );
   
   console.log('Usage:');
-  console.log('  npx playwright test --project=uber-admin');
-  console.log('  npx playwright test tests/uber-admin-features.spec.ts --project=uber-admin');
+  console.log('  npx playwright test --project=tenant-admin');
+  console.log('  npx playwright test tests/tenant-admin-features.spec.ts --project=tenant-admin');
 });
 
 // Regular User Authentication

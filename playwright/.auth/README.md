@@ -5,7 +5,7 @@ This directory stores saved authentication state (cookies, localStorage, session
 ## Files
 - `user.json` - Default authentication (tester's personal Microsoft profile)
 - `super-admin.json` - Super admin user authentication state
-- `uber-admin.json` - Uber admin user authentication state
+- `tenant-admin.json` - Tenant admin user authentication state
 - `regular-user.json` - Regular user authentication state
 
 ## How It Works
@@ -17,13 +17,13 @@ Tests then reuse the appropriate authentication state based on the project/role 
 **All authentication setups are now in one place:**
 ```bash
 # Run consolidated setup (all user roles)
-npx playwright test setup/auth.setup.ts
+npx playwright test setup/auth.setup.spec.ts
 
 # Or run specific role setup
-npx playwright test setup/auth.setup.ts --grep "Default User"
-npx playwright test setup/auth.setup.ts --grep "Super Admin"
-npx playwright test setup/auth.setup.ts --grep "Uber Admin"
-npx playwright test setup/auth.setup.ts --grep "Regular User"
+npx playwright test setup/auth.setup.spec.ts --grep "Default User"
+npx playwright test setup/auth.setup.spec.ts --grep "Super Admin"
+npx playwright test setup/auth.setup.spec.ts --grep "Tenant Admin"
+npx playwright test setup/auth.setup.spec.ts --grep "Regular User"
 ```
 
 This will guide you through setting up authentication for each role you need.
@@ -40,8 +40,8 @@ npx playwright test
 # Super admin tests
 npx playwright test --project=super-admin
 
-# Uber admin tests  
-npx playwright test --project=uber-admin
+# Tenant admin tests  
+npx playwright test --project=tenant-admin
 
 # Regular user tests
 npx playwright test --project=regular-user
@@ -67,13 +67,13 @@ Sessions expire periodically. When tests start failing with authentication error
 npx playwright test auth.setup
 
 # Refresh super admin
-npx playwright test auth.setup.super-admin
+npx playwright test setup/auth.setup.ts --grep "Super Admin"
 
-# Refresh uber admin
-npx playwright test auth.setup.uber-admin
+# Refresh tenant admin
+npx playwright test setup/auth.setup.ts --grep "Tenant Admin"
 
 # Refresh regular user
-npx playwright test auth.setup.regular-user
+npx playwright test setup/auth.setup.ts --grep "Regular User"
 ```
 
 ## Securitall or specific roles
@@ -106,7 +106,7 @@ playwright/
 ├── .auth/                  ← Saved authentication states (this folder)
 │   ├── user.json
 │   ├── super-admin.json
-│   ├── uber-admin.json
+│   ├── tenant-admin.json
 │   └── regular-user.json
 └── Magic Suite/            ← Test files
     ├── Admin/

@@ -856,7 +856,7 @@ if (Test-Command "node") {
         Write-Host ""
         Write-Host "Which user roles would you like to configure?" -ForegroundColor Yellow
         Write-Host "  1. Super Admin"
-        Write-Host "  2. Uber Admin"
+        Write-Host "  2. Tenant Admin"
         Write-Host "  3. Regular User"
         Write-Host "  4. All of the above"
         Write-Host "  5. Skip"
@@ -867,15 +867,15 @@ if (Test-Command "node") {
         $rolesToSetup = @()
         switch ($roleChoice) {
             "1" { $rolesToSetup = @("super-admin") }
-            "2" { $rolesToSetup = @("uber-admin") }
+            "2" { $rolesToSetup = @("tenant-admin") }
             "3" { $rolesToSetup = @("regular-user") }
-            "4" { $rolesToSetup = @("super-admin", "uber-admin", "regular-user") }
+            "4" { $rolesToSetup = @("super-admin", "tenant-admin", "regular-user") }
             default { Write-Host "Skipping additional user roles" -ForegroundColor Gray }
         }
         
         if ($rolesToSetup.Count -gt 0) {
             # Use the same environment as the main auth setup
-            $envForRoles = if ($selectedEnv) { $selectedEnv } else { "alpha2" }
+            $envForRoles = if ($selectedEnv) { $selectedEnv } else { "test2" }
             
             Write-Host ""
             Write-Host "Setting up roles for environment: $envForRoles" -ForegroundColor Cyan
@@ -884,7 +884,7 @@ if (Test-Command "node") {
             foreach ($role in $rolesToSetup) {
                 $roleName = switch ($role) {
                     "super-admin" { "Super Admin" }
-                    "uber-admin" { "Uber Admin" }
+                    "tenant-admin" { "Tenant Admin" }
                     "regular-user" { "Regular User" }
                 }
                 
@@ -956,9 +956,9 @@ if (Test-Command "node") {
     }
     else {
         Write-Host "Skipped - You can set up additional roles later by running:" -ForegroundColor Yellow
-        Write-Info "cd playwright; npx playwright test auth.setup.super-admin --headed"
-        Write-Info "cd playwright; npx playwright test auth.setup.uber-admin --headed"
-        Write-Info "cd playwright; npx playwright test auth.setup.regular-user --headed"
+        Write-Info "cd playwright; npx playwright test setup/auth.setup.spec.ts --grep 'Super Admin' --headed --project=super-admin"
+        Write-Info "cd playwright; npx playwright test setup/auth.setup.spec.ts --grep 'Tenant Admin' --headed --project=tenant-admin"
+        Write-Info "cd playwright; npx playwright test setup/auth.setup.spec.ts --grep 'Regular User' --headed --project=regular-user"
     }
 }
 else {

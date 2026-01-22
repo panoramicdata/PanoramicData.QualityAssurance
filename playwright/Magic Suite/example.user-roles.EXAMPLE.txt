@@ -15,17 +15,17 @@ import { test, expect } from '@playwright/test';
  *   # Run with super admin
  *   npx playwright test example.user-roles.spec.ts --project=super-admin
  * 
- *   # Run with uber admin
- *   npx playwright test example.user-roles.spec.ts --project=uber-admin
+ *   # Run with tenant admin
+ *   npx playwright test example.user-roles.spec.ts --project=tenant-admin
  * 
  *   # Run with regular user
  *   npx playwright test example.user-roles.spec.ts --project=regular-user
  * 
  * SETUP REQUIRED:
  *   Before running with specific roles, you must create the auth state:
- *   npx playwright test auth.setup.super-admin
- *   npx playwright test auth.setup.uber-admin
- *   npx playwright test auth.setup.regular-user
+ *   npx playwright test setup/auth.setup.ts --grep "Super Admin"
+ *   npx playwright test setup/auth.setup.ts --grep "Tenant Admin"
+ *   npx playwright test setup/auth.setup.ts --grep "Regular User"
  */
 
 // Example environment configuration

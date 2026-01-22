@@ -1,14 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { handleAuthentication } from '../utils/auth';
 
 /**
  * NCalc 101 Home Page Tests
  * Tests the NCalc expression language learning portal
  * 
  * AUTHENTICATION:
- * - Uses saved auth from .auth/user.json if available
- * - Falls back to automatic login if MS_TEST_USER and MS_TEST_PASSWORD are set
- * - Falls back to manual login if no credentials available
+ * - Uses saved auth from .auth/user.json (automatically loaded by playwright.config.ts)
+ * - To set up auth for the first time, run: npx playwright test setup/auth.setup.ts
  */
 
 // NCalc 101 uses the same auth as other Magic Suite apps
@@ -24,19 +22,14 @@ const ignoredPatterns = [
 ];
 
 test.describe('NCalc 101 Home Page', () => {
-  // Ensure we're authenticated before each test
+  // Note: Authentication is handled automatically via storageState in playwright.config.ts
+  // The .auth/user.json file is loaded automatically if it exists
   test.beforeEach(async ({ page }) => {
-    // Set generous timeout for manual login if needed
-    test.setTimeout(300000); // 5 minutes
-    
     // Navigate to NCalc 101 - auth state should be loaded from .auth/user.json
     await page.goto(baseUrl);
     
     // Wait for page to load
     await page.waitForLoadState('networkidle');
-    
-    // Handle authentication (automatic or manual)
-    await handleAuthentication(page, baseUrl, 'NCalc 101', 'ncalc101');
     
     // Wait for app to fully load
     await page.waitForTimeout(2000);

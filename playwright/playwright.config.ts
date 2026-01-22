@@ -65,11 +65,11 @@ if (!absoluteOutputDir) {
  * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './Magic Suite',
+  testDir: './',
   
-  /* Ignore setup files and examples from test discovery */
+  /* Ignore old setup files and examples from test discovery */
   testIgnore: [
-    '**/auth.setup*.spec.ts',  // Old auth setup files (moved to setup/ folder)
+    '**/Magic Suite/**/auth.setup*.spec.ts',  // Old auth setup files in Magic Suite folder
     '**/example.*.spec.ts',    // Example files
   ],
   
@@ -96,7 +96,9 @@ export default defineConfig({
   
   /* Shared settings for all the projects below */
   use: {
-    /* Show browser window during tests (set to true for headed mode) */
+    /* Show browser window during tests - headless false means browser is visible
+     * When --headed flag is used, it will override and ensure browser shows
+     */
     headless: false,
     
     /* Collect trace when retrying the failed test */
@@ -120,8 +122,8 @@ export default defineConfig({
      * This loads saved cookies and storage so tests don't need to log in
      * Run 'npx playwright test auth.setup' to create/refresh the auth state
      * Only loads if the file exists (allows auth.setup to run without it)
+     * Note: storageState is undefined here and set per-project to allow auth setup to run
      */
-    storageState: fs.existsSync('.auth/user.json') ? '.auth/user.json' : undefined,
   },
 
   /**
@@ -133,7 +135,7 @@ export default defineConfig({
    * User Role Projects:
    * - 'default-chromium': Tester's personal Microsoft profile (default)
    * - 'super-admin': Super admin user permissions
-   * - 'uber-admin': Uber admin user permissions  
+   * - 'tenant-admin': Tenant admin user permissions  
    * - 'regular-user': Standard user permissions
    * 
    * Usage:
@@ -161,14 +163,16 @@ export default defineConfig({
       name: 'super-admin',
       use: { 
         ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/super-admin.json') ? '.auth/super-admin.json' : undefined,
       },
     },
     
-    /* Uber Admin role - for tests requiring uber admin permissions */
+    /* Tenant Admin role - for tests requiring tenant admin permissions */
     {
-      name: 'uber-admin',
+      name: 'tenant-admin',
       use: { 
         ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/tenant-admin.json') ? '.auth/tenant-admin.json' : undefined,
       },
     },
     
@@ -177,6 +181,7 @@ export default defineConfig({
       name: 'regular-user',
       use: { 
         ...devices['Desktop Chrome'],
+        storageState: fs.existsSync('.auth/regular-user.json') ? '.auth/regular-user.json' : undefined,
       },
     },
     

@@ -345,7 +345,7 @@ playwright/
 ├── .auth/                     # Saved authentication states
 │   ├── user.json              # Default user
 │   ├── super-admin.json       # Super admin
-│   ├── uber-admin.json        # Uber admin
+│   ├── tenant-admin.json      # Tenant admin
 │   └── regular-user.json      # Regular user
 ├── Magic Suite/               # Test files organized by product
 │   ├── Admin/                 # Admin Portal tests

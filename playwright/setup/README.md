@@ -12,28 +12,28 @@ This directory contains setup scripts that configure the testing environment and
 ### Set up authentication for all user roles:
 ```powershell
 # Run all authentication setups (choose which ones to complete)
-npx playwright test setup/auth.setup.ts
+npx playwright test setup/auth.setup.spec.ts
 ```
 
 ### Set up specific user role:
 ```powershell
 # Default user (your personal profile)
-npx playwright test setup/auth.setup.ts --grep "Default User"
+npx playwright test setup/auth.setup.spec.ts --grep "Default User"
 
 # Super admin
-npx playwright test setup/auth.setup.ts --grep "Super Admin"
+npx playwright test setup/auth.setup.spec.ts --grep "Super Admin"
 
-# Uber admin
-npx playwright test setup/auth.setup.ts --grep "Uber Admin"
+# Tenant admin
+npx playwright test setup/auth.setup.spec.ts --grep "Tenant Admin"
 
 # Regular user
-npx playwright test setup/auth.setup.ts --grep "Regular User"
+npx playwright test setup/auth.setup.spec.ts --grep "Regular User"
 ```
 
 ### Change environment before setup:
 ```powershell
 $env:MS_ENV="test2"
-npx playwright test setup/auth.setup.ts
+npx playwright test setup/auth.setup.spec.ts
 ```
 
 ## 📝 What Gets Created
@@ -43,7 +43,7 @@ Authentication states are saved to the `.auth/` directory:
 .auth/
 ├── user.json              # Default user (your personal profile)
 ├── super-admin.json       # Super admin user
-├── uber-admin.json        # Uber admin user
+├── tenant-admin.json      # Tenant admin user
 └── regular-user.json      # Regular user
 ```
 
@@ -69,7 +69,7 @@ playwright/
 ├── .auth/                   ← Saved authentication states
 │   ├── user.json
 │   ├── super-admin.json
-│   ├── uber-admin.json
+│   ├── tenant-admin.json
 │   └── regular-user.json
 └── Magic Suite/             ← Test files
     ├── Admin/
