@@ -149,6 +149,15 @@ export default defineConfig({
    * Install browsers: npx playwright install
    */
   projects: [
+    /* Chromium without pre-loaded auth - for tests that use test.use() to set their own storageState */
+    {
+      name: 'chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+        // No storageState - tests can set their own via test.use()
+      },
+    },
+    
     /* Default user - tester's personal profile */
     {
       name: 'default-chromium',

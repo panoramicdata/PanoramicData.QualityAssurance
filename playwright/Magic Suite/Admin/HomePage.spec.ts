@@ -1,21 +1,30 @@
 import { test, expect } from '@playwright/test';
+import * as path from 'path';
+
+// Auth file paths (relative to playwright root)
+const authDir = path.join(__dirname, '..', '..', '.auth');
+const regularUserAuth = path.join(authDir, 'regular-user.json');
+const tenantAdminAuth = path.join(authDir, 'tenant-admin.json');
+const superAdminAuth = path.join(authDir, 'super-admin.json');
 
 /**
  * Admin Home Page Tests
  * Tests the administration console with different user roles
  * 
  * AUTHENTICATION:
- * - Each test MUST be run with its corresponding Playwright project
- * - Regular User test: run with --project=regular-user
- * - Tenant Admin test: run with --project=tenant-admin
- * - Super Admin test: run with --project=super-admin
+ * Each test suite uses test.use() to specify its own authentication state,
+ * so you can run all tests with any project (e.g., default-chromium).
  * 
- * To set up authentication, run: npx playwright test setup/auth.setup.ts
+ * Prerequisites: Run auth setup first to create the auth state files:
+ *   npx playwright test setup/auth.setup.ts
  * 
- * To run the tests:
- *   npx playwright test --grep "Regular User" --project=regular-user
- *   npx playwright test --grep "Tenant Admin" --project=tenant-admin
- *   npx playwright test --grep "Super Admin" --project=super-admin
+ * To run all Admin tests:
+ *   npx playwright test "Magic Suite/Admin/HomePage.spec.ts"
+ * 
+ * To run specific role tests:
+ *   npx playwright test --grep "Regular User"
+ *   npx playwright test --grep "Tenant Admin"
+ *   npx playwright test --grep "Super Admin"
  */
 
 // Get environment from environment variable or default to 'test2'
@@ -31,12 +40,29 @@ const ignoredPatterns = [
   /gtag/i,
 ];
 
+// Check if auth files exist
+const fs = require('fs');
+const regularUserAuthExists = fs.existsSync(regularUserAuth);
+const tenantAdminAuthExists = fs.existsSync(tenantAdminAuth);
+const superAdminAuthExists = fs.existsSync(superAdminAuth);
+
+// These tests manage their own authentication via browser.newContext()
+// Only run with the 'chromium' project to avoid running 5x across all projects
 test.describe('Admin Home Page - Regular User', () => {
-  test('should show admin dashboard with NO Super Admin tab for regular user', async ({ page }, testInfo) => {
-    // Skip if not running with the regular-user project
-    if (testInfo.project.name !== 'regular-user') {
+  // Skip if not running with chromium project (avoids duplicate runs)
+  test.beforeEach(async ({}, testInfo) => {
+    if (testInfo.project.name !== 'chromium') {
       test.skip();
     }
+  });
+  
+  // Skip this test suite if regular-user auth file doesn't exist
+  test.skip(!regularUserAuthExists, 'Regular user auth not configured - run auth setup first');
+  
+  test('should show admin dashboard with NO Super Admin tab for regular user', async ({ browser }, testInfo) => {
+    // Create a NEW browser context with the regular-user auth - this ensures we don't inherit any other credentials
+    const context = await browser.newContext({ storageState: regularUserAuth });
+    const page = await context.newPage();
     
     const consoleErrors: string[] = [];
     
@@ -92,15 +118,27 @@ test.describe('Admin Home Page - Regular User', () => {
       console.log('Console errors found:', consoleErrors);
     }
     expect(consoleErrors, 'Page should have no critical console errors').toHaveLength(0);
+    
+    // Clean up the context we created
+    await context.close();
   });
 });
 
 test.describe('Admin Home Page - Tenant Admin', () => {
-  test('should show admin tabs but NO Super Admin tab for tenant admin', async ({ page }, testInfo) => {
-    // Skip if not running with the tenant-admin project
-    if (testInfo.project.name !== 'tenant-admin') {
+  // Skip if not running with chromium project (avoids duplicate runs)
+  test.beforeEach(async ({}, testInfo) => {
+    if (testInfo.project.name !== 'chromium') {
       test.skip();
     }
+  });
+  
+  // Skip this test suite if tenant-admin auth file doesn't exist
+  test.skip(!tenantAdminAuthExists, 'Tenant admin auth not configured - run auth setup first');
+  
+  test('should show admin tabs but NO Super Admin tab for tenant admin', async ({ browser }, testInfo) => {
+    // Create a NEW browser context with the tenant-admin auth
+    const context = await browser.newContext({ storageState: tenantAdminAuth });
+    const page = await context.newPage();
     
     const consoleErrors: string[] = [];
     
@@ -165,15 +203,27 @@ test.describe('Admin Home Page - Tenant Admin', () => {
       console.log('Console errors found:', consoleErrors);
     }
     expect(consoleErrors, 'Page should have no critical console errors').toHaveLength(0);
+    
+    // Clean up the context we created
+    await context.close();
   });
 });
 
 test.describe('Admin Home Page - Super Admin', () => {
-  test('should show all admin tabs INCLUDING Super Admin tab', async ({ page }, testInfo) => {
-    // Skip if not running with the super-admin project
-    if (testInfo.project.name !== 'super-admin') {
+  // Skip if not running with chromium project (avoids duplicate runs)
+  test.beforeEach(async ({}, testInfo) => {
+    if (testInfo.project.name !== 'chromium') {
       test.skip();
     }
+  });
+  
+  // Skip this test suite if super-admin auth file doesn't exist
+  test.skip(!superAdminAuthExists, 'Super admin auth not configured - run auth setup first');
+  
+  test('should show all admin tabs INCLUDING Super Admin tab', async ({ browser }, testInfo) => {
+    // Create a NEW browser context with the super-admin auth
+    const context = await browser.newContext({ storageState: superAdminAuth });
+    const page = await context.newPage();
     
     const consoleErrors: string[] = [];
     
@@ -239,5 +289,8 @@ test.describe('Admin Home Page - Super Admin', () => {
       console.log('Console errors found:', consoleErrors);
     }
     expect(consoleErrors, 'Page should have no critical console errors').toHaveLength(0);
+    
+    // Clean up the context we created
+    await context.close();
   });
 });
