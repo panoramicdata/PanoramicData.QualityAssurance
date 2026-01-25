@@ -235,17 +235,46 @@ Initialize-BloggerCredentials
 # Validate credentials are available for non-read-only actions
 if (-not ($script:ReadOnlyActions -contains $Action)) {
     if (-not $script:ClientId -or -not $script:ClientSecret) {
-        Write-Error @"
-Blogger credentials not found. Please set the following environment variables (one-time setup):
-
-  `$env:BLOGGER_CLIENT_ID = 'your-client-id'
-  `$env:BLOGGER_CLIENT_SECRET = 'your-client-secret'
-  `$env:BLOGGER_API_KEY = 'your-api-key'  # Optional, for read-only access
-
-Then run this script again. The credentials will be stored in Windows Credential Manager
-and the environment variables will be automatically removed.
-"@
-        exit 1
+        Write-Host "Blogger credentials not found. Please enter them now (one-time setup):" -ForegroundColor Yellow
+        Write-Host ""
+        
+        if (-not $script:ClientId) {
+            $clientIdInput = Read-Host "Enter BLOGGER_CLIENT_ID"
+            if ($clientIdInput) {
+                Set-StoredCredential -Target $script:ClientIdTarget -Username "BloggerClientId" -Password $clientIdInput
+                $script:ClientId = $clientIdInput
+                Write-Host "  Client ID stored in Windows Credential Manager." -ForegroundColor Green
+            }
+        }
+        
+        if (-not $script:ClientSecret) {
+            $clientSecretInput = Read-Host "Enter BLOGGER_CLIENT_SECRET"
+            if ($clientSecretInput) {
+                Set-StoredCredential -Target $script:ClientSecretTarget -Username "BloggerClientSecret" -Password $clientSecretInput
+                $script:ClientSecret = $clientSecretInput
+                Write-Host "  Client Secret stored in Windows Credential Manager." -ForegroundColor Green
+            }
+        }
+        
+        if (-not $script:ApiKey) {
+            $apiKeyInput = Read-Host "Enter BLOGGER_API_KEY (optional, press Enter to skip)"
+            if ($apiKeyInput) {
+                Set-StoredCredential -Target $script:ApiKeyTarget -Username "BloggerApiKey" -Password $apiKeyInput
+                $script:ApiKey = $apiKeyInput
+                Write-Host "  API Key stored in Windows Credential Manager." -ForegroundColor Green
+            }
+        }
+        
+        Write-Host ""
+        
+        # Final validation
+        if (-not $script:ClientId -or -not $script:ClientSecret) {
+            Write-Error "Client ID and Client Secret are required for this action."
+            exit 1
+        }
+        
+        Write-Host "Credentials saved successfully!" -ForegroundColor Green
+        Write-Host ""
     }
 }
 
