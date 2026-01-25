@@ -1,0 +1,63 @@
+Explore these examples to learn how to use NCalc101 for a variety of calculations. Try them out in your workspace or use them as templates for your own work!
+
+Basic Arithmetic
+
+ 7 + 5 12
+
+ 10 - 3 7
+
+ 4 * 6 24
+
+ 20 / 4 5
+
+ 2^5 32
+
+Using Parentheses
+
+ (2 + 3) * 4 20
+
+ 8 / (1 + 1) 4
+
+Variables
+
+ a = 10
+
+ b = 5
+
+ a + b 15
+
+ c = a * b 50
+
+Functions
+
+ sqrt(25) 5
+
+ sin(3.1416 / 2) 1
+
+ log(100) 4.6052
+
+ max(3, 7, 2) 7
+
+Combining Features
+
+ x = 8
+
+ y = sqrt(x) + 2 4
+
+ z = (x + y) / 2 6
+
+Error Handling
+
+ sqrt(-4) Error: Invalid input for sqrt
+
+ unknownVar + 2 Error: Variable not defined
+
+Tips
+
+ Use variables to simplify complex calculations.
+
+ Try built-in functions for advanced math.
+
+ Check the output for errors and variable values.
+
+Experiment with these examples and create your own to get the most out of NCalc101!

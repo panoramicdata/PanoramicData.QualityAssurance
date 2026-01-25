@@ -1,0 +1,200 @@
+Kubernetes Connection Setup
+
+The Kubernetes connection type allows MagicSuite to connect to your Kubernetes cluster and display basic statistics about nodes, pods, deployments, and other resources.
+
+Prerequisites
+
+ A running Kubernetes cluster (MicroK8s, K3s, AKS, EKS, GKE, or standard Kubernetes)
+
+ kubectl access to the cluster
+
+ Network connectivity from MagicSuite to the Kubernetes API server
+
+Step 1: Create a Service Account
+
+Create a read-only service account that MagicSuite will use to access your cluster:
+
+# Create the service account
+kubectl create serviceaccount magicsuite-reader -n kube-system
+
+# Grant read-only access to cluster resources
+kubectl create clusterrolebinding magicsuite-reader-binding \
+ --clusterrole=view \
+ --serviceaccount=kube-system:magicsuite-reader
+
+Step 2: Create a Long-Lived Token
+
+Kubernetes 1.24+ no longer automatically creates tokens for service accounts. Create a long-lived token secret:
+
+cat 
+
+Step 3: Extract the Token
+
+Wait a few seconds for the token to be generated, then extract it:
+
+# Extract and decode the token
+kubectl get secret magicsuite-reader-token -n kube-system \
+ -o jsonpath="{.data.token}" | base64 -d
+
+Copy this token - you'll need it for the MagicSuite connection.
+
+Step 4: Get the API Server URL
+
+Find your cluster's API server URL:
+
+# Get the API server URL
+kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
+
+This will output something like https://192.168.1.100:16443 or https://your-cluster.example.com:6443.
+
+Step 5: Configure the Connection in MagicSuite
+
+In the MagicSuite Admin app, create a new connection with these settings:
+
+ 
+ 
+ Field
+ Value
+ Example
+ 
+ 
+ 
+ 
+ Connection Type
+ Kubernetes
+ -
+ 
+ 
+ Name
+ Descriptive name for your cluster
+ Production K8s Cluster
+ 
+ 
+ Url
+ API Server URL from Step 4
+ https://192.168.1.100:16443
+ 
+ 
+ Username
+ (Optional) Display name only
+ magicsuite-reader
+ 
+ 
+ Password
+ Bearer Token from Step 3
+ eyJhbGciOiJSUzI1NiIsImtpZ...
+ 
+ 
+
+Configuration Options
+
+The Configuration field accepts a JSON object with these options:
+
+{
+ "SkipTlsVerify": true,
+ "TimeoutSeconds": 30,
+ "NamespaceFilterRegex": "^(default|production)$"
+}
+
+Configuration Parameters
+
+ 
+ 
+ Parameter
+ Type
+ Default
+ Description
+ 
+ 
+ 
+ 
+ SkipTlsVerify
+ boolean
+ false
+ Skip TLS certificate validation. Use for clusters with self-signed certificates (MicroK8s, local dev clusters).
+ 
+ 
+ TimeoutSeconds
+ integer
+ 30
+ HTTP client timeout in seconds.
+ 
+ 
+ NamespaceFilterRegex
+ string
+ (none)
+ Optional regex to filter which namespaces are included in statistics. Examples: ^prod-.*, ^(default|kube-system)$
+ 
+ 
+
+Statistics Displayed
+
+Once connected, the Connections page will display:
+
+ Nodes: Total nodes in the cluster
+
+ Namespaces: Total namespaces (after filter if configured)
+
+ Pods (Running): Pods in Running state
+
+ Pods (Pending): Pods in Pending state
+
+ Pods (Failed): Pods in Failed state
+
+ Deployments: Total deployments
+
+ Services: Total services
+
+ PersistentVolumeClaims: Total PVCs
+
+MicroK8s-Specific Notes
+
+For MicroK8s clusters:
+
+ Use microk8s kubectl instead of kubectl in the commands above
+
+ The API server typically runs on port 16443
+
+ Enable SkipTlsVerify: true in the Configuration as MicroK8s uses self-signed certificates
+
+ Ensure the API server is accessible from the MagicSuite host (check firewall rules)
+
+Troubleshooting
+
+Connection validation fails
+
+ Verify the API server URL is correct and accessible
+
+ Check that the bearer token is valid and not expired
+
+ For self-signed certs, ensure SkipTlsVerify: true is set
+
+ Verify network connectivity (firewalls, security groups)
+
+Token not working
+
+ Ensure the secret was created correctly: kubectl get secret magicsuite-reader-token -n kube-system
+
+ Wait a few seconds after creating the secret for the token to be generated
+
+ Verify the service account exists: kubectl get serviceaccount magicsuite-reader -n kube-system
+
+No statistics showing
+
+ Verify the service account has the view ClusterRole
+
+ Check if NamespaceFilterRegex is too restrictive
+
+ Look for errors in the MagicSuite logs
+
+Security Considerations
+
+ The view ClusterRole provides read-only access to most cluster resources
+
+ The service account cannot modify any resources
+
+ Consider creating a more restrictive ClusterRole if you need to limit access further
+
+ Rotate the token periodically for security
+
+ Use SkipTlsVerify: false in production with properly signed certificates

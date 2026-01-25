@@ -1,0 +1,116 @@
+Introduction
+
+The Licensing page displays all per-device licenses for your Meraki organization. This page is only available for organizations that use the per-device licensing model (as opposed to co-termination licensing).
+
+Each license record shows detailed information including the license type, state, assigned device, and important dates such as activation and expiration.
+
+To view Licenses for All Organizations, from the Licensing page, click Home.
+
+To view Licenses for a specific Organization, from the Licensing page, click the relevant Organization node.
+
+Search, filter, sort, view and download data. For example, filter on State = expired to identify all expired licenses, or filter on Expiration to find licenses expiring soon.
+
+ 
+
+Table definition
+
+ Schema for Table: "OrganizationLicenses"
+ 
+ Name
+ Type
+ Description
+ 
+ 
+ Id
+ uuid
+ Unique identifier for the license record
+ 
+ 
+ OrganizationId
+ uuid
+ Foreign key reference to the Organization this license belongs to
+ 
+ 
+ MerakiId
+ text
+ Unique Meraki identifier for this license
+ 
+ 
+ LicenseType
+ text
+ The type/duration of the license (e.g., 'Enterprise', 'MR Enterprise')
+ 
+ 
+ LicenseKey
+ text
+ The key of the license
+ 
+ 
+ OrderNumber
+ text
+ Order number associated with the license
+ 
+ 
+ DurationInDays
+ integer
+ Duration of the license in days
+ 
+ 
+ ClaimDate
+ timestamp with time zone
+ Date when the license was claimed
+ 
+ 
+ ActivationDate
+ timestamp with time zone
+ Date when the license was activated
+ 
+ 
+ ExpirationDate
+ timestamp with time zone
+ Date when the license expires
+ 
+ 
+ DeviceSerial
+ text
+ The device serial number this license is assigned to
+ 
+ 
+ NetworkId
+ text
+ The network ID this license is associated with
+ 
+ 
+ State
+ text
+ Current state of the license (e.g., 'active', 'expired', 'unused', 'recentlyQueued')
+ 
+ 
+ SeatCount
+ integer
+ The number of seats (for multi-seat licenses)
+ 
+ 
+ TotalDurationInDays
+ integer
+ The total count of the license across the organization
+ 
+ 
+ PermanentlyQueuedLicenses
+ boolean
+ Indicates if the license is permanently queued (will not be auto-assigned)
+ 
+ 
+ HeadLicenseId
+ text
+ The head license ID if this is part of a license chain
+ 
+ 
+ Created
+ timestamp with time zone
+ Timestamp when the record was initially created in the system
+ 
+ 
+ LastModified
+ timestamp with time zone
+ Timestamp when the record was last modified or updated

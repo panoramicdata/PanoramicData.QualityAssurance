@@ -1,0 +1,43 @@
+Find answers to common questions about using DataMagic. If your question isn’t listed, check the other help pages or contact support.
+
+I've forgotten my password. What do I do?
+
+To access DataMagic you need your Microsoft account and password. If you require a password reset, visit https://login.microsoftonline.com/ and click "Can't access your account?" or speak to your company Administrator.
+
+My Meraki node is changing. What should I do?
+
+You don't need to do anything. As soon as your node has changed, DataMagic will automatically handle it.
+
+My API key has expired. What should I do?
+
+If your API key has expired:
+
+ Log into the Meraki Dashboard
+
+ in the top right corner, click your username
+
+ Click My Profile
+
+ Click the API Access tab
+
+ Click Generate new API key
+
+ Copy the new API key
+
+ In DataMagic, expand the Admin menu and click Organizations
+
+ Click to select the required organization then click the Edit button
+
+ In the dialog box that appears, paste the new API key in the relevant box and click Save
+
+What information is held on Mac Vendors?
+
+MAC vendors are unique identifiers tied to a device's MAC address that tell us about the manufacturer. Using MAC vendors are important when security and troubleshooting your network.
+
+We provide an initial list of MAC vendors but you should ensure that it is up to date. This can be achieved using data available in the public domain. In particular, ensure that the MAC Vendor priority field is set appropriately. If you need further help, submit a Feedback request.
+
+Can we have an on-site version?
+
+Yes. A DataMagic Datacenter version is available for purchase.
+
+Still have questions? Explore the other help pages or contact us for assistance!

@@ -1,0 +1,107 @@
+Introduction 
+
+This page describes:
+
+ Estate Tree
+
+ Filtering
+
+ Downloading
+
+Estate Tree
+
+The Estate tree is a hierarchical representation of the Estate based on the way it is managed.
+
+When a given node is selected, by default the table shows data for ALL nodes below the currently selected one. Additionally, any columns relating to the currently selected node and above will not be shown in the table, as it would be the same for every row.
+
+Organizations
+
+An Organization is the top level of the Meraki hierarchy. You can add as many Organizations as you like which is useful if you manage multiple Meraki Organizations.
+
+Network Groups
+
+An Organization contains one or more Network Groups. The following Networks Groups are present by default:
+
+Assigned
+Unassigned 
+Network Groups are dynamically created by DataMagic when each network is processed by the round robin, based on the Network Group function configured for each Organization. For example, Network Groups can be based on Network Name or tags you have assigned to your Networks. The Unassigned Network Group contains only one virtual "Unassigned" Network.
+
+Networks
+
+DataMagic Networks relate directly to Meraki Networks. Devices that are not assigned to a Network appear in the "Unassigned" Network (see above).
+
+Devices
+
+Meraki Devices can be any of:
+
+MR: Meraki Radio / Wireless LAN (Access Points)
+MX: Meraki security and SD-WAN (Security & SD-WAN Appliances)
+MS: Meraki Switching (Switches)
+MV: Meraki Video (Smart Cameras)
+MG: Meraki Gateway (Cellular Gateway)
+MT: Meraki Sensors 
+All such devices are presented in DataMagic at the "Device" level.
+
+Ports
+
+Ports are the ports on a device, such as MX, MS and MR LAN ports and include Wifi "ports" such as:
+
+wifi0: 2.4GHz spectrum
+wifi1: 5GHz spectrum
+wifi2: 6GHz spectrum
+Filtering
+
+You can filter using the tree or the filters in tables. Using filters updates the contents of:
+
+ The table
+
+ The URL bar (providing a "deep link" capability)
+
+ The Search box
+
+Filtering Information in Tables
+
+Wherever you see a table, there is more available data than can be easily shown in a row and there may be even more data in the database itself.
+
+To see what fields are available, double-click a row.
+
+ Use the filters next to any column heading to filter the data
+
+ Use Search to display only items that match your search term (search works for most fields):
+
+ 
+
+ Click Columns to change what data is shown. For example:
+
+ 
+
+Downloading
+
+You can download all fields for the data visible on the currently displayed page of a table. To do this:
+
+1. Use the filters next to the column name to reduce the number of rows shown:
+
+ 
+
+ 
+2. If required, scroll to the right and change the page size:
+
+ 
+
+ 
+3. Click the Download button
+
+An XLSX file is downloaded. This contains a single table containing all fields for the filtered data.
+
+Using Timelines
+
+On a timeline, click and drag to select a date range. Use these buttons to zoom in/out of the timeline:
+
+You can:
+
+Use the scroll bar to scroll the timeline
+Hover over an area you're interested in for more information
+View the information including exact values in the table
+Double click an item in the table
+Search, filter, sort, view and download the information using the Filters on the table columns, or filtered additionally by Organization, Network Group, Network etc. using the left hand pane.
+This shows a timeline on the Sensor Data page:

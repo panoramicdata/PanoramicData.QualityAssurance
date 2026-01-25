@@ -1,0 +1,54 @@
+Azure Blob Storage Integration
+
+Overview
+
+Azure Blob Storage is now supported as a file system provider in Magic Suite, allowing you to store and manage files in Microsoft Azure cloud storage.
+
+Features
+
+Full CRUD operations: Create, read, update, and delete files and directories
+Virtual directory structure: Hierarchical folder organization using blob name prefixes
+Streaming support: Efficient handling of large files
+Read-only mode: Optional read-only access for security
+Seamless integration: Works with existing Files interface and macros
+Configuration
+
+Prerequisites
+
+Azure Storage Account with Blob Storage enabled
+Storage Account connection string or SAS token
+Container name for file storage
+Setting Up a Connection
+
+Navigate to Admin → Connections in Magic Suite
+Click Create New Connection
+Select Azure Blob Storage as the connection type
+Fill in the required fields:
+Name: A friendly name for the connection (e.g., "Company Azure Storage")
+URL: https://myaccount.blob.core.windows.net/
+Password: Your key 
+Read Only: Check this box if you want read-only access 
+Configuration: JSON object:
+{
+ "AccountName": "myaccount",
+ "AccountKey": "mykey",
+ "ContainerName": "your-container-name"
+}
+
+Click Test Connection to verify the configuration
+Click Save
+
+Usage
+
+Accessing Files
+
+Once configured, your Azure Blob Storage connection appears as a mount point in the Files interface:
+
+/
+├── My Files/
+├── Library/
+├── [Your Azure Connection Name]/
+│ ├── folder1/
+│ │ ├── file1.txt
+│ │ └── file2.pdf
+│ └── folder2/

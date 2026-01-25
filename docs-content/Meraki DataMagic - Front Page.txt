@@ -1,0 +1,15 @@
+Use DataMagic to manage, monitor and maintain the data in your Cisco Meraki networks. With a user-friendly interface and a dedicated, historical datamart, you can:
+
+ Get a long-term, comprehensive view across multiple organizations
+
+ Easily filter data, (find out which Meraki administrators do not have 2FA), create and export reports, and visualize network trends over time
+
+ Use your own SQL queries to analyze historical data, correlate network events
+
+ Troubleshoot issues by examining a device's entire configuration history. For example, identify a DHCP conflict and see exactly when a configuration change was made that may have caused it.
+
+ See a detailed timeline of configuration changes, crucial for auditing and compliance, and a full historical record of all network events, wireless connection failures, and other key metrics
+
+ Track device lifecycles, monitor for security threats, and ensure consistency in network configurations
+
+ Export data as XLSX to streamline reporting and share with other teams or clients

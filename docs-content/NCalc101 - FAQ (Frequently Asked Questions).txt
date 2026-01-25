@@ -1,0 +1,93 @@
+Find answers to common questions about using NCalc101. If your question isn’t listed here, check the other help pages or contact support.
+
+General
+
+ 
+ What is NCalc101?
+
+ NCalc101 is a web-based calculator for evaluating mathematical expressions, supporting variables, functions, and workspaces.
+ 
+
+ 
+ Do I need to create an account?
+
+ No account is required for basic use. Some features, like saving workspaces, may require you to sign in.
+ 
+
+Expressions
+
+ 
+ What operators are supported?
+
+ NCalc101 supports +, -, *, /, ^, and parentheses for grouping.
+ 
+
+ 
+ Can I use functions?
+
+ Yes! Use functions like sqrt(), sin(), log(), and more.
+ 
+
+Variables
+
+ 
+ How do I define a variable?
+
+ Assign a value using =, e.g., x = 10.
+ 
+
+ 
+ Are variable names case-sensitive?
+
+ Yes, total and Total are different variables.
+ 
+
+ 
+ How do I clear or reset a variable?
+
+ Assign a new value or use the workspace management features to reset.
+ 
+
+Workspaces
+
+ 
+ What is a workspace?
+
+ A workspace is a collection of your expressions, variables, and results, organized for a specific project or topic.
+ 
+
+ 
+ Can I have multiple workspaces?
+
+ Yes, you can create and switch between multiple workspaces.
+ 
+
+Errors and Troubleshooting
+
+ 
+ Why do I see an error message?
+
+ Errors usually mean there’s a typo, an undefined variable, or an unsupported operation in your expression.
+ 
+
+ 
+ How do I fix calculation errors?
+
+ Double-check your syntax, variable names, and function usage. Refer to the Expressions and Variables help pages for guidance.
+ 
+
+More Help
+
+ 
+ Where can I find more examples?
+
+ Visit the Examples page for ready-to-use sample expressions.
+ 
+
+ 
+ Who do I contact for support?
+
+ Use the contact form on the website or reach out to the support email listed in the app.
+ 
+
+Still have questions? Explore the other help pages or contact us for assistance!

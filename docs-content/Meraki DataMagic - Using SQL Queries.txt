@@ -1,0 +1,33 @@
+Introduction 
+
+As well as viewing your data in the user interface, you may want to use SQL queries. Magic Suite uses PostgreSQL.
+
+Remote access to port 5432
+
+To ensure data security, please provide contact us to set up access as follows:
+
+ Click the Feedback icon (speech bubble)
+
+ From the Type drop down, select Support Request
+
+ In the Summary box, please enter Company Name - Remote SQL Access
+
+ In the Description, please enter:
+
+ 
+ The IP Address Range(s) of the machine from where you will access the database
+
+ The username(s) requiring access
+
+ Any table constraints you wish to put in place for each user
+
+ 
+ Click Submit and wait to hear from us. Requests are actioned in UK business hours
+
+Database schema
+
+The DataMagic database schema is documented here. This is an interactive document, which you should download onto your own machine. Once downloaded, you can pan, zoom and rearrange tables. Once you have the view that you want, you can download a copy.
+
+SQL Studio 
+
+Coming soon: an in-built SQL Studio!

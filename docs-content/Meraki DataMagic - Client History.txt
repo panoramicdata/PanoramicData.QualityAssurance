@@ -1,0 +1,1 @@
+The Client History page shows a timeline and table of concurrent clients active in the selected Organization(s). For larger networks, this can be vast quantities of data, so it is best to start at the Network level, select a minimal time rang and carefully increase the scope.

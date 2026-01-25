@@ -1,0 +1,354 @@
+Introduction
+
+To view the Organizations:
+
+ From the Meraki Estate menu click Organizations to see a read-only view of your organizations data
+
+ Filter, sort and download the Organizations data which your Administrator has added to DataMagic
+
+ You can expand the tree, or you can click other menu items to drill down into the details.
+
+An Organization is the top level of the Meraki hierarchy. You can add as many Organizations as you like to your Tenant via the Admin | Oranizations page. This is useful if you have multiple Meraki accounts or you are a Managed Service Provider.
+
+Table Definition
+
+ Schema for Table: "Organizations"
+ 
+ Name
+ Type
+ Description
+ 
+ 
+ Id
+ uuid
+ Unique identifier for the entity record
+ 
+ 
+ MerakiId
+ text
+ The unique identifier of the organization in the Meraki cloud dashboard
+ 
+ 
+ ApiNode
+ text
+ The API node hostname or endpoint used for Meraki API requests
+ 
+ 
+ ApiKeyEncrypted
+ text
+ Legacy encrypted Meraki API key (deprecated - use ConnectionId instead)
+ 
+ 
+ ApiKeySalt
+ text
+ Legacy salt used for API key encryption (deprecated - use ConnectionId instead)
+ 
+ 
+ Name
+ text
+ Display name of the organization
+ 
+ 
+ SamlConsumerUrl
+ text
+ SAML SSO consumer URL for single sign-on authentication
+ 
+ 
+ EventLogLastEventAt
+ timestamp with time zone
+ Timestamp of the most recent event log entry received from Meraki
+ 
+ 
+ ConfigurationChangeLastObservedAt
+ timestamp with time zone
+ Timestamp when configuration changes were last observed from Meraki API
+ 
+ 
+ NetworkClientDescriptionStorageMode
+ integer
+ Storage mode for network client device descriptions (Unencrypted=0, Encrypted=1, Hashed=2, Redacted=3)
+ 
+ 
+ Created
+ timestamp with time zone
+ Timestamp when the record was initially created in the system
+ 
+ 
+ LastModified
+ timestamp with time zone
+ Timestamp when the record was last modified or updated
+ 
+ 
+ NetworkClientMacStorageMode
+ integer
+ Storage mode for network client MAC addresses (Full=0, Aggregated=1, Redacted=2)
+ 
+ 
+ IsEnabled
+ boolean
+ Indicates whether the organization is active and enabled for data processing
+ 
+ 
+ StatConfigurationTemplateLoopIndex
+ integer
+ Current loop iteration index for configuration template processing
+ 
+ 
+ StatDeviceCount
+ integer
+ Total number of devices across all networks in this organization
+ 
+ 
+ StatDeviceIndex
+ integer
+ Current device being processed (0-based index)
+ 
+ 
+ StatDeviceLoopIndex
+ integer
+ Current loop iteration index for device processing
+ 
+ 
+ StatNetworkCount
+ integer
+ Total number of networks in this organization
+ 
+ 
+ StatNetworkIndex
+ integer
+ Current network being processed (0-based index)
+ 
+ 
+ StatNetworkLoopIndex
+ integer
+ Current loop iteration index for network processing
+ 
+ 
+ StatOrganizationLoopIndex
+ integer
+ Current loop iteration index for organization-level statistics processing
+ 
+ 
+ StatPrioritizedNetworkQueueLength
+ integer
+ Number of networks in the priority processing queue
+ 
+ 
+ StatPriorityNetworkQueueDelaySeconds
+ integer
+ Delay in seconds for priority network queue processing
+ 
+ 
+ StatPrioritizedDeviceQueueLength
+ integer
+ Number of devices in the priority processing queue
+ 
+ 
+ StatPriorityDeviceQueueDelaySeconds
+ integer
+ Delay in seconds for priority device queue processing
+ 
+ 
+ StatConfigurationTemplateErrorCount
+ integer
+ Number of error conditions encountered during configuration template processing
+ 
+ 
+ StatConfigurationTemplateWarningCount
+ integer
+ Number of warning conditions encountered during configuration template processing
+ 
+ 
+ StatDeviceErrorCount
+ integer
+ Number of error conditions encountered during device processing
+ 
+ 
+ StatDeviceWarningCount
+ integer
+ Number of warning conditions encountered during device processing
+ 
+ 
+ StatNetworkErrorCount
+ integer
+ Number of error conditions encountered during network processing
+ 
+ 
+ StatNetworkWarningCount
+ integer
+ Number of warning conditions encountered during network processing
+ 
+ 
+ StatOrganizationErrorCount
+ integer
+ Number of error conditions encountered during organization processing
+ 
+ 
+ StatOrganizationWarningCount
+ integer
+ Number of warning conditions encountered during organization processing
+ 
+ 
+ ChangeLogRetentionHours
+ integer
+ Number of hours to retain configuration change logs (default: 840 hours = 35 days)
+ 
+ 
+ StatConfigurationTemplateSuccessCount
+ integer
+ Number of successful operations during configuration template processing
+ 
+ 
+ StatDeviceSuccessCount
+ integer
+ Number of successful operations during device processing
+ 
+ 
+ StatNetworkSuccessCount
+ integer
+ Number of successful operations during network processing
+ 
+ 
+ StatOrganizationSuccessCount
+ integer
+ Number of successful operations during organization processing
+ 
+ 
+ StatConfigurationTemplateCount
+ integer
+ Total number of configuration templates in this organization
+ 
+ 
+ StatConfigurationTemplateIndex
+ integer
+ Current configuration template being processed (0-based index)
+ 
+ 
+ StatConfigurationTemplateApiBackOffCount
+ integer
+ Number of API requests that resulted in rate limiting (HTTP 429) for configuration templates
+ 
+ 
+ StatConfigurationTemplateApiTotalRequestCount
+ integer
+ Total number of API requests made for configuration template operations
+ 
+ 
+ StatDeviceApiBackOffCount
+ integer
+ Number of API requests that resulted in rate limiting (HTTP 429) for devices
+ 
+ 
+ StatDeviceApiTotalRequestCount
+ integer
+ Total number of API requests made for device-level operations
+ 
+ 
+ StatNetworkApiBackOffCount
+ integer
+ Number of API requests that resulted in rate limiting (HTTP 429) for networks
+ 
+ 
+ StatNetworkApiTotalRequestCount
+ integer
+ Total number of API requests made for network-level operations
+ 
+ 
+ StatOrganizationApiBackOffCount
+ integer
+ Number of API requests that resulted in rate limiting (HTTP 429) for organization
+ 
+ 
+ StatOrganizationApiTotalRequestCount
+ integer
+ Total number of API requests made for organization-level operations
+ 
+ 
+ NetworkAllowFunction
+ text
+ JavaScript expression used to determine which networks are allowed for processing
+ 
+ 
+ NetworkGroupFunction
+ text
+ JavaScript expression used to group networks by extracting group name from network properties
+ 
+ 
+ Url
+ text
+ URL to the organization's Meraki dashboard
+ 
+ 
+ NetworkEventMaxAgeDays
+ integer
+ Maximum age in days to retain network events before deletion (default: 45 days)
+ 
+ 
+ SensorDataCompleteTo
+ timestamp with time zone
+ Timestamp indicating up to what point sensor data has been completely processed
+ 
+ 
+ WebHookKey
+ uuid
+ Unique webhook key used for authenticating incoming webhook notifications
+ 
+ 
+ ApiKeyHasWritePrivileges
+ boolean
+ Indicates whether the API key has write privileges in the Meraki dashboard
+ 
+ 
+ ApiKeyHasWritePrivilegesLastChecked
+ timestamp with time zone
+ Timestamp when the API key write privileges were last verified
+ 
+ 
+ EnableWebHooks
+ boolean
+ Indicates whether webhook notifications are enabled for this organization
+ 
+ 
+ IsDeleted
+ boolean
+ Indicates whether this organization record has been soft-deleted
+ 
+ 
+ IsNetworkEventsEnabled
+ boolean
+ Indicates whether network events collection is enabled for this organization
+ 
+ 
+ CloudRegionHostName
+ text
+ Hostname of the Meraki cloud region serving this organization
+ 
+ 
+ CloudRegionName
+ text
+ Name of the Meraki cloud region serving this organization
+ 
+ 
+ LicensingModel
+ text
+ Licensing model used by this organization (e.g. 'per-device', 'co-term')
+ 
+ 
+ ConnectionId
+ integer
+ Foreign key reference to the Connection record in MagicSuite database (post-migration)
+ 
+ 
+ IsMigratedToMagicSuiteConnection
+ boolean
+ Migration flag indicating if organization has been migrated to MagicSuite connection system
+ 
+ 
+ ApiKeyFoundToBeInvalidAt
+ timestamp with time zone
+ Timestamp when the API key was discovered to be invalid or expired
+ 
+ 
+ SnmpCommunity
+ character varying(100)
+ SNMP community string used for device authentication and data retrieval

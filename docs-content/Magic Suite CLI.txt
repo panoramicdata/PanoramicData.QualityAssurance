@@ -1,0 +1,730 @@
+MagicSuite CLI - Command-Line Interface
+
+The MagicSuite CLI is a powerful command-line tool for managing Magic Suite operations, providing full CRUD capabilities, tenant management, file system operations, and beautiful console output.
+
+🚀 Installation, upgrade and removal
+
+Prerequisites
+
+Before installing MagicSuite CLI, you must have the .NET 10.0 SDK or later installed on your system.
+
+Installing .NET 10 SDK:
+
+ Visit https://dotnet.microsoft.com/download
+
+ Download the .NET 10.0 SDK installer for your operating system (Windows, macOS, or Linux)
+
+ Run the installer and follow the installation wizard
+
+ Verify installation by opening a terminal/command prompt and running:
+ dotnet --version
+
+ You should see version 10.0 or later displayed.
+ 
+
+Installation/Upgrade/Removal Options
+
+Option 1: .NET Global Tool (Recommended)
+
+Once .NET is installed, install/upgrade/remove MagicSuite CLI as a global tool:
+
+# Install 
+
+dotnet tool install -g MagicSuite.Cli
+
+ 
+
+# Upgrade 
+
+dotnet tool update -g MagicSuite.Cli
+
+ 
+
+# Uninstall
+
+dotnet tool uninstall -g MagicSuite.Cli
+
+Option 2: Windows Package Manager (Winget)
+
+Windows users may chose to install/upgrade/remove via Winget:
+
+ # Install 
+
+ 
+ winget install PanoramicData.MagicSuite.Cli
+
+ 
+ 
+
+ # Upgrade
+
+ winget upgrade PanoramicData.MagicSuite.Cli 
+
+ 
+ 
+
+ # Uninstall
+
+ winget uninstall PanoramicData.MagicSuite.Cli
+
+ 
+ Verify Installation
+
+After installation, verify the tool is working:
+
+magicsuite --version
+
+magicsuite --help
+
+✨ Key Features
+
+ Full CRUD Operations - Create, read, update, and delete entities via API
+
+ File System Management - Upload, download, search, and organize files
+
+ Tenant Management - Switch between tenants with intelligent resolution
+
+ Multiple Profiles - Manage different environments (alpha, staging, production)
+
+ Flexible Authentication - API tokens with environment variable support
+
+ Beautiful Output - Color-coded tables and JSON formats via Spectre.Console
+
+ Safety Features - Confirmation prompts for destructive operations
+
+ Built-in Help - Comprehensive --help documentation for all commands
+
+🎯 Quick Start
+
+First-Time Setup
+
+Run the interactive configuration wizard to get started:
+
+magicsuite config init
+
+The wizard will guide you through:
+
+ Creating your first profile
+
+ Setting up the API URL
+
+ Configuring authentication credentials
+
+Manual Setup
+
+Alternatively, configure manually:
+
+# Create a profile
+
+magicsuite config profiles add alpha2
+
+# Configure API URL
+
+magicsuite config set api-url https://api.alpha2.magicsuite.com
+
+# Set up authentication
+
+magicsuite auth token --name your-token-name --key your-api-token-key
+
+# Test connection
+
+magicsuite auth status
+
+📚 Command Reference
+
+💡 Tip: Every command supports the --help flag for detailed usage information:
+
+magicsuite config --help
+
+magicsuite api get --help
+
+magicsuite file upload --help
+
+Configuration Commands
+
+Profile Management:
+
+# List all profiles
+
+magicsuite config profiles list
+
+# Add new profile
+
+magicsuite config profiles add production
+
+# Set active profile
+
+magicsuite config profiles set-active production
+
+# Remove profile
+
+magicsuite config profiles remove old-profile
+
+Settings Management:
+
+# View all configuration
+
+magicsuite config list
+
+# Get specific setting
+
+magicsuite config get api-url
+
+# Set configuration value
+
+magicsuite config set default-format json
+
+magicsuite config set api-url https://api.magicsuite.com
+
+Authentication Commands
+
+# Set API token credentials
+
+magicsuite auth token --name token-name --key token-key
+
+# Check authentication status (includes connection test)
+
+magicsuite auth status
+
+# Clear stored credentials
+
+magicsuite auth logout
+
+API Commands - Read Operations
+
+List Entities:
+
+# Get all tenants
+
+magicsuite api get tenants
+
+# Get with filtering
+
+magicsuite api get tenants --filter "Acme"
+
+magicsuite api get connections --filter "LogicMonitor"
+
+# Limit results
+
+magicsuite api get tenants --top 5
+
+# Expand navigation properties
+
+magicsuite api get connections --expand tenant
+
+# JSON output
+
+magicsuite api get tenants --format json
+
+# Combined options
+
+magicsuite api get connections --filter "Logic" --top 10 --format json
+
+Supported Entity Types:
+
+ 
+ 
+ Entity Type
+ Description
+ 
+ 
+ 
+ 
+ tenants
+ Tenant/customer information
+ 
+ 
+ connections
+ System connections (LogicMonitor, Meraki, etc.)
+ 
+ 
+ reportschedules
+ Scheduled report configurations
+ 
+ 
+ people
+ User accounts
+ 
+ 
+
+Get Single Entity:
+
+# Get by ID (shows detailed properties)
+
+magicsuite api get-by-id tenant 123
+
+magicsuite api get-by-id connection 456
+
+# With expansion
+
+magicsuite api get-by-id connection 456 --expand tenant
+
+# JSON format
+
+magicsuite api get-by-id tenant 123 --format json
+
+API Commands - Create Operations
+
+# Create with inline JSON
+
+magicsuite api create connection --json '{"Name":"Production LM","ConnectionType":"LogicMonitor","Url":"https://company.logicmonitor.com"}'
+
+# Create from JSON file
+
+magicsuite api create connection --json-file new-connection.json
+
+# Create report schedule
+
+magicsuite api create reportschedule --json '{"Name":"Daily Report","CronSchedule":"0 0 * * *","IsEnabled":true}'
+
+Example JSON file (new-connection.json):
+
+{
+
+ "Name": "Production LogicMonitor",
+
+ "ConnectionType": "LogicMonitor",
+
+ "Url": "https://company.logicmonitor.com/santaba",
+
+ "UserName": "api@company.com",
+
+ "Password": "your-access-key",
+
+ "Description": "Main monitoring system"
+
+}
+
+API Commands - Update Operations
+
+# Partial update (PATCH) - recommended
+
+magicsuite api patch connection 456 --json '{"Name":"Updated Name"}'
+
+# Update multiple fields
+
+magicsuite api patch connection 456 --json '{"Description":"New description","Url":"https://new-url.com"}'
+
+# Update from file
+
+magicsuite api patch connection 456 --json-file updates.json
+
+# Update with JSON output
+
+magicsuite api patch connection 456 --json '{"IsEnabled":false}' --format json
+
+API Commands - Delete Operations
+
+# Delete with confirmation prompt
+
+magicsuite api delete connection 456
+
+# Delete without confirmation (for automation)
+
+magicsuite api delete connection 456 --confirm
+
+# Example: Delete report schedule
+
+magicsuite api delete reportschedule 789
+
+⚠️ Safety Notes:
+
+ Tenants and people cannot be deleted via CLI (use Admin UI instead)
+
+ Confirmation is required unless the --confirm flag is used
+
+ The entity name is displayed before deletion for verification
+
+Tenant Commands
+
+# Switch to different tenant (by code)
+
+magicsuite tenant select ACME01
+
+# Switch by ID
+
+magicsuite tenant select 123
+
+# Switch by GUID
+
+magicsuite tenant select 550e8400-e29b-41d4-a716-446655440000
+
+# Show current tenant
+
+magicsuite tenant current
+
+# Current tenant as JSON
+
+magicsuite tenant current --format json
+
+Requirements:
+
+ Only Super Admin or Uber Admin can switch tenants
+
+ Tenant selection is cached for session performance
+
+File System Commands
+
+Manage files and folders in the Magic Suite file system with full CRUD operations.
+
+List Files and Folders:
+
+# List root directory
+
+magicsuite file list
+
+# List specific folder
+
+magicsuite file list /Library
+
+# List with JSON output
+
+magicsuite file list /Reports --format json
+
+Upload Files:
+
+# Upload a file
+
+magicsuite file upload report.pdf /Reports/monthly.pdf
+
+# Force overwrite existing file
+
+magicsuite file upload data.csv /Library/data.csv --force
+
+# Upload to subfolder
+
+magicsuite file upload image.png /Library/images/logo.png
+
+Download Files:
+
+# Download a file
+
+magicsuite file download /Reports/monthly.pdf ./local-report.pdf
+
+# Download to current directory
+
+magicsuite file download /Library/data.csv ./data.csv
+
+# Download to specific directory
+
+magicsuite file download /Reports/analysis.xlsx ./downloads/analysis.xlsx
+
+Create Folders:
+
+# Create a new folder
+
+magicsuite file create-folder /Reports/2024
+
+# Create nested folder
+
+magicsuite file create-folder /Library/Projects/NewProject
+
+Rename/Move Files:
+
+# Rename a file
+
+magicsuite file rename /old-name.pdf /new-name.pdf
+
+# Move a file to different folder
+
+magicsuite file rename /Temp/file.pdf /Archive/file.pdf
+
+# Rename a folder
+
+magicsuite file rename /OldFolder /NewFolder
+
+Copy Files:
+
+# Copy a file
+
+magicsuite file copy /source.pdf /backup.pdf
+
+# Copy to different folder
+
+magicsuite file copy /Reports/monthly.pdf /Archive/Reports/monthly-backup.pdf
+
+# Copy a folder (recursive)
+
+magicsuite file copy /Reports /Archive/Reports-Backup
+
+Delete Files and Folders:
+
+# Delete with confirmation prompt
+
+magicsuite file delete /Temp/old-file.pdf
+
+# Delete without confirmation (for scripts)
+
+magicsuite file delete /OldFolder --confirm
+
+# Delete specific file
+
+magicsuite file delete /Reports/outdated-report.pdf
+
+Search for Files:
+
+# Search everywhere
+
+magicsuite file search 'budget'
+
+# Search in specific path
+
+magicsuite file search 'report' --path /Reports
+
+# Search with JSON output
+
+magicsuite file search '*.pdf' --format json
+
+# Search for files by pattern
+
+magicsuite file search 'Q1-2024'
+
+File Operations Features:
+
+ Human-readable file sizes (B, KB, MB, GB, TB)
+
+ Type indicators (📁 folders, 📄 files)
+
+ Formatted timestamps
+
+ Safety confirmations for destructive operations
+
+ Recursive folder operations
+
+ Path validation
+
+🌐 Global Options
+
+All commands support these global options for flexibility:
+
+--profile # Use specific profile (e.g., alpha2, production)
+
+--format # Output format (default: table)
+
+Examples:
+
+# Use production profile
+
+magicsuite api get tenants --profile production
+
+# Force JSON output
+
+magicsuite config list --format json
+
+# Combine options
+
+magicsuite api get connections --profile alpha2 --format json
+
+📊 Output Formats
+
+Table Format (Default)
+
+Beautiful, color-coded tables using Spectre.Console with:
+
+ Property/value pairs for single entities
+
+ Columnar tables for lists
+
+ Color highlighting for important fields
+
+ Emoji indicators (✓, ✗)
+
+JSON Format
+
+Pretty-printed JSON with camelCase naming for easy parsing and automation:
+
+magicsuite api get-by-id tenant 123 --format json
+
+⚙️ Configuration File
+
+Configuration is stored at:
+
+ Windows: %APPDATA%\MagicSuite\cli-config.json
+
+ Linux/Mac: ~/.config/MagicSuite/cli-config.json
+
+Example configuration:
+
+{
+
+ "activeProfile": "alpha2",
+
+ "profiles": {
+
+ "alpha2": {
+
+ "apiUrl": "https://api.alpha2.magicsuite.com",
+
+ "tokenName": "dev-token",
+
+ "tokenKey": "your-key-here"
+
+ },
+
+ "production": {
+
+ "apiUrl": "https://api.magicsuite.com",
+
+ "tokenName": "prod-token",
+
+ "tokenKey": "your-prod-key"
+
+ }
+
+ },
+
+ "defaultOutputFormat": "table"
+
+}
+
+🔐 Environment Variables
+
+For CI/CD pipelines and automation, use environment variables instead of storing credentials:
+
+# Set environment variables
+
+export MAGICSUITE_TOKEN_NAME="automation-token"
+
+export MAGICSUITE_TOKEN_KEY="your-token-key"
+
+export MAGICSUITE_API_URL="https://api.magicsuite.com"
+
+# Then use CLI without explicit credentials
+
+magicsuite api get tenants
+
+Priority Order: Environment variables > Profile configuration > Command-line options
+
+🎓 Common Workflows
+
+Setup New Environment
+
+magicsuite config profiles add staging
+
+magicsuite config set api-url https://api.staging.magicsuite.com
+
+magicsuite auth token --name staging-token --key abc123
+
+magicsuite auth status
+
+Query and Filter Data
+
+magicsuite api get connections --filter "Logic" --top 5
+
+magicsuite api get-by-id connection 456 --expand tenant
+
+magicsuite api get tenants --format json > tenants.json
+
+Create and Configure Resources
+
+magicsuite api create connection --json-file connection.json
+
+magicsuite api patch connection 456 --json '{"IsEnabled":true}'
+
+Tenant Operations
+
+magicsuite tenant select ACME01
+
+magicsuite api get connections
+
+magicsuite tenant current
+
+File Management
+
+magicsuite file list /Library
+
+magicsuite file upload report.pdf /Reports/monthly.pdf
+
+magicsuite file download /Reports/monthly.pdf ./report.pdf
+
+magicsuite file search 'budget' --path /Reports
+
+magicsuite file delete /Temp/old-files --confirm
+
+❓ Getting Help
+
+The CLI includes comprehensive built-in help. Use the --help flag at any level:
+
+# General help
+
+magicsuite --help
+
+# Command group help
+
+magicsuite config --help
+
+magicsuite api --help
+
+magicsuite file --help
+
+# Specific command help
+
+magicsuite api get --help
+
+magicsuite auth token --help
+
+magicsuite file upload --help
+
+Each help screen provides:
+
+ Command description and purpose
+
+ Required and optional arguments
+
+ Available options and flags
+
+ Usage examples
+
+🔍 Error Handling
+
+The CLI provides clear, actionable error messages:
+
+# Missing credentials
+
+Error: Missing API credentials.
+
+Run 'magicsuite config init' or 'magicsuite auth token' to configure credentials.
+
+# Entity not found
+
+Error: Connection with ID 999 not found.
+
+# Permission denied
+
+Error: Tenant switching requires Super Admin or Uber Admin privileges.
+
+Current user: john@example.com (john)
+
+🛡️ Safety Features
+
+ Cannot delete tenants or people via CLI (must use Admin UI)
+
+ Delete operations require confirmation unless --confirm flag is used
+
+ Tenant switching requires Super Admin privileges
+
+ All operations validate credentials before execution
+
+ Entity names displayed before deletion for verification
+
+📦 About
+
+MagicSuite CLI is part of the Magic Suite platform developed by Panoramic Data Limited.
+
+Built with:
+
+ .NET 9
+
+ System.CommandLine for command parsing
+
+ Spectre.Console for beautiful output
+
+ MagicSuite.Api for backend integration
+
+Version: Automatically managed by Nerdbank.GitVersioning
+
+Support: For issues, feature requests, or questions, please create a ticket in the Magic Suite project on Jira.
+
+📚 Additional Resources
+
+NuGet Package: MagicSuite.Cli

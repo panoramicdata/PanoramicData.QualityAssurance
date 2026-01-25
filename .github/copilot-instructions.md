@@ -82,6 +82,7 @@ Environments: alpha, alpha2, test, **test2 (default)**, beta, staging, productio
 | Run Playwright auth | [Playwright](instructions/playwright.md#authentication) | `npx playwright test auth.setup --project=firefox` |
 | Run Playwright test | [Playwright](instructions/playwright.md#running-tests) | `npx playwright test [name] --project=firefox` |
 | Get XWiki page | [XWiki](instructions/xwiki.md#get-page-content) | `.\.github\tools\XWiki.ps1 -Action Get -Space "MagicSuite"` |
+| Run schedule | [CLI](instructions/cli-reference.md#running-report-schedules-batch-jobs) | Create ReportBatchJob via REST API |
 
 ### Key Information
 

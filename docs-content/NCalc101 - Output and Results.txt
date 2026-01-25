@@ -1,0 +1,37 @@
+Output and Results show you the answers to your calculations and the current state of your variables and expressions. Understanding the output helps you verify your work and troubleshoot issues.
+
+Viewing Results
+
+ After entering an expression, click Evaluate or press Enter.
+
+ The result will appear below the input box or in the results panel.
+
+ If your expression uses variables, their current values will also be displayed.
+
+Output Details
+
+ Result: The calculated value of your expression.
+
+ Variables: A list of all defined variables and their current values.
+
+ Errors: If there is a problem with your expression, an error message will be shown to help you fix it.
+
+Examples
+
+ Input: 2 + 3 * 4 Output: 14
+
+ Input: x = 5 Output: x = 5
+
+ Input: x * 2 Output: 10
+
+ Input: sqrt(-1) Output: Error: Invalid input for sqrt
+
+Tips
+
+ Check the output panel for variable values and error messages.
+
+ Use clear and descriptive variable names to make results easier to understand.
+
+ If you get an error, review your expression for typos or unsupported operations.
+
+The output and results area is your feedback loop in NCalc101—use it to confirm your calculations and refine your work!

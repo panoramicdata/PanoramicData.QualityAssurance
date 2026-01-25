@@ -1,0 +1,1 @@
+You can find the Magic Suite Entity Relationship diagram in the Library here as a single-file HTML app. To view it, download it and open in a local browser. If the version number is older than the current version, then there have been no recent changes.

@@ -1,0 +1,43 @@
+Variables allow you to store values and reuse them in your expressions. This makes calculations more flexible and your work easier to manage.
+
+Defining Variables
+
+ Type a variable assignment in the input box, such as x = 10.
+
+ Press Enter or click Evaluate to save the variable.
+
+ You can now use x in other expressions, e.g., x * 5 will evaluate to 50.
+
+Using Variables in Expressions
+
+ Simply reference the variable name in your expression: y = x + 3
+
+ Variables can be used with functions: sqrt(x)
+
+ You can update a variable by assigning a new value: x = 20
+
+Variable Naming Rules
+
+ Variable names must start with a letter and can include letters, numbers, and underscores (e.g., total_1).
+
+ Variable names are case-sensitive: total and Total are different.
+
+Examples
+
+ a = 5
+
+ b = a * 2
+
+ result = b + 10
+
+ sqrt(result)
+
+Tips
+
+ Use variables to break complex calculations into smaller, manageable steps.
+
+ Clear or update variables as needed to keep your workspace organized.
+
+ Check the Output and Results page to see the current values of your variables.
+
+Variables make your calculations more powerful and organized in NCalc101!

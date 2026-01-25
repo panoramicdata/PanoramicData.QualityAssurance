@@ -1,0 +1,46 @@
+DataMagic collects data from your Meraki account continuously via the Meraki Dashboard API.
+
+At present, the Meraki API is limited in how much data it can return at any one time, and so DataMagic will make multiple calls to the API to retrieve all the data. For example, if you have 1000 networks, in your Meraki account, DataMagic must query the data one network at a time to retrieve everything and each network may require several API calls.
+
+DataMagic must use the "Round Robin" algorithm to collect data for each network in turn.
+
+An organization with 1000 networks will take approximately 1 hour to collect all the data.
+
+Please take this into account when viewing your data in DataMagic and if you need real-time data, go to the Meraki Dashboard, which you can do by clicking any button in DataMagic.
+
+SNMP Data Collection
+
+It is possible to collect some additional data using SNMP. This data is not essential to everyday use, but may benefit some customers.
+
+To do so, edit the Organization and put in the details. Both V2C and V3 are supported, as follows:
+
+ V2C
+
+ 
+ Enter the community string
+
+ Example abc123
+
+ 
+ V3
+
+ 
+ Enter in the form v3:username:authMode:authSecret:privMode:privSecret
+
+ Supported auth modes:
+
+ 
+ md5
+
+ sha
+
+ 
+ Supported priv modes:
+
+ 
+ des
+
+ aes or aes128 (both are equivalent)
+
+ 
+ Example: v3:abc123:sha:def456:aes:ghi789

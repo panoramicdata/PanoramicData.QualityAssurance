@@ -16,12 +16,27 @@ magicsuite --version
 
 ### Install Specific Version
 ```powershell
-# Install latest 4.1.x
+# Install latest 4.1.x (stable)
 dotnet tool install -g MagicSuite.Cli --version '4.1.*'
 
 # Install specific version
-dotnet tool install -g MagicSuite.Cli --version '4.1.*'
+dotnet tool install -g MagicSuite.Cli --version '4.1.546'
 ```
+
+### Installing Pre-Release Versions
+The `--version '4.1.*'` pattern only matches stable releases. For pre-releases:
+
+```powershell
+# Step 1: Query NuGet API to find available pre-release versions
+Invoke-RestMethod "https://api.nuget.org/v3-flatcontainer/magicsuite.cli/index.json" | 
+    Select-Object -ExpandProperty versions | 
+    Where-Object { $_ -like '4.1*' }
+
+# Step 2: Install the specific pre-release version found
+dotnet tool install -g MagicSuite.Cli --version '4.1.698-g9695777ce6'
+```
+
+**Note**: The `--prerelease` flag cannot be combined with `--version`, so you must query NuGet directly to find pre-release version strings.
 
 ### Update/Downgrade Version
 ```powershell
@@ -281,6 +296,77 @@ magicsuite get --entity DataStore --output json --profile test2-amy |
     Where-Object { $_.Type -eq 'SQL' } |
     ForEach-Object { Write-Host "SQL DataStore: $($_.Name)" }
 ```
+
+## Running Report Schedules (Batch Jobs)
+
+**Important**: To run a report schedule, you must create a ReportBatchJob. The CLI does not have a `create` command, so use the REST API directly.
+
+### Understanding the Relationship
+- **ReportSchedule** - Defines what reports to run, input/output folders, cron schedule
+- **ReportBatchJob** - An execution instance of a schedule (created to trigger a run)
+- **ReportJob** - Individual report jobs within a batch
+
+### Finding Schedules
+```powershell
+# List all schedules (default limit is 100)
+magicsuite api get reportschedules --profile test2 --tenant 1 --take 200
+
+# Search by name
+magicsuite api get reportschedules --profile test2 --tenant 1 --filter "Amy"
+
+# Get schedule details
+magicsuite api get-by-id reportschedule 27967 --profile test2 --format Json
+```
+
+### Creating a Batch Job (Run a Schedule) via REST API
+```powershell
+# Get profile credentials
+$tokenName = "YOUR_TOKEN_NAME"
+$tokenKey = "YOUR_TOKEN_KEY"
+$apiUrl = "https://api.test2.magicsuite.net"
+$scheduleId = 27967  # Amy Test schedule
+
+# Create authorization header
+$auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${tokenName}:${tokenKey}"))
+$headers = @{
+    "Authorization" = "Basic $auth"
+    "Content-Type" = "application/json"
+    "X-Tenant-Id" = "1"  # Panoramic Data tenant
+}
+
+# Create batch job payload
+$body = @{
+    reportScheduleId = $scheduleId
+} | ConvertTo-Json
+
+# POST to create batch job (triggers schedule run)
+$result = Invoke-RestMethod -Uri "$apiUrl/api/ReportBatchJobs" `
+    -Method POST `
+    -Headers $headers `
+    -Body $body
+
+Write-Host "Created Batch Job ID: $($result.id)"
+```
+
+### Monitoring Batch Job Status
+```powershell
+# Get batch job status
+magicsuite api get-by-id reportbatchjob $batchJobId --profile test2 --format Json
+
+# List recent batch jobs for a schedule
+magicsuite api get reportbatchjobs --profile test2 --tenant 1 --take 10 --orderby "-CreatedDateTimeUtc"
+```
+
+### Batch Job Execution Results
+| Value | Meaning |
+|-------|---------|
+| 0 | Pending |
+| 1 | Success |
+| 2 | Partial Success |
+| 3 | Failed |
+| 4 | Cancelled |
+| 5 | Timeout |
+| 6 | No Reports |
 
 ## Common Pitfalls
 

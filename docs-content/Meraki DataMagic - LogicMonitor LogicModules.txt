@@ -1,0 +1,1118 @@
+Meraki DataMagic Logic Modules Summary
+
+ 
+ 
+ Overview
+
+ This document provides a comprehensive summary of the Meraki DataMagic logic modules designed for monitoring Cisco Meraki infrastructure through LogicMonitor. These modules connect to a PostgreSQL database populated by the Meraki DataMart to collect performance metrics, status information, and configuration data across various Meraki device types.
+
+ 
+ 
+ 
+ 16
+
+ Total Modules
+
+ 
+
+ 
+ 15
+
+ DataSources
+
+ 
+
+ 
+ 1
+
+ PropertySource
+
+ 
+
+ 
+ 6
+
+ Device Types
+
+ 
+
+ 
+
+ 
+
+ 
+ Table of Contents
+
+ 
+ Access Point Monitoring
+
+ Security Appliance Monitoring
+
+ Cellular Gateway Monitoring
+
+ Environmental Sensor Monitoring
+
+ Switch Monitoring
+
+ Network-Level Monitoring
+
+ VPN Tunnel Monitoring
+
+ 
+ 
+
+ Access Point Monitoring
+
+ 
+ Meraki_DataMagic_Access_Points
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Method
+
+ Batch Script (Groovy)
+
+ 
+
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Multi-Instance
+
+ Yes
+
+ 
+
+ 
+ Discovery Interval
+
+ 60 minutes
+
+ 
+
+ 
+
+ Purpose: Monitors Cisco Meraki wireless access points, collecting comprehensive WiFi performance metrics, client connection data, and device status information.
+
+ Key Metrics (17 datapoints):
+
+ 
+ 
+ 2.4GHz/5GHz/6GHz Utilization
+ Total, WiFi, and non-WiFi utilization across all wireless bands
+
+ 
+
+ 
+ Client Count
+ Current number of connected wireless clients
+
+ 
+
+ 
+ Device Status
+ Online (0), Alerting (1), Offline (2), Dormant (3), Unassigned (-1)
+
+ 
+
+ 
+ License Management
+ Days to license expiry and end of support tracking
+
+ 
+
+ 
+ Packet Loss
+ Upstream and downstream packet loss percentages
+
+ 
+
+ 
+ Traffic Counters
+ Packets sent and received over the last hour
+
+ 
+
+ 
+
+ 
+ 🚨 Configured Alert Thresholds
+
+ 
+ 2.4GHz/5GHz/6GHz Utilization:
+ = 100 (Alert when utilization reaches 100%)
+ 
+
+ 
+ Device Status:
+ > 0 (Alert when device is not online - alerting, offline, or dormant)
+ 
+
+ 
+ License Expiry:
+ 
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Access_Point_Interfaces
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Grouping
+
+ By Device Name (ILP)
+
+ 
+
+ 
+ Instance Format
+
+ Serial-PortXX
+
+ 
+
+ 
+
+ Purpose: Monitors individual network interfaces on Meraki access points, tracking port-level performance and status.
+
+ Key Metrics (3 datapoints):
+
+ 
+ 
+ Interface Status
+ Disabled (0), Connected (1), Disconnected (2), Unknown (-2)
+
+ 
+
+ 
+ Throughput
+ Bytes received and sent per second
+
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Access_Point_SSIDs
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Instance Format
+
+ Serial-SSIDNumber
+
+ 
+
+ 
+
+ Purpose: Monitors individual SSIDs broadcast by Meraki access points, tracking per-SSID client counts and data usage.
+
+ Key Metrics (5 datapoints):
+
+ 
+ 
+ Client Counts
+ Current online and total wireless clients per SSID
+
+ 
+
+ 
+ Data Usage
+ Sent, received, and total kilobytes per SSID
+
+ 
+
+ 
+
+ 
+
+ Security Appliance Monitoring
+
+ 
+ Meraki_DataMagic_Appliances
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Target Devices
+
+ Appliance ProductType
+
+ 
+
+ 
+
+ Purpose: Monitors Cisco Meraki MX security appliances, including firewall performance, high availability status, and network events.
+
+ Key Metrics (11 datapoints):
+
+ 
+ 
+ High Availability
+ HA enabled status, primary/spare designation
+
+ 
+
+ 
+ Performance Score
+ Average performance score over the last hour
+
+ 
+
+ 
+ Network Events
+ IP conflicts, DHCP problems, virtual router collisions (last 2 hours)
+
+ 
+
+ 
+ Client Count
+ Number of currently connected clients
+
+ 
+
+ 
+ Device Status & Licensing
+ Status monitoring and license/support expiry tracking
+
+ 
+
+ 
+
+ 
+ 🚨 Configured Alert Thresholds
+
+ 
+ Device Status:
+ > 0 (Alert when appliance is not online - alerting, offline, or dormant)
+ 
+
+ 
+ License Expiry:
+ 
+ 
+
+ 
+
+ 
+
+ Cellular Gateway Monitoring
+
+ 
+ Meraki_DataMagic_Cellular_Gateways
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery Interval
+
+ 60 minutes
+
+ 
+
+ 
+ Target Devices
+
+ CellularGateway ProductType
+
+ 
+
+ 
+
+ Purpose: Monitors Cisco Meraki cellular gateway devices for connectivity status and device health.
+
+ Key Metrics (3 datapoints):
+
+ 
+ 
+ Device Status
+ Online/offline status monitoring
+
+ 
+
+ 
+ Licensing
+ Days to end of support and license expiry
+
+ 
+
+ 
+
+ 
+ 🚨 Configured Alert Thresholds
+
+ 
+ Device Status:
+ > 0 (Alert when cellular gateway is not online)
+ 
+
+ 
+ License Expiry:
+ 
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Cellular_Gateway_Interfaces
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Grouping
+
+ By Device Name (ILP)
+
+ 
+
+ 
+ Instance Format
+
+ Serial-PortXX
+
+ 
+
+ 
+
+ Purpose: Monitors cellular interfaces on Meraki gateways, focusing on signal quality metrics.
+
+ Key Metrics (2 datapoints):
+
+ 
+ 
+ Signal Quality
+ RSRP (Reference Signal Received Power) and RSRQ (Reference Signal Received Quality)
+
+ 
+
+ 
+
+ 
+
+ Environmental Sensor Monitoring
+
+ 
+ Meraki_DataMagic_Sensors
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery Interval
+
+ 60 minutes
+
+ 
+
+ 
+ Target Devices
+
+ Sensor ProductType
+
+ 
+
+ 
+
+ Purpose: Monitors Cisco Meraki MT series environmental sensors for temperature, humidity, air quality, and other environmental conditions.
+
+ Key Metrics (Multiple environmental datapoints):
+
+ 
+ 
+ Environmental Conditions
+ Temperature, humidity, CO2 levels, ambient noise, indoor air quality
+
+ 
+
+ 
+ Device Management
+ Status monitoring, license and support expiry tracking
+
+ 
+
+ 
+
+ 
+ 🚨 Configured Alert Thresholds
+
+ 
+ Device Status:
+ > 0 (Alert when sensor is not online)
+ 
+
+ 
+ License Expiry:
+ 
+ 
+
+ 
+
+ 
+
+ Switch Monitoring
+
+ 
+ Meraki_DataMagic_Switches
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery Interval
+
+ 60 minutes
+
+ 
+
+ 
+ Target Devices
+
+ Switch ProductType
+
+ 
+
+ 
+
+ Purpose: Monitors Cisco Meraki MS series switches for device status, authentication events, and network alerts.
+
+ Key Metrics (6+ datapoints):
+
+ 
+ 
+ Authentication Events
+ 802.1x RADIUS timeout counts over last 2 hours
+
+ 
+
+ 
+ Network Alerts
+ UDLD (UniDirectional Link Detection) alert counts
+
+ 
+
+ 
+ Client Monitoring
+ Current connected client count
+
+ 
+
+ 
+ Device Status
+ Status and licensing information
+
+ 
+
+ 
+
+ 
+ 🚨 Configured Alert Thresholds
+
+ 
+ Device Status:
+ > 0 (Alert when switch is not online)
+ 
+
+ 
+ License Expiry:
+ 
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Switch_Interfaces
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Grouping
+
+ By Device Name (ILP)
+
+ 
+
+ 
+ Instance Format
+
+ Serial-PortXX
+
+ 
+
+ 
+
+ Purpose: Provides detailed monitoring of individual switch ports including traffic, status, and power consumption.
+
+ Key Metrics (Multiple interface datapoints):
+
+ 
+ 
+ Port Status
+ Enabled/disabled state, disconnection status
+
+ 
+
+ 
+ Traffic Statistics
+ Inbound and outbound Mbps throughput
+
+ 
+
+ 
+ Error Monitoring
+ Interface error and warning counts
+
+ 
+
+ 
+ Power Consumption
+ PoE power usage in watt hours
+
+ 
+
+ 
+
+ 
+ 🚨 Configured Alert Thresholds
+
+ 
+ Port Disconnected:
+ = 1 (Alert when switch port is disconnected)
+ 
+
+ 
+
+ 
+
+ Network-Level Monitoring
+
+ 
+ Meraki_DataMagic_Network
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Method
+
+ Script (Single Instance)
+
+ 
+
+ 
+ Collection Interval
+
+ 3 minutes
+
+ 
+
+ 
+ Multi-Instance
+
+ No
+
+ 
+
+ 
+
+ Purpose: Provides network-wide summary statistics showing the overall health and status distribution of devices within a Meraki network.
+
+ Key Metrics (6 datapoints):
+
+ 
+ 
+ Device Status Counts
+ Total, online, offline, alerting, dormant, and unassigned device counts
+
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Network_Events
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Grouping
+
+ By Event Category
+
+ 
+
+ 
+
+ Purpose: Monitors network-wide events occurring across the Meraki infrastructure, automatically discovering and tracking different event types.
+
+ Key Metrics (1 datapoint per event type):
+
+ 
+ 
+ Event Activity
+ Binary indicator (1/0) showing if events of each type occurred in the last 2 hours
+
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Network_Interface_Underlay
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Target
+
+ Network Interface Underlay
+
+ 
+
+ 
+
+ Purpose: Monitors underlay network interface performance including latency, throughput, and quality metrics.
+
+ Key Metrics (Multiple performance datapoints):
+
+ 
+ 
+ Performance Metrics
+ Latency, jitter, packet loss, goodput, and throughput calculations
+
+ 
+
+ 
+ Bandwidth Limits
+ Upload and download bandwidth limits in Kbps
+
+ 
+
+ 
+ Traffic Counters
+ Packets and kilobits sent/received per second
+
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Network_Properties
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Module Type
+
+ PropertySource
+
+ 
+
+ 
+ Purpose
+
+ Configuration Discovery
+
+ 
+
+ 
+
+ Purpose: Discovers and sets network-level properties and configuration information for use by other modules.
+
+ Properties Set:
+
+ 
+ 
+ Network Information
+ Network ID, name, organization details, product types
+
+ 
+
+ 
+ WAN Configuration
+ Bandwidth limits for WAN1, WAN2, WAN3 (up/down)
+
+ 
+
+ 
+
+ 
+
+ VPN Tunnel Monitoring
+
+ 
+ Meraki_DataMagic_Network_Tunnels
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Scope
+
+ All Tunnel Types
+
+ 
+
+ 
+
+ Purpose: Monitors all VPN tunnel connections with comprehensive performance and quality metrics.
+
+ Key Metrics (Multiple tunnel performance datapoints):
+
+ 
+ 
+ Quality Metrics
+ Average, min, max values for latency, jitter, loss percentage, and MOS scores
+
+ 
+
+ 
+ Performance Data
+ All calculated over the last hour at DataMart collection time
+
+ 
+
+ 
+
+ 
+
+ 
+ Meraki_DataMagic_Network_Tunnels_hub
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Focus
+
+ Hub Tunnels Only
+
+ 
+
+ 
+
+ Purpose: Specialized monitoring for hub VPN tunnels with the same comprehensive metrics as the general tunnel monitor.
+
+ 
+
+ 
+ Meraki_DataMagic_Network_Tunnels_spoke
+
+ Applies To: meraki_datamagic.network_id
+
+ 
+ 
+ 
+ Collection Interval
+
+ 1 minute
+
+ 
+
+ 
+ Discovery
+
+ Immediate (0m)
+
+ 
+
+ 
+ Focus
+
+ Spoke Tunnels Only
+
+ 
+
+ 
+
+ Purpose: Monitors spoke-side VPN tunnels, tracking reachability and data transfer metrics.
+
+ Key Metrics (3+ datapoints):
+
+ 
+ 
+ Reachability
+ Tunnel reachability status: Reachable (1), Unreachable (0), Unknown (-1)
+
+ 
+
+ 
+ Data Transfer
+ Kilobytes sent and received over the last hour
+
+ 
+
+ 
+
+ 
+
+ 
+ Alert Threshold Summary
+
+ The Meraki DataMagic modules implement consistent alerting patterns across device types:
+
+ 
+ 
+ 🚨 Common Alert Patterns
+
+ 
+ Device Status (All Device Types):
+ > 0 - Alerts when any device is not online (values: 1=alerting, 2=offline, 3=dormant)
+ 
+
+ 
+ License Expiry (All Device Types):
+ 
+ 
+
+ 
+ WiFi Utilization (Access Points):
+ = 100% - Critical alert when 2.4GHz, 5GHz, or 6GHz bands reach full utilization
+ 
+
+ 
+ Port Disconnection (Switch Interfaces):
+ = 1 - Alert when switch ports become disconnected
+ 
+
+ 
+
+ 
+ 
+ 7
+
+ Modules with Status Alerts
+
+ 
+
+ 
+ 7
+
+ Modules with License Alerts
+
+ 
+
+ 
+ 3
+
+ WiFi Utilization Thresholds
+
+ 
+
+ 
+ 1
+
+ Interface Status Alert
+
+ 
+
+ 
+
+ 
+
+ 
+ Technical Architecture
+
+ Database Connectivity: All modules connect to a PostgreSQL database populated by the Meraki DataMart system using JDBC with configurable credentials.
+
+ 
+ Common Properties Required:
+
+ 
+ meraki_datamagic.username - Database username
+
+ meraki_datamagic.password - Database password
+
+ meraki_datamagic.server - PostgreSQL server address
+
+ meraki_datamagic.database - Database name
+
+ meraki_datamagic.network_id - Meraki Network ID for filtering
+
+ 
+ 
+ Collection Method: Most modules use Groovy batch scripts with complex SQL queries to extract metrics from the normalized DataMart schema.
+
+ 
+ Instance Management: Multi-instance modules automatically discover devices and components, with proper cleanup of inactive instances.
+
+ 
+
+ 
+ Version: 1.0 | Copyright: © 2025 Panoramic Data Ltd
+
+ Generated on: 
+
+ This summary covers all 16 Meraki DataMagic logic modules designed for comprehensive Cisco Meraki infrastructure monitoring through LogicMonitor.

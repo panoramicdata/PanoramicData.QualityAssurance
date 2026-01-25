@@ -1,0 +1,59 @@
+The Magic Suite Admin App can integrate with Codacy to retrieve information about code quality, security analysis results, and repository configurations, making this data available for reporting, monitoring, and automation tasks.
+
+The Connection setup relies on using a Codacy Personal Access Token (PAT) for secure, programmatic access to your organization's data.
+
+More information about creating a Personal Access Token can be found on Codacy's documentation (usually under Account Settings -> Access Tokens).
+
+Setting Up the Codacy Connection
+
+To set up Magic Suite apps to be able to use Codacy as an integration Connection:
+
+Prerequisite: Ensure you have a Codacy account with permissions to generate an API Token that has the required read scope for the data you intend to access (e.g., project:read, organization:read).
+
+Decide: Note down your Codacy Organization/Group ID (often visible in the Codacy URL when viewing your dashboard).
+
+Then in the Admin App, under Connections (or in Report Magic -> Admin -> Connections):
+
+Click the Create button.
+Enter a Name (e.g., Codacy Production) and optionally, a description. This name will be used to identify the connection within Magic Suite.
+From the Type drop-down, choose a Connection type of Codacy.
+Leave the URL and Username fields blank
+In the Password field, enter your generated Codacy Personal Access Token (PAT).
+Click Save
+Using Codacy Data
+
+Once this process is completed, Codacy endpoints can be queried by Magic Suite components ReportMagic macros.
+
+The access is governed by the scope of the Personal Access Token used in the Connection configuration. For security, it is highly recommended to generate a token with the minimum required scopes (e.g., Read-only access) necessary for your Magic Suite applications.
+
+Creating a Codacy Personal Access Token (PAT)
+
+You must create a PAT directly within the Codacy platform and provide it to the Magic Suite Connection's Password field.
+
+To create the required token:
+
+Go to the Codacy platform and log in.
+
+Click on your profile picture in the top-right corner, then navigate to Account Settings (or similar menu option).
+
+On the settings page, find the Access Tokens section.
+
+Click the button to Generate a new token.
+
+Give the token a descriptive Name (e.g., MagicSuite-AdminApp-Connection) and choose the expiration date.
+
+Select Scopes/Permissions: This is the most critical step. Ensure you grant the necessary permissions for Magic Suite to retrieve the data you need. For general reporting, the following read-only scopes are typically required:
+
+organization:read
+
+project:read
+
+coverage:read
+
+analysis:read
+
+Click the Generate button.
+
+Copy the generated token immediately. It will not be shown again.
+
+Use this token in the Password field of the Magic Suite Connection create/edit dialog.

@@ -1,0 +1,51 @@
+Expressions are the core of NCalc101. An expression is a combination of numbers, operators, variables, and functions that evaluates to a result.
+
+Writing Expressions
+
+ Type your expression in the input box, such as 3 + 4 * 2.
+
+ Use parentheses to control the order of operations: (3 + 4) * 2.
+
+ Expressions can include variables and functions for more advanced calculations.
+
+Supported Operators
+
+ + Addition
+
+ - Subtraction
+
+ * Multiplication
+
+ / Division
+
+ ^ Exponentiation (e.g., 2^3 = 8)
+
+ Parentheses ( ) for grouping
+
+Using Functions
+
+NCalc101 supports many built-in functions. For example:
+
+ sqrt(16) returns 4
+
+ sin(3.14) returns the sine of 3.14 radians
+
+ log(100) returns the natural logarithm of 100
+
+Examples
+
+ 5 * (2 + 3) evaluates to 25
+
+ sqrt(9) + 4 evaluates to 7
+
+ 2^4 - 6 evaluates to 10
+
+Tips
+
+ Check your expression for typos before evaluating.
+
+ Use the Examples page for more sample expressions.
+
+ Combine variables and functions for powerful calculations.
+
+Mastering expressions is the key to getting the most out of NCalc101!

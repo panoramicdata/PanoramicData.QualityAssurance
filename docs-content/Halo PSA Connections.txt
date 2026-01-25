@@ -1,0 +1,23 @@
+To connect to Halo PSA, you will need:
+
+URL (e.g. https://mycompany.halopsa.com)
+Client ID (This will be a GUID)
+Client Secret (This will be two concatentated GUIDs)
+
+Ask your Halo PSA administrator to generate these for client authentication by going to:
+
+Configuration → 
+Integrations → 
+Halo PSA API →
+Applications
+Create a new Application
+Call it "Magic Suite"
+Select 'Client ID and Secret (Services)' as the Authentication Method
+Login Type: Agent
+Assign the appropriate permissions.
+Configure these items as follows in the Connection dialog:
+
+URL: enter the URL
+Username: enter your Client ID
+Password: enter your Client Secret
+Configuration: not needed / supported

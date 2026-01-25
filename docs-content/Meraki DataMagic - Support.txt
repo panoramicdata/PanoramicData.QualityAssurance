@@ -1,0 +1,68 @@
+We want you to get the most out of DataMagic and are here to help. If you have any questions or need assistance:
+
+ On the top right, click the Feedback button
+
+ Feedback is responded to as soon as possible during UK business hours
+
+Bug Reports
+
+Despite our best efforts, bugs do occasionally slip through the net. If you experience an issue with DataMagic, please follow the steps below to report it to our support team:
+
+ Navigate to the page were you are experiencing the issue
+
+ Click the Feedback button
+
+ Ensure the Type shown is Bug Report
+
+ Enter a Summary and in the Description box, provide as much detail as possible about the issue you are experiencing, including:
+ 
+ What you were doing when the issue occurred
+
+ What you expected to happen
+
+ What actually happened
+
+ Any error messages you received
+
+ 
+ 
+
+ Click Submit
+ 
+ A message showing your ticket number appears - you may wish to note this for future reference
+
+ What you expected to happen
+
+ What actually happened
+
+ Any error messages you received
+
+ 
+
+One of our team will be in touch and may ask for further information and screenshots.
+
+Feature Requests
+
+We welcome ideas for new features and improvements and treat customer-requested features as priority, often including them in the next release. To submit a request for a new feature:
+
+ Click the Feedback button
+
+ From the Type dropdown, select Feature Request
+
+ Enter a description of the requested feature, with much detail as you can provide then click Submit
+
+A message showing your ticket number appears - you may wish to note this for future reference.
+
+Support Requests
+
+Some features, such as remote SQL access, require additional configuration and setup. If you require assistance with these or anything else:
+
+ Click the Feedback button
+
+ From the Type dropdown, select Support Request
+
+ Enter a Summary and in the Description box, provide details of the support we can provide
+
+ Click Submit
+
+A message showing your ticket number appears - you may wish to note this for future reference.
