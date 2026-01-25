@@ -75,28 +75,18 @@ param(
 # Define which actions are read-only (don't require authentication)
 $script:ReadOnlyActions = @("list-pages", "get-page")
 
+# Windows Credential Manager targets for Blogger credentials
+$script:ClientIdTarget = "MagicSuite:Blogger:ClientId"
+$script:ClientSecretTarget = "MagicSuite:Blogger:ClientSecret"
+$script:ApiKeyTarget = "MagicSuite:Blogger:ApiKey"
+$script:AccessTokenTarget = "MagicSuite:Blogger:AccessToken"
+$script:RefreshTokenTarget = "MagicSuite:Blogger:RefreshToken"
+
 # OAuth2 Configuration - Using Google's "Desktop app" flow with localhost redirect
-# Credentials are read from environment variables
-$script:ClientId = $env:BLOGGER_CLIENT_ID
-$script:ClientSecret = $env:BLOGGER_CLIENT_SECRET
 $script:RedirectUri = "http://localhost:8642/oauth2callback"
 $script:Scope = "https://www.googleapis.com/auth/blogger"
 $script:AuthEndpoint = "https://accounts.google.com/o/oauth2/v2/auth"
 $script:TokenEndpoint = "https://oauth2.googleapis.com/token"
-
-# API Key for public read-only access (from environment variable)
-$script:ApiKey = $env:BLOGGER_API_KEY
-
-# Validate credentials are available for non-read-only actions
-if (-not ($script:ReadOnlyActions -contains $Action)) {
-    if (-not $script:ClientId -or -not $script:ClientSecret) {
-        Write-Error "BLOGGER_CLIENT_ID and BLOGGER_CLIENT_SECRET environment variables must be set for this action."
-        exit 1
-    }
-}
-
-$script:AccessTokenTarget = "MagicSuite:Blogger:AccessToken"
-$script:RefreshTokenTarget = "MagicSuite:Blogger:RefreshToken"
 
 # Default blog ID for MagicSuite docs
 if (-not $BlogId) {
@@ -192,6 +182,70 @@ function Remove-StoredCredential {
     }
     catch {
         return $false
+    }
+}
+
+#endregion
+
+#region Credential Initialization
+
+# Try to migrate credentials from environment variables to Windows Credential Manager
+# This is a one-time migration - after storing, environment variables are removed
+
+function Initialize-BloggerCredentials {
+    $migrated = $false
+    
+    # Check for Client ID in environment variable
+    if ($env:BLOGGER_CLIENT_ID) {
+        Write-Host "Migrating BLOGGER_CLIENT_ID to Windows Credential Manager..." -ForegroundColor Cyan
+        Set-StoredCredential -Target $script:ClientIdTarget -Username "BloggerClientId" -Password $env:BLOGGER_CLIENT_ID
+        [System.Environment]::SetEnvironmentVariable("BLOGGER_CLIENT_ID", $null, [System.EnvironmentVariableTarget]::User)
+        $migrated = $true
+    }
+    
+    # Check for Client Secret in environment variable
+    if ($env:BLOGGER_CLIENT_SECRET) {
+        Write-Host "Migrating BLOGGER_CLIENT_SECRET to Windows Credential Manager..." -ForegroundColor Cyan
+        Set-StoredCredential -Target $script:ClientSecretTarget -Username "BloggerClientSecret" -Password $env:BLOGGER_CLIENT_SECRET
+        [System.Environment]::SetEnvironmentVariable("BLOGGER_CLIENT_SECRET", $null, [System.EnvironmentVariableTarget]::User)
+        $migrated = $true
+    }
+    
+    # Check for API Key in environment variable
+    if ($env:BLOGGER_API_KEY) {
+        Write-Host "Migrating BLOGGER_API_KEY to Windows Credential Manager..." -ForegroundColor Cyan
+        Set-StoredCredential -Target $script:ApiKeyTarget -Username "BloggerApiKey" -Password $env:BLOGGER_API_KEY
+        [System.Environment]::SetEnvironmentVariable("BLOGGER_API_KEY", $null, [System.EnvironmentVariableTarget]::User)
+        $migrated = $true
+    }
+    
+    if ($migrated) {
+        Write-Host "Credentials migrated successfully. Environment variables have been removed." -ForegroundColor Green
+    }
+    
+    # Now load credentials from Windows Credential Manager
+    $script:ClientId = Get-StoredCredential -Target $script:ClientIdTarget
+    $script:ClientSecret = Get-StoredCredential -Target $script:ClientSecretTarget
+    $script:ApiKey = Get-StoredCredential -Target $script:ApiKeyTarget
+}
+
+# Initialize credentials
+Initialize-BloggerCredentials
+
+# Validate credentials are available for non-read-only actions
+if (-not ($script:ReadOnlyActions -contains $Action)) {
+    if (-not $script:ClientId -or -not $script:ClientSecret) {
+        Write-Error @"
+Blogger credentials not found. Please set the following environment variables (one-time setup):
+
+  `$env:BLOGGER_CLIENT_ID = 'your-client-id'
+  `$env:BLOGGER_CLIENT_SECRET = 'your-client-secret'
+  `$env:BLOGGER_API_KEY = 'your-api-key'  # Optional, for read-only access
+
+Then run this script again. The credentials will be stored in Windows Credential Manager
+and the environment variables will be automatically removed.
+"@
+        exit 1
     }
 }
 
