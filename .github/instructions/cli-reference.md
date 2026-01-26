@@ -326,7 +326,10 @@ magicsuite api get-by-id reportschedule 27967 --profile test2 --tenant 1 --forma
 ### Running a Schedule (Creating a Batch Job)
 ```powershell
 # Run a schedule by creating a ReportBatchJob
-# Required fields: ReportScheduleId, ExecutionResult, ReportScheduleType, TriggeredBy, Name, Description
+# Generate current UTC timestamp for StartDateTimeUtc
+$startTime = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.000Z")
+
+# Required fields: ReportScheduleId, ExecutionResult, ReportScheduleType, TriggeredBy, Name, Description, StartDateTimeUtc
 magicsuite api create reportbatchjob `
     --set ReportScheduleId=27967 `
     --set ExecutionResult=Pending `
@@ -334,10 +337,11 @@ magicsuite api create reportbatchjob `
     --set TriggeredBy=Manual `
     --set Name="Amy Test - Manual Run" `
     --set Description="Triggered via CLI" `
+    --set StartDateTimeUtc="$startTime" `
     --profile test2 --tenant 1
 
 # One-liner version:
-magicsuite api create reportbatchjob --set ReportScheduleId=27967 --set ExecutionResult=Pending --set ReportScheduleType=Production --set TriggeredBy=Manual --set Name="Schedule Run" --set Description="CLI Trigger" --profile test2 --tenant 1
+magicsuite api create reportbatchjob --set ReportScheduleId=27967 --set ExecutionResult=Pending --set ReportScheduleType=Production --set TriggeredBy=Manual --set Name="Schedule Run" --set Description="CLI Trigger" --set StartDateTimeUtc="$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss.000Z'))" --profile test2 --tenant 1
 ```
 
 ### Required Fields for ReportBatchJob Creation
@@ -349,6 +353,7 @@ magicsuite api create reportbatchjob --set ReportScheduleId=27967 --set Executio
 | TriggeredBy | `Manual` | Set to "Manual" for CLI-triggered runs |
 | Name | String | Descriptive name for this run |
 | Description | String | Description of why the run was triggered |
+| StartDateTimeUtc | ISO 8601 UTC timestamp | When to start (use current time) |
 
 **Note**: `CreatedBy` is set automatically by the API based on the authenticated user.
 
