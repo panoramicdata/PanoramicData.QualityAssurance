@@ -19,9 +19,6 @@ test-results/
 # Windows Credential Manager exports
 *.cred
 
-# User-specific settings
-.vscode/settings.json
-
 # PowerShell history
 ConsoleHost_history.txt
 

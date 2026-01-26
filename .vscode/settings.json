@@ -1,0 +1,37 @@
+{
+  // Peacock - Dark orange for QA workspace identification
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#be5700",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#00df66",
+    "activityBarBadge.foreground": "#15202b",
+    "titleBar.activeBackground": "#8b4000",
+    "titleBar.inactiveBackground": "#8b400099",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "statusBar.background": "#8b4000",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#be5700",
+    "statusBarItem.remoteBackground": "#8b4000",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "sash.hoverBorder": "#be5700",
+    "commandCenter.border": "#e7e7e799",
+    "activityBar.activeBackground": "#be5700"
+  },
+  "peacock.color": "#8B4000",
+
+  // Pester Test Explorer settings
+  "pester.testFilePath": [
+    "**/test-scripts/*.Tests.ps1",
+    "**/*.Tests.ps1"
+  ],
+  "pester.runTestsInNewProcess": true,
+  "pester.pesterModulePath": "",
+  "pester.autoDiscoverOnOpen": true,
+
+  // Playwright Test settings (recognized by Playwright extension)
+  "playwright.testingOptions": {
+    "projects": ["chromium", "firefox"]
+  }
+}
