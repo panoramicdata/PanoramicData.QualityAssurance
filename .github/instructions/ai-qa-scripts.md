@@ -261,10 +261,16 @@ Available on [environments]
 
 ## Environment Requirements
 
-All scripts require:
-```powershell
-$env:JIRA_USERNAME = "your.username"
-$env:JIRA_PASSWORD = "your-api-token"
-```
+All scripts use Windows Credential Manager for JIRA authentication.
 
-Run `.\scripts\setup\Setup.ps1` to configure credentials.
+On first run, you will be prompted to enter and store your credentials.
+Credentials are stored under the target name `PanoramicData.JIRA`.
+
+To manually manage credentials:
+```powershell
+# View stored credential
+cmdkey /list:PanoramicData.JIRA
+
+# Delete stored credential (to re-enter)
+cmdkey /delete:PanoramicData.JIRA
+```

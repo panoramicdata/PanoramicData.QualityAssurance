@@ -1,5 +1,5 @@
 # JIRA Integration Tool for Panoramic Data QA Team
-# This script provides functions to interact with JIRA using environment variables for authentication
+# This script provides functions to interact with JIRA using Windows Credential Manager for authentication
 
 param(
     [string]$Action,
@@ -12,34 +12,22 @@ $JIRA_BASE_URL = "https://jira.panoramicdata.com"
 $API_VERSION = "2"
 $JIRA_API_URL = "$JIRA_BASE_URL/rest/api/$API_VERSION"
 
-# Get credentials from environment variables or prompt user
-$JIRA_USERNAME = $env:JIRA_USERNAME
-$JIRA_PASSWORD = $env:JIRA_PASSWORD
+# Get credentials using the helper script (Windows Credential Manager)
+$credentialScript = Join-Path $PSScriptRoot "Get-JiraCredentials.ps1"
+$credentials = & $credentialScript
 
-if (-not $JIRA_USERNAME) {
-    Write-Host "JIRA credentials not found in environment variables." -ForegroundColor Yellow
-    Write-Host "JIRA URL: $JIRA_BASE_URL" -ForegroundColor Cyan
-    $JIRA_USERNAME = Read-Host "Enter your JIRA username"
-    if (-not $JIRA_USERNAME) {
-        Write-Error "Username is required to access JIRA"
-        exit 1
-    }
+if (-not $credentials -or -not $credentials.Username -or -not $credentials.Password) {
+    Write-Error "Failed to retrieve JIRA credentials"
+    exit 1
 }
 
-if (-not $JIRA_PASSWORD) {
-    Write-Host "Enter your JIRA password or API token (input will be hidden)" -ForegroundColor Cyan
-    $securePassword = Read-Host -AsSecureString
-    $JIRA_PASSWORD = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword))
-    if (-not $JIRA_PASSWORD) {
-        Write-Error "Password/API token is required to access JIRA"
-        exit 1
-    }
-}
+$JIRA_USERNAME = $credentials.Username
+$JIRA_PASSWORD = $credentials.Password
 
 # Create authentication header
-$credentials = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${JIRA_USERNAME}:${JIRA_PASSWORD}"))
+$authBytes = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${JIRA_USERNAME}:${JIRA_PASSWORD}"))
 $headers = @{
-    "Authorization" = "Basic $credentials"
+    "Authorization" = "Basic $authBytes"
     "Content-Type" = "application/json"
     "Accept" = "application/json"
 }
@@ -397,9 +385,9 @@ switch ($Action.ToLower()) {
         Write-Host "  transition- Change issue status (requires IssueKey and TransitionName in Parameters)"
         Write-Host "  team      - Get QA team issues (optional TeamMember and Status in Parameters)"
         Write-Host ""
-        Write-Host "Environment Variables Required:"
-        Write-Host "  JIRA_USERNAME - Your JIRA username"
-        Write-Host "  JIRA_PASSWORD - Your JIRA password/API token"
+        Write-Host "Authentication:"
+        Write-Host "  Credentials are stored in Windows Credential Manager under 'PanoramicData.JIRA'"
+        Write-Host "  On first run, you will be prompted to enter and store your credentials."
         Write-Host ""
         Write-Host "Examples:"
         Write-Host "  .\JIRA.ps1 -Action get -IssueKey 'MS-123'"

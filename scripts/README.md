@@ -151,14 +151,22 @@ The `-GeneratePrompt` flag creates a prompt you can paste directly into GitHub C
 
 ## Environment Requirements
 
-All scripts require these environment variables:
+### JIRA Credentials
+All scripts use Windows Credential Manager for JIRA authentication.
+
+On first run, you will be prompted to enter and store your credentials.
+Credentials are stored under the target name `PanoramicData.JIRA`.
 
 ```powershell
-# JIRA credentials
-$env:JIRA_USERNAME = "your.username"
-$env:JIRA_PASSWORD = "your-api-token"
+# View stored credential
+cmdkey /list:PanoramicData.JIRA
 
-# For Elastic scripts
+# Delete stored credential (to re-enter)
+cmdkey /delete:PanoramicData.JIRA
+```
+
+### Elastic Credentials (if using Elastic scripts)
+```powershell
 $env:ELASTIC_USERNAME = "your.username"
 $env:ELASTIC_PASSWORD = "your-password"
 ```
@@ -233,7 +241,7 @@ $ticket = "MS-22886"
 ## Extending Scripts
 
 All scripts follow the same pattern:
-1. Require `$env:JIRA_USERNAME` and `$env:JIRA_PASSWORD`
+1. Get credentials from Windows Credential Manager via `Get-JiraCredentials.ps1`
 2. Fetch ticket details via REST API
 3. Analyze content using pattern matching
 4. Perform action (categorize, run, generate)

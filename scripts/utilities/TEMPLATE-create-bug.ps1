@@ -1,20 +1,18 @@
 # Template for Creating JIRA Bug Reports
 
-# Get credentials from Windows Credential Manager
-# Run this once to store your credentials:
-# .\.github\tools\JIRA.ps1 -Action status
-# (It will prompt you to save credentials)
-
-# Alternatively, use environment variables:
-$username = $env:JIRA_USERNAME
-$password = $env:JIRA_PASSWORD
-
-# If neither is set, prompt the user
-if (-not $username -or -not $password) {
-    Write-Host "JIRA credentials not found. Please set environment variables or use Credential Manager." -ForegroundColor Yellow
-    Write-Host "To use Credential Manager, run: .\.github\tools\JIRA.ps1 -Action status" -ForegroundColor Yellow
+# Get credentials using the helper script (Windows Credential Manager)
+$credentialScript = Join-Path $PSScriptRoot "..\..\..\.github\tools\Get-JiraCredentials.ps1"
+if (-not (Test-Path $credentialScript)) {
+    $credentialScript = Join-Path $PSScriptRoot "..\..\.github\tools\Get-JiraCredentials.ps1"
+}
+$credentials = & $credentialScript
+if (-not $credentials -or -not $credentials.Username -or -not $credentials.Password) {
+    Write-Host "Failed to retrieve JIRA credentials." -ForegroundColor Red
     exit 1
 }
+
+$username = $credentials.Username
+$password = $credentials.Password
 
 $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${username}:${password}"))
 

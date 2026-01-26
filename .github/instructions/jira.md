@@ -10,9 +10,19 @@
 - **Include environment + version** in all test results
 
 ## Authentication
-- **Environment Variables**: `$env:JIRA_USERNAME`, `$env:JIRA_PASSWORD`
+- **Windows Credential Manager**: Credentials stored under `PanoramicData.JIRA`
+- **First run**: Script will prompt for credentials and offer to store them
 - **JIRA URL**: https://jira.panoramicdata.com
 - **Project Key**: MS (Magic Suite)
+
+### Managing Credentials
+```powershell
+# View stored credential
+cmdkey /list:PanoramicData.JIRA
+
+# Delete stored credential (to re-enter)
+cmdkey /delete:PanoramicData.JIRA
+```
 
 ## Common Actions
 

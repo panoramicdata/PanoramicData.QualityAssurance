@@ -1,19 +1,23 @@
 # Test JIRA issue creation with verbose error handling
 
-# Get credentials from environment variables
-$username = $env:JIRA_USERNAME
-$password = $env:JIRA_PASSWORD
-
-if (-not $username -or -not $password) {
-    Write-Host "❌ JIRA credentials not found in environment variables." -ForegroundColor Red
-    Write-Host "Please set JIRA_USERNAME and JIRA_PASSWORD environment variables." -ForegroundColor Yellow
+# Get credentials using the helper script (Windows Credential Manager)
+$credentialScript = Join-Path $PSScriptRoot "..\..\..\.github\tools\Get-JiraCredentials.ps1"
+if (-not (Test-Path $credentialScript)) {
+    $credentialScript = Join-Path $PSScriptRoot "..\..\.github\tools\Get-JiraCredentials.ps1"
+}
+$credentials = & $credentialScript
+if (-not $credentials -or -not $credentials.Username -or -not $credentials.Password) {
+    Write-Host "❌ Failed to retrieve JIRA credentials." -ForegroundColor Red
     exit 1
 }
 
-$credentials = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${username}:${password}"))
+$username = $credentials.Username
+$password = $credentials.Password
+
+$authHeader = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${username}:${password}"))
 
 $headers = @{
-    "Authorization" = "Basic $credentials"
+    "Authorization" = "Basic $authHeader"
     "Content-Type" = "application/json"
     "Accept" = "application/json"
 }

@@ -48,13 +48,24 @@ param(
     [string]$OutputFile = ""
 )
 
-# Ensure JIRA credentials are available
-if (-not $env:JIRA_USERNAME -or -not $env:JIRA_PASSWORD) {
-    Write-Error "JIRA_USERNAME and JIRA_PASSWORD environment variables must be set"
+# Get JIRA credentials using the helper script (Windows Credential Manager)
+$credentialScript = Join-Path $PSScriptRoot "..\..\.github\tools\Get-JiraCredentials.ps1"
+if (-not (Test-Path $credentialScript)) {
+    # Try alternate path
+    $credentialScript = Join-Path $PSScriptRoot "..\.github\tools\Get-JiraCredentials.ps1"
+}
+if (-not (Test-Path $credentialScript)) {
+    Write-Error "Could not find Get-JiraCredentials.ps1 helper script"
     exit 1
 }
 
-$auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($env:JIRA_USERNAME):$($env:JIRA_PASSWORD)"))
+$credentials = & $credentialScript
+if (-not $credentials -or -not $credentials.Username -or -not $credentials.Password) {
+    Write-Error "Failed to retrieve JIRA credentials"
+    exit 1
+}
+
+$auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($credentials.Username):$($credentials.Password)"))
 $headers = @{
     "Authorization" = "Basic $auth"
     "Content-Type" = "application/json"

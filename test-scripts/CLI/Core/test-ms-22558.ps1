@@ -1,29 +1,18 @@
 # Test script for MS-22558 - MagicSuite CLI NuGet package missing DotnetToolSettings.xml
 
-# Get credentials
-$credTarget = "PanoramicData_JIRA"
-$cred = $null
-
-try {
-    $credObject = Get-StoredCredential -Target $credTarget -ErrorAction SilentlyContinue
-    if ($credObject) {
-        $cred = $credObject
-    }
-} catch {
-    # Fallback to environment variables
-    if ($env:JIRA_USERNAME -and $env:JIRA_PASSWORD) {
-        $securePassword = ConvertTo-SecureString $env:JIRA_PASSWORD -AsPlainText -Force
-        $cred = New-Object System.Management.Automation.PSCredential($env:JIRA_USERNAME, $securePassword)
-    }
+# Get credentials using the helper script (Windows Credential Manager)
+$credentialScript = Join-Path $PSScriptRoot "..\..\..\..\.github\tools\Get-JiraCredentials.ps1"
+if (-not (Test-Path $credentialScript)) {
+    $credentialScript = Join-Path $PSScriptRoot "..\..\..\.github\tools\Get-JiraCredentials.ps1"
 }
-
-if (-not $cred) {
-    Write-Error "No JIRA credentials found. Please set up credentials in Windows Credential Manager or environment variables."
+$credentials = & $credentialScript
+if (-not $credentials -or -not $credentials.Username -or -not $credentials.Password) {
+    Write-Error "Failed to retrieve JIRA credentials."
     exit 1
 }
 
 $headers = @{
-    "Authorization" = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($cred.UserName):$($cred.GetNetworkCredential().Password)"))
+    "Authorization" = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($credentials.Username):$($credentials.Password)"))
     "Content-Type" = "application/json"
 }
 

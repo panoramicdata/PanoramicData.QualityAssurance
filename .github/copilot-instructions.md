@@ -19,11 +19,16 @@ This workspace uses a modular instruction system for easier navigation as docume
 
 ## 🤖 AI-Assisted QA Scripts (Quick Reference)
 
+**IMPORTANT**: When asked about ticket quality, improvements, or testing a ticket, ALWAYS use these scripts FIRST:
+
 These scripts in `scripts/` help automate QA tasks. Use them when asked about tickets.
 
 | Question/Task | Script to Use | Command |
 |---------------|---------------|---------|
 | "What could be improved about MS-12345?" | Assess-TicketQuality.ps1 | `.\scripts\Assess-TicketQuality.ps1 -IssueKey MS-12345` |
+| "Is this ticket ready to test?" | Assess-TicketQuality.ps1 | `.\scripts\Assess-TicketQuality.ps1 -IssueKey MS-12345` |
+| "Check ticket quality" | Assess-TicketQuality.ps1 | `.\scripts\Assess-TicketQuality.ps1 -IssueKey MS-12345` |
+| "Improve ticket quality" | Assess-TicketQuality.ps1 | Run first, then apply suggestions |
 | "Categorize this ticket for testing" | Auto-Triage.ps1 | `.\scripts\Auto-Triage.ps1 -IssueKey MS-12345` |
 | "Can this be tested on any environment?" | Auto-Triage.ps1 | Check output for 🌍/⚙️/🏢 indicators |
 | "Generate a test prompt for this ticket" | Auto-Triage.ps1 | `.\scripts\Auto-Triage.ps1 -GeneratePrompt -IssueKey MS-12345` |
