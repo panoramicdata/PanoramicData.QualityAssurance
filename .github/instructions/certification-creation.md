@@ -3,6 +3,157 @@
 ## Purpose
 Instructions for creating professional certification quizzes using the standardized JSON format. These instructions cover everything from planning to implementation, with real-world examples and best practices.
 
+## Information Sources for Magic Suite Certifications
+
+**CRITICAL REQUIREMENT**: When creating certifications for Magic Suite products, you MUST only use information from the following approved sources:
+
+1. **https://docs.magicsuite.net/** - Official Magic Suite documentation
+2. **XWiki** - Internal documentation platform (https://wiki.panoramicdata.com or docs environment)
+3. **Relevant JIRA Tickets** - Product specifications and feature documentation
+4. **Blogger** - Published blog posts about Magic Suite features
+
+**DO NOT use:**
+- External documentation not verified by Panoramic Data
+- Assumptions or generalizations about features
+- Information from unofficial sources
+- Outdated or archived documentation
+
+This ensures all certification content is accurate, current, and officially supported.
+
+**Official Style Guide Reference**:
+- Follow the [Certification Style Guide](https://wiki.panoramicdata.com/bin/view/OPS/Products/ReportMagic/Certification%20Style/) on XWiki
+- Also refer to the [Writing Style Guide](https://wiki.panoramicdata.com/bin/view/Staff%20Training/Office%20systems/Writing%20Style%20Guide/)
+
+## Certification Writing Style Guide
+
+**CRITICAL**: All Magic Suite certifications MUST adhere to these style rules from the official XWiki guide:
+
+### Language & Spelling
+- ✓ **Use US English**: "recognized" (not "recognised"), "color" (not "colour")
+- ✓ **Avoid UK-specific terms**: Use "every two weeks" instead of "fortnightly"
+- ✓ **American terminology**: "Select the checkbox" (not "tick the box")
+
+### Product-Specific Naming
+- ✓ **Exact product names**: Use exact UI element names from the product
+  - Example: "Use Monthly Sub-folder" checkbox (not "Output to Monthly Subfolder" option)
+- ✓ **Capitalization**: Page names like "Schedules" and "Files" have initial capitals
+  - When referring to one schedule or file (concepts), use lowercase
+- ✓ **"Page" vs "Screen"**: Use "Page" or better yet, just "In Files..." (not "screen")
+
+### Writing Perspective
+- ✓ **User point of view**: "To save your work..." (not "The Save page allows you to...")
+- ✓ **User-focused language**: Write from the user's perspective, not developer's viewpoint
+
+### Instruction Ordering
+- ✓ **Logical flow**: "From the File menu, click Save As." (not "Click Save As from the File menu")
+- ✓ **Clear sequence**: Help the user by putting actions in the order they'll perform them
+
+### Icons & Images
+- ✓ **Exact product icons**: If using icons in questions, they must be the exact ones from the product
+- ✓ **Consistent sizing**: When using pictures in answers, ensure they are appropriately and similarly sized
+
+### Answer Formatting
+- ❌ **Avoid full stops** in answer options
+- ✓ **Single correct answer questions**: Must have exactly **4 answers**
+- ✓ **Multiple correct answer questions**: Must have exactly **5 answers**
+
+### Code & Technical Terms
+- ✓ **Courier font size 10** for code/macros in **questions**
+- ✓ **Courier font size 12** for code/macros in **answers**
+- ✓ **Bold and italics** for emphasis in system font areas
+- ✓ **Technical reminders**: Include details like "unless you do `storeAsHidden` you'll get text output" in output questions when relevant
+
+### Examples of Style Rules in Practice
+
+**❌ Wrong**:
+- "Tick the Output to Monthly Subfolder option on the Save screen"
+- "The system allows you to save your schedule fortnightly"
+- "Recognised formats include..."
+
+**✓ Correct**:
+- "Select the Use Monthly Sub-folder checkbox in Files"
+- "You can save your schedule every two weeks"
+- "Recognized formats include..."
+
+## Answer Distribution Best Practices
+
+**Balance and Quality**:
+- Mix difficulty levels appropriately (suggested: 30% easy, 50% medium, 20% hard)
+- Each answer option should be plausible to test genuine understanding
+- Avoid obvious wrong answers that don't test knowledge
+
+**Answer Options Guidelines**:
+- ❌ **Avoid**: "All of the above" or "None of the above" options for the most part (sometimes may be applicable)
+- ❌ **Avoid**: Trick questions that rely on obscure edge cases
+- ✓ **Do**: Provide specific, testable answer choices
+- ✓ **Do**: Use consistent terminology from official documentation
+
+**Multiple Correct Answers**:
+- For `MultipleCorrectAnswer` questions, indicate in the question how many answers to select
+- Example: "Select **two** features that..." or "Select **all** that apply..."
+- Ensure the number of correct answers makes sense (avoid 1 correct out of 2 options)
+- Test that partial credit logic works as intended
+
+**Distractors (Wrong Answers)**:
+- Should represent common misconceptions or similar features
+- Must be definitively incorrect based on documentation
+- Should not require deep technical knowledge to eliminate
+
+## Verification & Review Process
+
+**Before Publication**:
+1. ✓ **Source Verification**: Every question must link to approved source material
+2. ✓ **HelpUrl Requirement**: Include `HelpUrl` links to specific documentation sections
+3. ✓ **Full Test Run**: Someone must complete the entire certification before publishing
+4. ✓ **Screenshot Verification**: If using screenshots, verify they're from official environments (specify: test2, production, etc.)
+5. ✓ **Accuracy Check**: Cross-reference all technical details against current documentation
+
+**Review Checklist**:
+- [ ] All questions traceable to approved sources (docs.magicsuite.net, XWiki, JIRA, Blogger)
+- [ ] No assumptions or generalizations without documentation backing
+- [ ] HelpUrl provided for MOST IF NOT ALL questions but especially for complex or technical questions
+- [ ] Answer correctness verified by at least one other person
+- [ ] Questions test actual knowledge, not memorization of arbitrary facts
+- [ ] Terminology matches official Magic Suite documentation
+- [ ] No version-specific edge cases without clear labeling
+
+**Testing Requirements**:
+- Take the full certification yourself before publishing
+- Verify time limit is appropriate (complete the test and add 30-50% buffer)
+- Check that pass percentage is achievable but challenging
+- Confirm all HTML formatting displays correctly
+
+## Question Quality Standards
+
+**Clear and Unambiguous Wording**:
+- Questions must have one clear interpretation
+- Avoid ambiguous terms like "usually", "sometimes", "often" without context
+- Be specific: Use "Magic Suite CLI v4.1" not "the CLI"
+- State context clearly: "In DataMagic's Query Builder..." not "When building queries..."
+
+**Testable Knowledge**:
+- Each question should test a specific learning objective
+- Avoid questions that require guessing between nearly identical options
+- Focus on "what" and "how", not just "where to find" information
+
+**Acceptance Criteria for Questions**:
+- What specific knowledge does this question assess?
+- Can this be answered using the approved documentation sources?
+- Is the correct answer definitively correct, not "more correct"?
+- Would a qualified Magic Suite user be able to answer this confidently?
+
+**Question Types to Avoid**:
+- ❌ Overly specific version numbers unless critical: "In version 4.1.546, what command..." 
+- ❌ UI element positions: "What is in the third menu item..."
+- ❌ Trivia: "In what year was DataMagic released..."
+- ❌ Multiple concepts in one question: "What does X do and when was it added?"
+
+**Question Types to Use**:
+- ✓ Conceptual understanding: "What is the purpose of DataMagic Sync?"
+- ✓ Workflow knowledge: "What steps are required to create a connection?"
+- ✓ Feature capabilities: "Which output formats does the CLI support?"
+- ✓ Best practices: "When should you use ReportSchedule vs. ReportBatchJob?"
+
 ## JSON Structure Overview
 
 The certification JSON format consists of:
