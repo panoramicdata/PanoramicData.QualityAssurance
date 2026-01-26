@@ -1,0 +1,602 @@
+{
+  "Name": "NCalc101 Professional Certification 2026",
+  "Description": "Professional certification for NCalc101 mathematical expression evaluation platform",
+  "DescriptionHtml": "<p>This certification validates your understanding of NCalc101, including expressions, variables, functions, and workspaces. Demonstrate your proficiency in using NCalc101 for mathematical calculations.</p>",
+  "CooldownDays": 30,
+  "PassPercentage": 70,
+  "PermittedTimeMinutes": 45,
+  "NewSessionValidFromUtc": "2026-01-01T00:00:00Z",
+  "NewSessionValidToUtc": "2026-12-31T23:59:59Z",
+  "Topics": [
+    {
+      "Name": "Basic Expressions and Operators",
+      "Description": "Understanding basic mathematical expressions and operator precedence",
+      "DescriptionHtml": "<p>Test your knowledge of basic arithmetic operations, operator precedence, and expression syntax in NCalc101.</p>",
+      "Position": 1,
+      "QuestionCount": 5,
+      "Questions": [
+        {
+          "Name": "basic-arithmetic-order",
+          "Description": "What is the result of the expression 3 + 4 * 2 in NCalc101?",
+          "DescriptionHtml": "<p>What is the result of the expression <code>3 + 4 * 2</code> in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>11</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>14</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>24</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>10</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "parentheses-grouping",
+          "Description": "What is the result of (3 + 4) * 2?",
+          "DescriptionHtml": "<p>What is the result of <code>(3 + 4) * 2</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>14</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>11</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>10</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>24</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "exponentiation-operator",
+          "Description": "What is the result of 2^4 - 6?",
+          "DescriptionHtml": "<p>What is the result of <code>2^4 - 6</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>10</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>2</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>16</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>22</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "supported-operators",
+          "Description": "Select all operators supported by NCalc101",
+          "DescriptionHtml": "<p>Select <strong>all</strong> operators supported by NCalc101.</p>",
+          "QuestionType": "MultipleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p><code>+</code> (Addition)</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>^</code> (Exponentiation)</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>/</code> (Division)</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>%</code> (Modulo)</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p><code>&amp;&amp;</code> (Logical AND)</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "division-operation",
+          "Description": "What is the result of 20 / 4?",
+          "DescriptionHtml": "<p>What is the result of <code>20 / 4</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>5</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>4</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>0.2</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>80</p>",
+              "IsCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Variables",
+      "Description": "Working with variables in NCalc101",
+      "DescriptionHtml": "<p>Understand how to define, use, and manage variables in NCalc101 expressions.</p>",
+      "Position": 2,
+      "QuestionCount": 5,
+      "Questions": [
+        {
+          "Name": "variable-assignment",
+          "Description": "How do you define a variable in NCalc101?",
+          "DescriptionHtml": "<p>How do you define a variable in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/variables",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Type <code>x = 10</code> and press Enter</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Type <code>var x = 10</code> and press Enter</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Type <code>define x as 10</code> and press Enter</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Type <code>let x = 10</code> and press Enter</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "variable-naming-rules",
+          "Description": "Select all valid variable naming rules",
+          "DescriptionHtml": "<p>Select <strong>all</strong> valid variable naming rules in NCalc101.</p>",
+          "QuestionType": "MultipleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/variables",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Variable names must start with a letter</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Variable names are case-sensitive</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Variable names can include underscores</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Variable names can start with numbers</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Variable names must be all uppercase</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "variable-case-sensitivity",
+          "Description": "Are the variables total and Total the same in NCalc101?",
+          "DescriptionHtml": "<p>Are the variables <code>total</code> and <code>Total</code> the same in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/variables",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>No, they are different variables</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Yes, they are the same variable</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Only if defined in the same workspace</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>They are the same unless explicitly differentiated</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "variable-reuse",
+          "Description": "If x = 10 is defined, what is the result of x * 5?",
+          "DescriptionHtml": "<p>If <code>x = 10</code> is defined, what is the result of <code>x * 5</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/variables",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>50</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>15</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>2</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Error: Variable not defined</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "variable-update",
+          "Description": "How do you update an existing variable to a new value?",
+          "DescriptionHtml": "<p>How do you update an existing variable to a new value?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/variables",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Assign a new value using <code>=</code> (e.g., <code>x = 20</code>)</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Use the <code>update</code> command</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Delete the old variable first, then create a new one</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Variables cannot be updated once defined</p>",
+              "IsCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Functions",
+      "Description": "Using built-in functions in NCalc101",
+      "DescriptionHtml": "<p>Test your knowledge of built-in mathematical functions available in NCalc101.</p>",
+      "Position": 3,
+      "QuestionCount": 4,
+      "Questions": [
+        {
+          "Name": "sqrt-function",
+          "Description": "What is the result of sqrt(25)?",
+          "DescriptionHtml": "<p>What is the result of <code>sqrt(25)</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>5</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>12.5</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>625</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>25</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "sqrt-negative",
+          "Description": "What happens when you evaluate sqrt(-4)?",
+          "DescriptionHtml": "<p>What happens when you evaluate <code>sqrt(-4)</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Error: Invalid input for sqrt</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>-2</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>2i (imaginary number)</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>4</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "function-types",
+          "Description": "Select all functions supported by NCalc101",
+          "DescriptionHtml": "<p>Select <strong>all</strong> functions supported by NCalc101.</p>",
+          "QuestionType": "MultipleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p><code>sqrt()</code></p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>sin()</code></p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>log()</code></p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>max()</code></p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p><code>concat()</code></p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "function-combination",
+          "Description": "What is the result of sqrt(16) + 4?",
+          "DescriptionHtml": "<p>What is the result of <code>sqrt(16) + 4</code>?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/expressions",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>8</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>20</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>6</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>4.47</p>",
+              "IsCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Output and Error Handling",
+      "Description": "Understanding output, results, and error messages",
+      "DescriptionHtml": "<p>Learn how to interpret output, view results, and troubleshoot errors in NCalc101.</p>",
+      "Position": 4,
+      "QuestionCount": 4,
+      "Questions": [
+        {
+          "Name": "viewing-results",
+          "Description": "How do you evaluate an expression in NCalc101?",
+          "DescriptionHtml": "<p>How do you evaluate an expression in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/output-and-results",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Click Evaluate or press Enter</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Click Calculate or press Space</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Type 'run' and press Enter</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Save the expression and refresh the page</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "output-components",
+          "Description": "Select all components shown in the NCalc101 output",
+          "DescriptionHtml": "<p>Select <strong>all</strong> components shown in the NCalc101 output.</p>",
+          "QuestionType": "MultipleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/output-and-results",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>The calculated result</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Defined variables and their values</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Error messages</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Execution time in milliseconds</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Memory usage statistics</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "undefined-variable-error",
+          "Description": "What happens when you reference an undefined variable?",
+          "DescriptionHtml": "<p>What happens when you reference an undefined variable?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/output-and-results",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Error: Variable not defined</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>The variable is automatically assigned a value of 0</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>The expression is ignored</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>A warning appears but calculation continues</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "error-troubleshooting",
+          "Description": "What causes most errors in NCalc101?",
+          "DescriptionHtml": "<p>What causes most errors in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/faq",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Typos, undefined variables, or unsupported operations</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Network connectivity issues</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Browser compatibility problems</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Server overload</p>",
+              "IsCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Workspaces and Best Practices",
+      "Description": "Managing workspaces and using NCalc101 effectively",
+      "DescriptionHtml": "<p>Understand workspaces, organization strategies, and best practices for efficient use of NCalc101.</p>",
+      "Position": 5,
+      "QuestionCount": 3,
+      "Questions": [
+        {
+          "Name": "workspace-definition",
+          "Description": "What is a workspace in NCalc101?",
+          "DescriptionHtml": "<p>What is a workspace in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/faq",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>A collection of expressions, variables, and results organized for a specific project</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>A physical location where you perform calculations</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>A template for creating new expressions</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>A shared folder for team collaboration</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "multiple-workspaces",
+          "Description": "Can you have multiple workspaces in NCalc101?",
+          "DescriptionHtml": "<p>Can you have multiple workspaces in NCalc101?</p>",
+          "QuestionType": "SingleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/faq",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Yes, you can create and switch between multiple workspaces</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>No, only one workspace is allowed per user</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Yes, but only with a premium account</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>No, but you can archive old workspaces</p>",
+              "IsCorrect": false
+            }
+          ]
+        },
+        {
+          "Name": "best-practices",
+          "Description": "Select all best practices for using NCalc101 effectively",
+          "DescriptionHtml": "<p>Select <strong>all</strong> best practices for using NCalc101 effectively.</p>",
+          "QuestionType": "MultipleCorrectAnswer",
+          "HelpUrl": "https://docs.magicsuite.net/ncalc101/variables",
+          "AnswerOptions": [
+            {
+              "DescriptionHtml": "<p>Use variables to simplify complex calculations</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Check expressions for typos before evaluating</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Use clear and descriptive variable names</p>",
+              "IsCorrect": true
+            },
+            {
+              "DescriptionHtml": "<p>Always use uppercase for variable names</p>",
+              "IsCorrect": false
+            },
+            {
+              "DescriptionHtml": "<p>Avoid using parentheses to keep expressions simple</p>",
+              "IsCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
