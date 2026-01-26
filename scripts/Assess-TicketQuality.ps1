@@ -270,13 +270,13 @@ function Assess-Ticket {
         }
     }
     else {
-        # For non-bugs, steps are nice-to-have
+        # For non-bugs, steps are nice-to-have but not required
         if ($hasSteps) {
             $stepsScore = 100
             $findings += "✓ Steps: Workflow documented"
         }
         else {
-            $stepsScore = 50
+            $stepsScore = 100  # Full marks - not required for this type
             $findings += "○ Steps: Not required for this type"
         }
     }
@@ -345,8 +345,8 @@ function Assess-Ticket {
         $recommendations += "Add fix version"
     }
     else {
-        # For planning/development stages, no fix version is fine
-        $envScore += 70  # Don't penalize
+        # For planning/development stages, no fix version is fine - full marks
+        $envScore += 100  # Full marks since it's not expected at this stage
         $findings += "○ Fix Version: Not required yet (status: $status)"
     }
     
@@ -367,10 +367,15 @@ function Assess-Ticket {
         $findings += "✓ Attachments: Inline images found"
     }
     else {
-        $attachScore = 0
-        $findings += "○ Attachments: None"
+        # Attachments are nice-to-have for features, required for bugs
         if ($isBug) {
+            $attachScore = 0
+            $findings += "⚠ Attachments: None (recommended for bugs)"
             $recommendations += "Add screenshot or error log"
+        }
+        else {
+            $attachScore = 100  # Full marks for non-bugs - attachments optional
+            $findings += "○ Attachments: None (optional for features)"
         }
     }
     $scores.Attachments = $attachScore
