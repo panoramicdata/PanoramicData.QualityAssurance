@@ -13,6 +13,35 @@ This workspace uses a modular instruction system for easier navigation as docume
 | 🎭 **Playwright** | [instructions/playwright.md](instructions/playwright.md) | UI testing with Playwright, Firefox setup, test execution |
 | 💻 **CLI Reference** | [instructions/cli-reference.md](instructions/cli-reference.md) | MagicSuite CLI commands, options, version management |
 | 🧪 **Testing** | [instructions/testing.md](instructions/testing.md) | Testing workflow, environment confirmation, test organization |
+| 🤖 **AI QA Scripts** | [instructions/ai-qa-scripts.md](instructions/ai-qa-scripts.md) | AI-assisted ticket analysis, triage, quality assessment |
+
+---
+
+## 🤖 AI-Assisted QA Scripts (Quick Reference)
+
+These scripts in `scripts/` help automate QA tasks. Use them when asked about tickets.
+
+| Question/Task | Script to Use | Command |
+|---------------|---------------|---------|
+| "What could be improved about MS-12345?" | Assess-TicketQuality.ps1 | `.\scripts\Assess-TicketQuality.ps1 -IssueKey MS-12345` |
+| "Categorize this ticket for testing" | Auto-Triage.ps1 | `.\scripts\Auto-Triage.ps1 -IssueKey MS-12345` |
+| "Can this be tested on any environment?" | Auto-Triage.ps1 | Check output for 🌍/⚙️/🏢 indicators |
+| "Generate a test prompt for this ticket" | Auto-Triage.ps1 | `.\scripts\Auto-Triage.ps1 -GeneratePrompt -IssueKey MS-12345` |
+| "Verify CLI commands in this ticket" | Auto-VerifyCLI.ps1 | `.\scripts\Auto-VerifyCLI.ps1 -IssueKey MS-12345` |
+| "Check logs before testing" | Pre-Test-Check.ps1 | `.\scripts\Pre-Test-Check.ps1 -IssueKey MS-12345` |
+| "Generate a Playwright test" | Generate-SmokeTest.ps1 | `.\scripts\Generate-SmokeTest.ps1 -IssueKey MS-12345` |
+| "Assess all Ready for Test tickets" | Assess-TicketQuality.ps1 | `.\scripts\Assess-TicketQuality.ps1 -BatchMode` |
+
+### Quality Score Interpretation
+- **80-100 (EXCELLENT)**: Ready to test, well-specified
+- **60-79 (GOOD)**: Minor improvements possible
+- **50-59 (ADEQUATE)**: Needs some clarification
+- **<50 (NEEDS IMPROVEMENT)**: Request clarification before testing
+
+### Environment Indicators (from Auto-Triage)
+- 🌍 `ai-any-environment` - Can test on any environment
+- ⚙️ `ai-config-specific` - Needs specific configuration
+- 🏢 `ai-tenant-specific` - Requires specific tenant data
 
 ---
 
@@ -82,7 +111,7 @@ Environments: alpha, alpha2, test, **test2 (default)**, beta, staging, productio
 | Run Playwright auth | [Playwright](instructions/playwright.md#authentication) | `npx playwright test auth.setup --project=firefox` |
 | Run Playwright test | [Playwright](instructions/playwright.md#running-tests) | `npx playwright test [name] --project=firefox` |
 | Get XWiki page | [XWiki](instructions/xwiki.md#get-page-content) | `.\.github\tools\XWiki.ps1 -Action Get -Space "MagicSuite"` |
-| Run schedule | [CLI](instructions/cli-reference.md#running-report-schedules-batch-jobs) | Create ReportBatchJob via REST API |
+| Run schedule | [CLI](instructions/cli-reference.md#running-report-schedules-batch-jobs) | `magicsuite api create reportbatchjob --set ReportScheduleId=<ID> ...` |
 
 ### Key Information
 

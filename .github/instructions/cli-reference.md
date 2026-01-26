@@ -299,12 +299,17 @@ magicsuite get --entity DataStore --output json --profile test2-amy |
 
 ## Running Report Schedules (Batch Jobs)
 
-**Important**: To run a report schedule, you must create a ReportBatchJob. The CLI does not have a `create` command, so use the REST API directly.
+**Important**: To run a report schedule, you must create a ReportBatchJob via the CLI.
 
 ### Understanding the Relationship
 - **ReportSchedule** - Defines what reports to run, input/output folders, cron schedule
 - **ReportBatchJob** - An execution instance of a schedule (created to trigger a run)
 - **ReportJob** - Individual report jobs within a batch
+
+### Common Test Schedules (test2 environment, tenant 1)
+| Schedule Name | ID | Owner | Notes |
+|---------------|-----|-------|-------|
+| Amy Test | 27967 | amy.bond | Test schedule for QA automation |
 
 ### Finding Schedules
 ```powershell
@@ -315,46 +320,49 @@ magicsuite api get reportschedules --profile test2 --tenant 1 --take 200
 magicsuite api get reportschedules --profile test2 --tenant 1 --filter "Amy"
 
 # Get schedule details
-magicsuite api get-by-id reportschedule 27967 --profile test2 --format Json
+magicsuite api get-by-id reportschedule 27967 --profile test2 --tenant 1 --format Json --quiet
 ```
 
-### Creating a Batch Job (Run a Schedule) via REST API
+### Running a Schedule (Creating a Batch Job)
 ```powershell
-# Get profile credentials
-$tokenName = "YOUR_TOKEN_NAME"
-$tokenKey = "YOUR_TOKEN_KEY"
-$apiUrl = "https://api.test2.magicsuite.net"
-$scheduleId = 27967  # Amy Test schedule
+# Run a schedule by creating a ReportBatchJob
+# Required fields: ReportScheduleId, ExecutionResult, ReportScheduleType, TriggeredBy, Name, Description
+magicsuite api create reportbatchjob `
+    --set ReportScheduleId=27967 `
+    --set ExecutionResult=Pending `
+    --set ReportScheduleType=Production `
+    --set TriggeredBy=Manual `
+    --set Name="Amy Test - Manual Run" `
+    --set Description="Triggered via CLI" `
+    --profile test2 --tenant 1
 
-# Create authorization header
-$auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${tokenName}:${tokenKey}"))
-$headers = @{
-    "Authorization" = "Basic $auth"
-    "Content-Type" = "application/json"
-    "X-Tenant-Id" = "1"  # Panoramic Data tenant
-}
-
-# Create batch job payload
-$body = @{
-    reportScheduleId = $scheduleId
-} | ConvertTo-Json
-
-# POST to create batch job (triggers schedule run)
-$result = Invoke-RestMethod -Uri "$apiUrl/api/ReportBatchJobs" `
-    -Method POST `
-    -Headers $headers `
-    -Body $body
-
-Write-Host "Created Batch Job ID: $($result.id)"
+# One-liner version:
+magicsuite api create reportbatchjob --set ReportScheduleId=27967 --set ExecutionResult=Pending --set ReportScheduleType=Production --set TriggeredBy=Manual --set Name="Schedule Run" --set Description="CLI Trigger" --profile test2 --tenant 1
 ```
+
+### Required Fields for ReportBatchJob Creation
+| Field | Value | Description |
+|-------|-------|-------------|
+| ReportScheduleId | Schedule ID (int) | The ID of the schedule to run |
+| ExecutionResult | `Pending` | Must be "Pending" to start a new run |
+| ReportScheduleType | `Production` | Usually "Production" |
+| TriggeredBy | `Manual` | Set to "Manual" for CLI-triggered runs |
+| Name | String | Descriptive name for this run |
+| Description | String | Description of why the run was triggered |
+
+**Note**: `CreatedBy` is set automatically by the API based on the authenticated user.
 
 ### Monitoring Batch Job Status
 ```powershell
-# Get batch job status
-magicsuite api get-by-id reportbatchjob $batchJobId --profile test2 --format Json
+# Get batch job status (replace 69158 with your batch job ID)
+magicsuite api get-by-id reportbatchjob 69158 --profile test2 --tenant 1 --format Json --quiet
 
 # List recent batch jobs for a schedule
 magicsuite api get reportbatchjobs --profile test2 --tenant 1 --take 10 --orderby "-CreatedDateTimeUtc"
+
+# Check result with PowerShell
+$job = magicsuite api get-by-id reportbatchjob 69158 --profile test2 --tenant 1 --format Json --quiet | ConvertFrom-Json
+Write-Host "Result: $($job.executionResult) - $($job.message)"
 ```
 
 ### Batch Job Execution Results
@@ -365,8 +373,9 @@ magicsuite api get reportbatchjobs --profile test2 --tenant 1 --take 10 --orderb
 | 2 | Partial Success |
 | 3 | Failed |
 | 4 | Cancelled |
-| 5 | Timeout |
+| 5 | Running (In Progress) |
 | 6 | No Reports |
+| 13 | Stopped (schedule's stopOn condition met) |
 
 ## Common Pitfalls
 
