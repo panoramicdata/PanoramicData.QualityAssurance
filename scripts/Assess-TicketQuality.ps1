@@ -123,7 +123,11 @@ $expectedBehaviorPatterns = @(
     "desired:",
     "correct\s+behavior:",
     "fix:",
-    "solution:"
+    "solution:",
+    "h2\.\s*acceptance\s+criteria",
+    "h3\.\s*acceptance\s+criteria",
+    "acceptance\s+criteria:",
+    "\*\*acceptance\s+criteria\*\*"
 )
 
 function Assess-Ticket {
