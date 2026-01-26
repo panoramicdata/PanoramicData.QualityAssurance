@@ -133,6 +133,7 @@ function Assess-Ticket {
     $summary = $Issue.fields.summary ?? ""
     $description = $Issue.fields.description ?? ""
     $issueType = $Issue.fields.issuetype.name ?? "Unknown"
+    $status = $Issue.fields.status.name ?? "Unknown"
     $components = $Issue.fields.components ?? @()
     $labels = $Issue.fields.labels ?? @()
     $fixVersions = $Issue.fields.fixVersions ?? @()
@@ -140,6 +141,17 @@ function Assess-Ticket {
     
     $fullText = "$summary`n$description"
     $isBug = $issueType -match "Bug|Defect"
+    
+    # Statuses where fix version is expected (later stages of workflow)
+    $fixVersionExpectedStatuses = @(
+        "Ready for Test",
+        "In Test",
+        "Ready for Release",
+        "Closed",
+        "Done",
+        "Resolved"
+    )
+    $shouldHaveFixVersion = $fixVersionExpectedStatuses -contains $status
     
     $scores = @{}
     $findings = @()
@@ -323,9 +335,15 @@ function Assess-Ticket {
         $envScore += 70
         $findings += "✓ Fix Version: $($fixVersions[0].name)"
     }
-    else {
-        $findings += "⚠ Fix Version: Not specified"
+    elseif ($shouldHaveFixVersion) {
+        # Only flag as missing if ticket is in a stage where fix version is expected
+        $findings += "⚠ Fix Version: Not specified (expected for '$status' status)"
         $recommendations += "Add fix version"
+    }
+    else {
+        # For planning/development stages, no fix version is fine
+        $envScore += 70  # Don't penalize
+        $findings += "○ Fix Version: Not required yet (status: $status)"
     }
     
     if ($hasEnvMention) {
@@ -567,7 +585,7 @@ if ($BatchMode) {
     $body = @{
         jql = $jql
         maxResults = 100
-        fields = @("key", "summary", "description", "issuetype", "priority", "components", "labels", "fixVersions", "attachment")
+        fields = @("key", "summary", "description", "issuetype", "status", "priority", "components", "labels", "fixVersions", "attachment")
     } | ConvertTo-Json
     
     try {
