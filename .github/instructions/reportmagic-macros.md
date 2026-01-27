@@ -6,26 +6,88 @@ This guide covers creating comprehensive `.rmscript` test files for ReportMagic 
 
 ## Documentation Source
 
-### Core Macros
+### Core Macros (Complete List - 47 Total)
 **Base URL:** https://docs.magicsuite.net/ReportMagic/Macros/Core/
+
+ReportMagic has 47 Core macros organized by category:
+
+**Array & Collection:**
+- Array.Count, Array, Map
+
+**Flow Control:**
+- Break, Continue, ForEach, If, Switch, Stop, Section
+
+**Calculation & Data:**
+- Calculate, Inc, Random, LinearRegression
+
+**String Operations:**
+- String, Substring, StringIndex, Regex, SearchAndReplace
+
+**Object & Variable:**
+- Object, Convert, IsSet, Unset, Delete, Settings
+
+**Document:**
+- DocumentBookmark, DocumentBreak, DocumentInsertSection, DocumentSection
+
+**Table:**
+- DeleteRow, RepeatRow, FormatTableCell, FormatTableRow, InsertTableCellImage
+
+**Email:**
+- Email, EmailFile, EmailReport
+
+**Utility:**
+- Comment, Ignore, Execute, Sleep, Stopwatch, Color, Link
+
+**Debug & Error:**
+- Breakpoint, ThrowException, Warning
 
 Each macro has its own documentation page:
 - https://docs.magicsuite.net/ReportMagic/Macros/Core/Array
 - https://docs.magicsuite.net/ReportMagic/Macros/Core/Calculate
-- https://docs.magicsuite.net/ReportMagic/Macros/Core/Object
+- https://docs.magicsuite.net/ReportMagic/Macros/Core/String
 - etc.
 
-### Core-Like Macros
+### Core-Like Macros (Complete List - 66 Total)
 These additional macros are also treated as 'core-like' for testing purposes:
+
+**Dictionary (3 macros):**
+- Dictionary.Item, Dictionary.Keys, Dictionary.Values
 - https://docs.magicsuite.net/ReportMagic/Macros/Dictionary
+
+**Function (2 macros):**
+- Function.Call, Function.Define
 - https://docs.magicsuite.net/ReportMagic/Macros/Function
+
+**Json (2 macros):**
+- Json.Item, Json.List
 - https://docs.magicsuite.net/ReportMagic/Macros/Json
+
+**List (20 macros):**
+- List.Add, List.Analysis, List.Complement, List.Count, List.Dequeue, List.Duplicates, List.First, List.Graph, List.GroupBy, List.IndicesOf, List.Intersection, List.Item, List.Range, List.SelectColumns, List.Select, List.Sort, List.Table, List.Union, List.Where, List.SummaryValue
 - https://docs.magicsuite.net/ReportMagic/Macros/List
+
+**Object (6 macros):**
+- Object.ArrayCount, Object.Graph, Object.Property, Object.Type, Object.Unpack, Object.UnpackVariables
 - https://docs.magicsuite.net/ReportMagic/Macros/Object
+
+**Table (9 macros):**
+- Table.ColumnCount, Table.Delete, Table.Graph, Table.MergeCells, Table.RowCount, Table.Save, Table.Sort, Table.Format, Table.WorldMap
 - https://docs.magicsuite.net/ReportMagic/Macros/Table
+
+**Time (8 macros):**
+- Calendar, CronHumanReadable, CronRunDate, DateRange, DateTime, DateTime.IsInWorkHours, TimeSpan, DateTime.WorkHoursDuration
 - https://docs.magicsuite.net/ReportMagic/Macros/Time
+
+**Variable (3 macros):**
+- Variable.Image, Variable.List, Variable.Property
 - https://docs.magicsuite.net/ReportMagic/Macros/Variable
+
+**Kroki (1 macro):**
+- Kroki.Image
 - https://docs.magicsuite.net/ReportMagic/Macros/Kroki
+
+**Cache (5 macros):**
+- Cache.Expires, Cache.Get, Cache.IsSet, Cache.Set, Cache.Unset
 - https://docs.magicsuite.net/ReportMagic/Macros/Cache
 
 ## File Location
