@@ -2,10 +2,11 @@
 
 ## Overview
 
-This guide covers creating comprehensive `.rmscript` test files for ReportMagic Core macros based on official documentation.
+This guide covers creating comprehensive `.rmscript` test files for ReportMagic Core macros and 'core-like' macros based on official documentation.
 
 ## Documentation Source
 
+### Core Macros
 **Base URL:** https://docs.magicsuite.net/ReportMagic/Macros/Core/
 
 Each macro has its own documentation page:
@@ -14,21 +15,46 @@ Each macro has its own documentation page:
 - https://docs.magicsuite.net/ReportMagic/Macros/Core/Object
 - etc.
 
+### Core-Like Macros
+These additional macros are also treated as 'core-like' for testing purposes:
+- https://docs.magicsuite.net/ReportMagic/Macros/Dictionary
+- https://docs.magicsuite.net/ReportMagic/Macros/Function
+- https://docs.magicsuite.net/ReportMagic/Macros/Json
+- https://docs.magicsuite.net/ReportMagic/Macros/List
+- https://docs.magicsuite.net/ReportMagic/Macros/Object
+- https://docs.magicsuite.net/ReportMagic/Macros/Table
+- https://docs.magicsuite.net/ReportMagic/Macros/Time
+- https://docs.magicsuite.net/ReportMagic/Macros/Variable
+- https://docs.magicsuite.net/ReportMagic/Macros/Kroki
+- https://docs.magicsuite.net/ReportMagic/Macros/Cache
+
 ## File Location
 
-All rmscript files are stored in:
+### Core Macros
+All Core macro rmscript files are stored in:
 ```
 test-scripts/ReportMagic/Macros/Core/{MacroName}.rmscript
 ```
+
+### Core-Like Macros
+Core-like macro rmscript files are stored in their respective folders:
+```
+test-scripts/ReportMagic/Macros/{MacroName}.rmscript
+```
+For example:
+- `test-scripts/ReportMagic/Macros/Dictionary.rmscript`
+- `test-scripts/ReportMagic/Macros/Function.rmscript`
+- `test-scripts/ReportMagic/Macros/Json.rmscript`
+- etc.
 
 ## File Structure
 
 Each rmscript file must follow this structure:
 
 ```rmscript
-// {MacroName} Macro - Core Macro Examples
+// {MacroName} Macro - Examples
 // Purpose: {Brief description from documentation}
-// Source: https://docs.magicsuite.net/ReportMagic/Macros/Core/{MacroName}
+// Source: https://docs.magicsuite.net/ReportMagic/Macros/{Core/}{MacroName}
 
 // Example 1: {Description}
 [MacroSyntax: parameters]
@@ -44,6 +70,8 @@ Each rmscript file must follow this structure:
 // Test: {Another parameter}
 [MacroSyntax: parameter=value]
 ```
+
+**Note:** For Core macros, the source URL includes `/Core/` in the path. For core-like macros, it doesn't.
 
 ## Content Requirements
 
@@ -135,8 +163,14 @@ Total: 17 working macro examples, no errors, no complex scenarios
 ## Creating New Macro Files
 
 ### Step 1: Fetch Documentation
+**Core Macros:**
 ```
 https://docs.magicsuite.net/ReportMagic/Macros/Core/{MacroName}
+```
+
+**Core-Like Macros:**
+```
+https://docs.magicsuite.net/ReportMagic/Macros/{MacroName}
 ```
 
 ### Step 2: Extract Information
@@ -184,8 +218,10 @@ https://docs.magicsuite.net/ReportMagic/Macros/Core/{MacroName}
 
 | Task | Action |
 |------|--------|
-| Find macro docs | https://docs.magicsuite.net/ReportMagic/Macros/Core/{Name} |
-| Create file | `test-scripts/ReportMagic/Macros/Core/{Name}.rmscript` |
+| Find Core macro docs | https://docs.magicsuite.net/ReportMagic/Macros/Core/{Name} |
+| Find core-like macro docs | https://docs.magicsuite.net/ReportMagic/Macros/{Name} |
+| Create Core file | `test-scripts/ReportMagic/Macros/Core/{Name}.rmscript` |
+| Create core-like file | `test-scripts/ReportMagic/Macros/{Name}.rmscript` |
 | Fetch page content | Use fetch_webpage tool with URL |
 | Test macros | Run rmscript file in ReportMagic Report Studio |
 | Fix jsonPath errors | Break nested access into multiple steps |
