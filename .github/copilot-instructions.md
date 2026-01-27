@@ -14,6 +14,7 @@ This workspace uses a modular instruction system for easier navigation as docume
 | 💻 **CLI Reference** | [instructions/cli-reference.md](instructions/cli-reference.md) | MagicSuite CLI commands, options, version management |
 | 🧪 **Testing** | [instructions/testing.md](instructions/testing.md) | Testing workflow, environment confirmation, test organization |
 | 🤖 **AI QA Scripts** | [instructions/ai-qa-scripts.md](instructions/ai-qa-scripts.md) | AI-assisted ticket analysis, triage, quality assessment |
+| 📋 **ReportMagic Macros** | [instructions/reportmagic-macros.md](instructions/reportmagic-macros.md) | Creating rmscript test files for ReportMagic Core macros |
 
 ---
 
