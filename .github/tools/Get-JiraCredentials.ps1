@@ -101,21 +101,30 @@ if ($credentials) {
 }
 
 # No stored credentials - check environment variables as fallback (for migration)
-if ($env:JIRA_USERNAME -and $env:JIRA_PASSWORD) {
+$envUsername = [Environment]::GetEnvironmentVariable('JIRA_USERNAME', 'User')
+$envPassword = [Environment]::GetEnvironmentVariable('JIRA_PASSWORD', 'User')
+
+if ($envUsername -and $envPassword) {
     Write-Host "Found JIRA credentials in environment variables." -ForegroundColor Yellow
     Write-Host "Migrating to Windows Credential Manager..." -ForegroundColor Yellow
     
-    $stored = Set-StoredJiraCredential -Username $env:JIRA_USERNAME -Password $env:JIRA_PASSWORD
+    $stored = Set-StoredJiraCredential -Username $envUsername -Password $envPassword
     if ($stored) {
         Write-Host "Credentials migrated successfully." -ForegroundColor Green
-        Write-Host "You can now remove the environment variables:" -ForegroundColor Cyan
-        Write-Host '  [Environment]::SetEnvironmentVariable("JIRA_USERNAME", $null, "User")' -ForegroundColor Gray
-        Write-Host '  [Environment]::SetEnvironmentVariable("JIRA_PASSWORD", $null, "User")' -ForegroundColor Gray
+        
+        # Remove the environment variables since we've migrated to Credential Manager
+        Write-Host "Removing environment variables..." -ForegroundColor Cyan
+        [Environment]::SetEnvironmentVariable('JIRA_USERNAME', $null, 'User')
+        [Environment]::SetEnvironmentVariable('JIRA_PASSWORD', $null, 'User')
+        # Also clear from current session
+        $env:JIRA_USERNAME = $null
+        $env:JIRA_PASSWORD = $null
+        Write-Host "Environment variables removed." -ForegroundColor Green
     }
     
     return @{
-        Username = $env:JIRA_USERNAME
-        Password = $env:JIRA_PASSWORD
+        Username = $envUsername
+        Password = $envPassword
         Source = "EnvironmentVariables_Migrated"
     }
 }

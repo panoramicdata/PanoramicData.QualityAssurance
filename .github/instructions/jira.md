@@ -10,51 +10,101 @@
 - **Include environment + version** in all test results
 
 ## Authentication
-- **Windows Credential Manager**: Credentials stored under `PanoramicData.JIRA`
-- **First run**: Script will prompt for credentials and offer to store them
-- **JIRA URL**: https://jira.panoramicdata.com
+The script uses Windows Credential Manager as the primary credential store. Environment variables are deprecated and will be automatically migrated.
+
+**Credential Priority:**
+1. **Command line parameters** (`-Username` and `-Password`) - for CI/automation only
+2. **Windows Credential Manager** (`PanoramicData.JIRA`) - preferred persistent storage
+3. **Environment variables** (legacy) - auto-migrated to Credential Manager, then removed
+4. **Interactive prompt** - stores new credentials in Windows Credential Manager
+
+- **JIRA URL**: https://jira.panoramicdata.com (or set `JIRA_BASEURL` environment variable)
 - **Project Key**: MS (Magic Suite)
 
 ### Managing Credentials
 ```powershell
-# View stored credential
+# View Windows Credential Manager stored credential
 cmdkey /list:PanoramicData.JIRA
 
 # Delete stored credential (to re-enter)
 cmdkey /delete:PanoramicData.JIRA
+
+# Manually add credential
+cmdkey /generic:PanoramicData.JIRA /user:your.username /pass:your.password
 ```
+
+### Legacy Environment Variables (Deprecated)
+If environment variables are detected, they will be automatically migrated to Windows Credential Manager and removed:
+```powershell
+# Check if legacy env vars exist (should be empty)
+[Environment]::GetEnvironmentVariable('JIRA_USERNAME', 'User')
+[Environment]::GetEnvironmentVariable('JIRA_PASSWORD', 'User')
+```
+
+## Available Actions
+
+| Action | Description |
+|--------|-------------|
+| `query` | Query tickets or users (default) |
+| `create` | Create new tickets |
+| `comment` | Add comment to a ticket |
+| `update-comment` | Update existing comment |
+| `delete-comment` | Delete a comment |
+| `transition` | Transition ticket to new status |
+| `transitions` | List available transitions for a ticket |
+| `set-fixversion` | Set fix version on a ticket |
+| `set-sprint` | Move ticket to a sprint |
+| `update-ticket` | Update ticket fields |
+| `link-issues` | Link two issues together |
+| `attach-file` | Attach file to a ticket |
+| `download-attachment` | Download attachment from a ticket |
+| `get-history` | Get change history for a ticket |
+| `list-components` | List available components for a project |
 
 ## Common Actions
 
 ### Get Ticket Information
 ```powershell
-# Basic info
-.\.github\tools\JIRA.ps1 -Action Get -IssueKey MS-12345
+# Query single ticket by JQL
+.\.github\tools\JIRA.ps1 -Action query -Jql 'key = MS-12345'
 
-# Full info with comments and history
-.\.github\tools\JIRA.ps1 -Action GetFull -IssueKey MS-12345
+# Query with all fields
+.\.github\tools\JIRA.ps1 -Action query -Jql 'key = MS-12345' -Fields all
 
-# Formatted detailed view
-.\.github\tools\JIRA.ps1 -Action Detailed -IssueKey MS-12345
+# Query with comments included
+.\.github\tools\JIRA.ps1 -Action query -Jql 'key = MS-12345' -IncludeComments
 ```
 
 ### Search Tickets
 ```powershell
 # JQL search
-.\.github\tools\JIRA.ps1 -Action Search -Parameters @{JQL="project=MS AND status='Ready for Test'"}
+.\.github\tools\JIRA.ps1 -Action query -Jql 'project = MS AND status = "Ready for Test"' -MaxResults 50
 
-# Team view (QA team tickets)
-.\.github\tools\JIRA.ps1 -Action Team
+# Search with specific fields
+.\.github\tools\JIRA.ps1 -Action query -Jql 'assignee = currentUser()' -Fields custom -CustomFields 'key,summary,status'
 ```
 
 ### Add Comments
 ```powershell
-.\.github\tools\JIRA.ps1 -Action Comment -IssueKey MS-12345 -Parameters @{Comment="Progress update..."}
+.\.github\tools\JIRA.ps1 -Action comment -IssueKey MS-12345 -Comment "Progress update..."
+
+# Multi-line comment with Jira markup
+.\.github\tools\JIRA.ps1 -Action comment -IssueKey MS-12345 -Comment @"
+h3. Update
+
+Testing complete.
+- All tests passed
+- No regressions
+"@
 ```
 
 ### Transition Tickets
 ```powershell
-.\.github\tools\JIRA.ps1 -Action Transition -IssueKey MS-12345 -Parameters @{TransitionName="In Progress"}
+# List available transitions first
+.\.github\tools\JIRA.ps1 -Action transitions -IssueKey MS-12345
+
+# Transition to new status
+.\.github\tools\JIRA.ps1 -Action transition -IssueKey MS-12345 -TransitionName "In Progress"
 ```
 
 **Common Transitions**:
@@ -107,7 +157,7 @@ Write-Host "Created: $($result.key)"
 ## Workflow Tracking
 
 ### Starting Work
-1. Get ticket details with `GetFull` action
+1. Get ticket details: `.\.github\tools\JIRA.ps1 -Action query -Jql 'key = MS-12345' -IncludeComments`
 2. Transition to "In Progress"
 3. Add comment: "Starting work on MS-12345. Creating test plan..."
 4. Confirm test environment

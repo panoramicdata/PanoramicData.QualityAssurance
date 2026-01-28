@@ -359,9 +359,9 @@ Tenant, Connection, Dashboard, ReportSchedule, ReportJob, Person, Role, Setting,
 - Work completion
 
 ### Security
-- Use environment variables: `$env:JIRA_USERNAME`, `$env:JIRA_PASSWORD`
+- Use Windows Credential Manager for JIRA credentials (stored under `PanoramicData.JIRA`)
 - Never commit credentials
-- Never use `Get-StoredCredential` (not universal)
+- Environment variables are deprecated and auto-migrated to Credential Manager
 
 ### Documentation
 - Keep test plans in `test-plans/`
