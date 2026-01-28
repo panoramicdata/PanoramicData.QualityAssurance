@@ -137,7 +137,9 @@ function Assess-Ticket {
     $summary = $Issue.fields.summary ?? ""
     $description = $Issue.fields.description ?? ""
     $issueType = $Issue.fields.issuetype.name ?? "Unknown"
+    $priority = $Issue.fields.priority.name ?? "Unknown"
     $status = $Issue.fields.status.name ?? "Unknown"
+    $assignee = $Issue.fields.assignee.displayName ?? "Unassigned"
     $components = $Issue.fields.components ?? @()
     $labels = $Issue.fields.labels ?? @()
     $fixVersions = $Issue.fields.fixVersions ?? @()
@@ -397,6 +399,9 @@ function Assess-Ticket {
         Key = $key
         Summary = $summary
         IssueType = $issueType
+        Priority = $priority
+        Status = $status
+        Assignee = $assignee
         TotalScore = [Math]::Round($totalScore)
         Grade = $grade
         Scores = $scores
@@ -418,6 +423,44 @@ function Display-Assessment {
         default { "Red" }
     }
     
+    # Icons for issue types
+    $typeIcon = switch ($Assessment.IssueType) {
+        "Bug"         { "🐛" }
+        "Defect"      { "🐛" }
+        "New Feature" { "✨" }
+        "Improvement" { "💡" }
+        "Task"        { "📋" }
+        "Epic"        { "🎯" }
+        "Story"       { "📖" }
+        "Sub-task"    { "📎" }
+        default       { "📝" }
+    }
+    
+    # Icons for priority
+    $priorityIcon = switch ($Assessment.Priority) {
+        "Critical"  { "🔴" }
+        "Blocker"   { "⛔" }
+        "High"      { "🟠" }
+        "Major"     { "🟡" }
+        "Medium"    { "🟡" }
+        "Minor"     { "🟢" }
+        "Low"       { "🟢" }
+        "Trivial"   { "⚪" }
+        default     { "⚫" }
+    }
+    
+    # Status icon
+    $statusIcon = switch -Regex ($Assessment.Status) {
+        "Ready for Progress|Open|To Do"       { "📥" }
+        "In Progress|In Development"          { "🔨" }
+        "Ready for Test|Ready for QA"         { "🧪" }
+        "In Test|Testing"                     { "🔬" }
+        "Ready for Release|Resolved"          { "✅" }
+        "Closed|Done"                         { "🏁" }
+        "Blocked|On Hold"                     { "⏸️" }
+        default                               { "📌" }
+    }
+    
     # Fixed width for content area (inside the box)
     $contentWidth = 63
     
@@ -436,21 +479,67 @@ function Display-Assessment {
         return $Text + (" " * ($Width - $Text.Length))
     }
     
+    # Helper function to word-wrap text
+    function Word-Wrap {
+        param([string]$Text, [int]$Width = $contentWidth)
+        $words = $Text -split '\s+'
+        $lines = @()
+        $currentLine = ""
+        
+        foreach ($word in $words) {
+            if ($currentLine.Length -eq 0) {
+                $currentLine = $word
+            } elseif (($currentLine.Length + 1 + $word.Length) -le $Width) {
+                $currentLine += " $word"
+            } else {
+                $lines += $currentLine
+                $currentLine = $word
+            }
+        }
+        if ($currentLine.Length -gt 0) {
+            $lines += $currentLine
+        }
+        return $lines
+    }
+    
     $border = "─" * $contentWidth
     
     Write-Host ""
     Write-Host "┌─$border─┐" -ForegroundColor DarkCyan
     
-    # Header
-    $line = Format-Line "TICKET QUALITY: $($Assessment.Key)"
+    # Header: Clickable key on left, icons on right
+    $jiraUrl = "https://jira.panoramicdata.com/browse/$($Assessment.Key)"
+    $esc = [char]27
+    $clickableKey = "$esc]8;;$jiraUrl$esc\$($Assessment.Key)$esc]8;;$esc\"
+    $icons = "$typeIcon $priorityIcon $statusIcon"
+    $keyLength = $Assessment.Key.Length
+    $iconsDisplayLength = 8  # 3 emojis (2 width each) + 2 spaces = 8 display columns
+    $padding = $contentWidth - $keyLength - $iconsDisplayLength
+    
     Write-Host "│ " -ForegroundColor DarkCyan -NoNewline
-    Write-Host $line -ForegroundColor Cyan -NoNewline
+    Write-Host $clickableKey -ForegroundColor Cyan -NoNewline
+    Write-Host (" " * $padding) -NoNewline
+    Write-Host $icons -NoNewline
     Write-Host " │" -ForegroundColor DarkCyan
     
-    $line = Format-Line "Type: $($Assessment.IssueType)"
+    # Metadata line: Type | Priority | Status (right-aligned)
+    $metaLine = "$($Assessment.IssueType) | $($Assessment.Priority) | $($Assessment.Status)"
+    $metaPadding = $contentWidth - $metaLine.Length
     Write-Host "│ " -ForegroundColor DarkCyan -NoNewline
-    Write-Host $line -ForegroundColor Gray -NoNewline
+    Write-Host (" " * $metaPadding) -NoNewline
+    Write-Host $metaLine -ForegroundColor DarkGray -NoNewline
     Write-Host " │" -ForegroundColor DarkCyan
+    
+    Write-Host "├─$border─┤" -ForegroundColor DarkCyan
+    
+    # Summary with word wrap
+    $summaryLines = Word-Wrap -Text $Assessment.Summary -Width $contentWidth
+    foreach ($summaryLine in $summaryLines) {
+        $line = Format-Line $summaryLine
+        Write-Host "│ " -ForegroundColor DarkCyan -NoNewline
+        Write-Host $line -ForegroundColor White -NoNewline
+        Write-Host " │" -ForegroundColor DarkCyan
+    }
     
     Write-Host "├─$border─┤" -ForegroundColor DarkCyan
     
