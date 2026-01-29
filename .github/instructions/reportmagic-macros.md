@@ -1,4 +1,4 @@
-# ReportMagic Macros Testing Instructions
+# ReportMagic Core and Core Like Macros Testing Instructions
 
 ## Overview
 
